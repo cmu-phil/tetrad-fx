@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetrad.fx.ui;
+package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;

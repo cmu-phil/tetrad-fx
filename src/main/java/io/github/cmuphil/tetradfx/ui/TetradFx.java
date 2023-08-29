@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetrad.fx.ui;
+package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.Boss;
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.jetbrains.annotations.NotNull;
 
-import static io.github.cmuphil.tetrad.fx.ui.GraphView.squareLayout;
+import static io.github.cmuphil.tetradfx.ui.GraphView.squareLayout;
 
 /**
  * The main display for Tetrad-FX. Currently displays a graph, a data set, and a

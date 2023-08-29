@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetrad.fx;
+package io.github.cmuphil.tetradfx;
 
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;

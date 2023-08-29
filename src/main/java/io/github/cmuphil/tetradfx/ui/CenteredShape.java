@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetrad.fx.ui;
+package io.github.cmuphil.tetradfx.ui;
 
 /**
  * Interface to be implemented by shapes that have a center.

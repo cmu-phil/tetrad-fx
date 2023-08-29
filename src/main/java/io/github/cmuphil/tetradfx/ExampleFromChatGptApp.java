@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetrad.fx;
+package io.github.cmuphil.tetradfx;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

@@ -23,7 +23,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>io.github.cmuphil.tetrad.fx.App</mainClass>
+          <mainClass>io.github.cmuphil.tetradfx.App</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -38,7 +38,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>io.github.cmuphil.tetrad.fx.JavaFXLauncher</mainClass>
+                  <mainClass>io.github.cmuphil.tetradfx.JavaFXLauncher</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -49,7 +49,7 @@
   </build>
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
-    <exec.mainClass>io.github.cmuphil.tetrad.fx.JavaFXLauncher</exec.mainClass>
+    <exec.mainClass>io.github.cmuphil.tetradfx.JavaFXLauncher</exec.mainClass>
     <maven.compiler.source>17</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

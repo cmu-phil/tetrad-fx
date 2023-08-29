@@ -1,6 +1,6 @@
-package io.github.cmuphil.tetrad.fx;
+package io.github.cmuphil.tetradfx;
 
-import io.github.cmuphil.tetrad.fx.ui.TetradFx;
+import io.github.cmuphil.tetradfx.ui.TetradFx;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
