@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetrad.fx.gui;
+package io.github.cmuphil.tetrad.fx.ui;
 
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.Boss;
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
@@ -6,7 +6,6 @@ import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
-import edu.cmu.tetrad.graph.LayoutUtil;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
@@ -18,8 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.jetbrains.annotations.NotNull;
 
-import static io.github.cmuphil.tetrad.fx.gui.GraphView.circleLayout;
-import static io.github.cmuphil.tetrad.fx.gui.GraphView.squareLayout;
+import static io.github.cmuphil.tetrad.fx.ui.GraphView.squareLayout;
 
 /**
  * The main display for Tetrad-FX. Currently displays a graph, a data set, and a
