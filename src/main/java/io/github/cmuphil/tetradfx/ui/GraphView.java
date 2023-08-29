@@ -53,6 +53,7 @@ public class GraphView extends Pane {
         setPrefWidth(content.getPrefWidth());
     }
 
+    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
     public static void circleLayout(Graph graph) {
         if (graph == null) {
             return;
@@ -79,6 +80,7 @@ public class GraphView extends Pane {
         }
     }
 
+    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
     public static void squareLayout(Graph graph) {
         List<Node> nodes = new ArrayList<>(graph.getNodes());
         graph.paths().makeValidOrder(nodes);
