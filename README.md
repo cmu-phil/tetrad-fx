@@ -10,7 +10,7 @@ We are not committed to making an FX interface, just fooling around right now, b
 
 ##### Well if you guys are going to clone it, let me at least tell you what my upcoming plans are.
 * Next, I'm going to translate the data loader UI from Swing to FX. There's no need to recode all of the underlying machinery. It should pretty much work right out of the box if I can do the translation right.
-* I want to do is flesh out the graph display. I'd like to allow it to represent PAGs for one thing, so I'll need to add circle endpoints, and and I'd like to do the Tetrad-style PAG coloring.
+* I want to do is flesh out the graph display. I'd like to allow it to represent PAGs for one thing, so I'll need to add circle endpoints, and I'd like to do the Tetrad-style PAG coloring.
 * Eventually I'd like to allow the user to represent different kinds of nodes in their own configurable way and choose colors for the graph interface. Ths should be fairly easy to do in FX.
 * I'd like to add a tool to load data, a translation of the one in Swing.
 * The data table currently can display both continuous and discrete columns, so I'd like to add some more search methods. Not sure exactly how I'm going to do that interface yet, but it will be lightweight.
