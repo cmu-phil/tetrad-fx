@@ -13,3 +13,4 @@ We are not committed to making an FX interface, just fooling around right now, b
 * Eventually I'd like to allow the user to represent different kinds of nodes in their own configurable way and choose colors for the graph interface. Ths should be fairly easy to do in FX.
 * I'd like to add a tool to load data, a translation of the one in Swing.
 * The data table currently can display both continuous and discrete columns, so I'd like to add some more search methods. Not sure exactly how I'm going to do that interface yet, but it will be lightweight.
+* Oh, also, I want to hook this up with JPackage to make self-contained apps. I may as well do that up front.
