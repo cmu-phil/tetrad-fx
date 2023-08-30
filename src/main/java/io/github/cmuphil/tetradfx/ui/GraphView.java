@@ -30,7 +30,7 @@ public class GraphView extends Pane {
         }
 
         for (Edge edge : graph.getEdges()) {
-            DisplayEdge _edge = makeDisplayEdge();
+            DisplayEdge _edge = new DisplayEdge();
             displayEdges.put(edge, _edge);
             content.getChildren().addAll(_edge.getLine(), _edge.getArrowHead1(), _edge.getArrowHead2());
             updateLineAndArrow(edge, _edge.getLine(),
@@ -132,10 +132,6 @@ public class GraphView extends Pane {
         });
 
         return new DisplayNode(shape, text);
-    }
-
-    private DisplayEdge makeDisplayEdge() {
-        return new DisplayEdge();
     }
 
     // Currently only support edges with possible arrow endpoints. So, DAGs and CPDAGs. Still
