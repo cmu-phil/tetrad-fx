@@ -8,7 +8,7 @@ We are not committed to making an FX interface, just fooling around right now, b
 
 ##### Holy crap you guys are cloning me already! Awesome! But I _just made this_ :-D It's very preliminary. But please, if you have ideas for how thie project should proceed, please let me know!
 
-##### Well if you guys are going to clone it, let me at least tell you what my upcoming plans are.
+##### Let me at least tell you what my upcoming plans are.
 * Next, I'm going to translate the data loader UI from Swing to FX. There's no need to recode all of the underlying machinery. It should pretty much work right out of the box if I can do the translation right. Data loading is pretty optimized in Tetrad.
 * I want to flesh out the graph display. I'd like to allow it to represent PAGs for one thing, so I'll need to add circle endpoints, and I'd like to do the Tetrad-style PAG coloring.
 * I'd like to add some more search method and maybe translate the gadgets that let you choose algorithm and set parameters. Not sure exactly how I'm going to do that interface yet, but it will be lightweight.
