@@ -5,3 +5,11 @@ We're doing some doodlings here to try to make a Tetrad UI using JavaFX, which s
 We started with these two components since they are the most complicated components in the Tetrad interface. As time permits we will add more. FX allows for flexible styling, so eventually we should even be able to add some of that to make it a nice interface.
 
 We are not committed to making an FX interface, just fooling around right now, but if you have comments one way or the other feel free to leave them in the Issues list.
+
+##### Holy crap you guys are cloning me already! Awesome! But I _just made this_ :-D It's very preliminary. But please, if you have ideas for how thie project should proceed, please let me know! Or feel free to steal anything!
+
+##### Well if you guys are going to clone it, let me at least tell you what my upcoming plans are.
+* The next thing I want to do is flesh out the graph display. I'd like to allow it to represent PAGs for one thing, so I'll need to add circle endpoints, and and I'd like to do the Tetrad-style PAG coloring.
+* Eventually I'd like to allow the user to represent different kinds of nodes in their own configurable way and choose colors for the graph interface. Ths should be fairly easy to do in FX.
+* I'd like to add a tool to load data, a translation of the one in Swing.
+* The data table currently can display both continuous and discrete columns, so I'd like to add some more search methods. Not sure exactly how I'm going to do that interface yet, but it will be lightweight.
