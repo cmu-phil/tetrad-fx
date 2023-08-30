@@ -1,8 +1,8 @@
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/App.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/ExampleFromChatGptApp.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/JavaFXLauncher.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/gui/DataView.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/ExampleFromChatGpt.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/gui/GraphView.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/gui/TetradFx.java
-/Users/josephramsey/IdeaProjects/tetrad-fx/src/main/java/io/github/cmuphil/tetrad/fx/gui/CenteredShape.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/ui/TetradFx.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/JavaFXLauncher.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/ui/CenteredShape.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/ui/DataView.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/App.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/ui/GraphView.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/ExampleFromChatGptApp.java
+/Users/josephramsey/IdeaProjects/tetrad-fx3/src/main/java/io/github/cmuphil/tetradfx/ExampleFromChatGpt.java
