@@ -6,15 +6,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import org.apache.commons.math3.util.FastMath;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * A graph display for Tetrad graphs.
+ * A graph display for Tetrad graphs. Currently only for DAGs and CPDAGs, need to
+ * add circle endpoints and represent PAGs.
  *
  * @author josephramsey
  */
@@ -53,93 +51,14 @@ public class GraphView extends Pane {
         setPrefWidth(content.getPrefWidth());
     }
 
-    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
-    public static void circleLayout(Graph graph) {
-        if (graph == null) {
-            return;
-        }
-
-        int centerx = 120 + 7 * graph.getNumNodes();
-        int centery = 120 + 7 * graph.getNumNodes();
-        int radius = centerx - 50;
-
-        List<Node> nodes = new ArrayList<>(graph.getNodes());
-        graph.paths().makeValidOrder(nodes);
-
-        double rad = 6.28 / nodes.size();
-        double phi = .75 * 6.28;    // start from 12 o'clock.
-
-        for (Node node : nodes) {
-            int centerX = centerx + (int) (radius * FastMath.cos(phi));
-            int centerY = centery + (int) (radius * FastMath.sin(phi));
-
-            node.setCenterX(centerX);
-            node.setCenterY(centerY);
-
-            phi += rad;
-        }
-    }
-
-    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
-    public static void squareLayout(Graph graph) {
-        List<Node> nodes = new ArrayList<>(graph.getNodes());
-        graph.paths().makeValidOrder(nodes);
-
-        int bufferx = 70;
-        int buffery = 50;
-        int spacex = 70;
-        int spacey = 50;
-
-        int side = nodes.size() / 4;
-
-        if (nodes.size() % 4 != 0) {
-            side++;
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i);
-            node.setCenterX(bufferx + spacex * i);
-            node.setCenterY(buffery);
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i + side >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i + side);
-            node.setCenterX(bufferx + spacex * side);
-            node.setCenterY(buffery + i * spacey);
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i + 2 * side >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i + 2 * side);
-            node.setCenterX(bufferx + spacex * (side - i));
-            node.setCenterY(buffery + spacey * side);
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i + 3 * side >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i + 3 * side);
-            node.setCenterX(bufferx);
-            node.setCenterY(buffery + spacey * (side - i));
-        }
-    }
-
+    // Makes a display node for a node in the graph and sets up its event handlers so it can
+    // be dragged around with attached edges.
     private DisplayNode makeDisplayNode(Node node, Graph graph, Map<Node, DisplayNode> displayNodes,
                                         Map<Edge, DisplayEdge> displayEdges) {
         String name = node.getName();
         Text text = new Text(name);
         text.setFont(Font.font(20));
         Shape shape;
-
         if (node.getNodeType() == NodeType.MEASURED) {
             shape = new Rectangle(node.getCenterX(), node.getCenterY(),
                     text.getLayoutBounds().getWidth() + 12,
@@ -219,6 +138,8 @@ public class GraphView extends Pane {
         return new DisplayEdge();
     }
 
+    // Currently only support edges with possible arrow endpoints. So, DAGs and CPDAGs. Still
+    // need to implement circle endpoints for PAGs.
     private void updateLineAndArrow(Edge edge, Line line, Polygon arrowhead1, Polygon arrowhead2,
                                     Shape startShape, Shape endShape) {
         double startX = ((CenteredShape) startShape).getCenterX();
@@ -263,11 +184,12 @@ public class GraphView extends Pane {
         }
     }
 
+    // Use binary search to find the intersection of a line with a Shape to a center point.
+    // Works for arbitrary Shapes.
     private double[] findShapeIntersection(Shape Shape, double startX, double startY, double endX, double endY) {
         double[] intersection = new double[2];
 
-        // Use binary search to find a point on the boundary of the Shape from the center to the edge.
-        int iterations = 15; // The number of iterations for binary search (can be adjusted for higher precision)
+        int iterations = 15;
         for (int i = 0; i < iterations; i++) {
             double midX = (startX + endX) / 2;
             double midY = (startY + endY) / 2;
@@ -286,6 +208,7 @@ public class GraphView extends Pane {
         return intersection;
     }
 
+    // Represents a node in the graph display.
     private static class DisplayNode {
         private final Shape shape;
         private final Text text;
@@ -304,6 +227,7 @@ public class GraphView extends Pane {
         }
     }
 
+    // Represents an edge in the graph display.
     private static class DisplayEdge {
         private final Line line;
         private final Polygon arrowHead1;
@@ -340,6 +264,7 @@ public class GraphView extends Pane {
         }
     }
 
+    // This is just a ordinary ellips which already has a center point, no problem.
     public static class Ellipse extends javafx.scene.shape.Ellipse implements CenteredShape {
         public Ellipse(int centerX, int centerY, double radiusX, double radiusY) {
             setRadiusX(radiusX);
@@ -349,6 +274,7 @@ public class GraphView extends Pane {
         }
     }
 
+    // This is just an ordinary rectangle, to which we add a center point.
     public static class Rectangle extends javafx.scene.shape.Rectangle implements CenteredShape {
         public Rectangle(int centerX, int centerY, double width, double height) {
             setWidth(width);

@@ -6,6 +6,7 @@ import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
@@ -15,9 +16,11 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
-import static io.github.cmuphil.tetradfx.ui.GraphView.squareLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The main display for Tetrad-FX. Currently displays a graph, a data set, and a
@@ -52,6 +55,86 @@ public class TetradFx {
         scrollPane.setLayoutX(410);  // positioned to the right of scrollPane1
         scrollPane.setLayoutY(10);
         return scrollPane;
+    }
+
+    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
+    public static void circleLayout(Graph graph) {
+        if (graph == null) {
+            return;
+        }
+
+        int centerx = 120 + 7 * graph.getNumNodes();
+        int centery = 120 + 7 * graph.getNumNodes();
+        int radius = centerx - 50;
+
+        List<Node> nodes = new ArrayList<>(graph.getNodes());
+        graph.paths().makeValidOrder(nodes);
+
+        double rad = 6.28 / nodes.size();
+        double phi = .75 * 6.28;    // start from 12 o'clock.
+
+        for (Node node : nodes) {
+            int centerX = centerx + (int) (radius * FastMath.cos(phi));
+            int centerY = centery + (int) (radius * FastMath.sin(phi));
+
+            node.setCenterX(centerX);
+            node.setCenterY(centerY);
+
+            phi += rad;
+        }
+    }
+
+    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
+    public static void squareLayout(Graph graph) {
+        List<Node> nodes = new ArrayList<>(graph.getNodes());
+        graph.paths().makeValidOrder(nodes);
+
+        int bufferx = 70;
+        int buffery = 50;
+        int spacex = 70;
+        int spacey = 50;
+
+        int side = nodes.size() / 4;
+
+        if (nodes.size() % 4 != 0) {
+            side++;
+        }
+
+        for (int i = 0; i < side; i++) {
+            if (i >= nodes.size()) {
+                break;
+            }
+            Node node = nodes.get(i);
+            node.setCenterX(bufferx + spacex * i);
+            node.setCenterY(buffery);
+        }
+
+        for (int i = 0; i < side; i++) {
+            if (i + side >= nodes.size()) {
+                break;
+            }
+            Node node = nodes.get(i + side);
+            node.setCenterX(bufferx + spacex * side);
+            node.setCenterY(buffery + i * spacey);
+        }
+
+        for (int i = 0; i < side; i++) {
+            if (i + 2 * side >= nodes.size()) {
+                break;
+            }
+            Node node = nodes.get(i + 2 * side);
+            node.setCenterX(bufferx + spacex * (side - i));
+            node.setCenterY(buffery + spacey * side);
+        }
+
+        for (int i = 0; i < side; i++) {
+            if (i + 3 * side >= nodes.size()) {
+                break;
+            }
+            Node node = nodes.get(i + 3 * side);
+            node.setCenterX(bufferx);
+            node.setCenterY(buffery + spacey * (side - i));
+        }
     }
 
     public TabPane getPane() {
