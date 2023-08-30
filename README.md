@@ -13,7 +13,6 @@ We are not committed to making an FX interface, just fooling around right now, b
 * I want to do is flesh out the graph display. I'd like to allow it to represent PAGs for one thing, so I'll need to add circle endpoints, and I'd like to do the Tetrad-style PAG coloring.
 * I'd like to add some more search method and maybe translate the gadgets that let you choose algorithm and set parameters. Not sure exactly how I'm going to do that interface yet, but it will be lightweight.
 * Eventually I'd like to allow the user to represent different kinds of nodes in their own configurable way and choose colors for the graph interface. Ths should be fairly easy to do in FX.
-* I'd like to add a tool to load data, a translation of the one in Swing.
 * Oh, also, I want to hook this up with JPackage to make self-contained apps. I may as well do that up front.
 
 There are a lot of ideas I draw on from the Swing app, though it's not clear to me yet that we just want a translation of the Swing app and not something new. This will all take me a few days.
