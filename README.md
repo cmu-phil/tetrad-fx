@@ -14,3 +14,5 @@ We are not committed to making an FX interface, just fooling around right now, b
 * I'd like to add a tool to load data, a translation of the one in Swing.
 * The data table currently can display both continuous and discrete columns, so I'd like to add some more search methods. Not sure exactly how I'm going to do that interface yet, but it will be lightweight.
 * Oh, also, I want to hook this up with JPackage to make self-contained apps. I may as well do that up front.
+
+There are a lot of ideas I draw on from the Swing app, though it's not clear to me yet that we just want a translation of the Swing app and not something new.
