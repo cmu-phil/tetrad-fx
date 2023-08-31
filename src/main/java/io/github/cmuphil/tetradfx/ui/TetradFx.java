@@ -5,6 +5,7 @@ import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.graph.LayoutUtil;
 import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
@@ -38,8 +39,8 @@ public class TetradFx {
     }
 
     private static void layout(Graph graph) {
-//        circleLayout(graph);
-        squareLayout(graph);
+        LayoutUtil.circleLayout(graph);
+//        LayoutUtil.squareLayout(graph);
 //        LayoutUtil.fruchtermanReingoldLayout(graph);
     }
 
@@ -56,86 +57,6 @@ public class TetradFx {
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         return scrollPane;
-    }
-
-    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
-    public static void circleLayout(Graph graph) {
-        if (graph == null) {
-            return;
-        }
-
-        int centerx = 120 + 7 * graph.getNumNodes();
-        int centery = 120 + 7 * graph.getNumNodes();
-        int radius = centerx - 50;
-
-        List<Node> nodes = new ArrayList<>(graph.getNodes());
-        graph.paths().makeValidOrder(nodes);
-
-        double rad = 6.28 / nodes.size();
-        double phi = .75 * 6.28;    // start from 12 o'clock.
-
-        for (Node node : nodes) {
-            int centerX = centerx + (int) (radius * FastMath.cos(phi));
-            int centerY = centery + (int) (radius * FastMath.sin(phi));
-
-            node.setCenterX(centerX);
-            node.setCenterY(centerY);
-
-            phi += rad;
-        }
-    }
-
-    // TODO: Publish snapshot of Tetrad and use the one from LayoutUtils.
-    public static void squareLayout(Graph graph) {
-        List<Node> nodes = new ArrayList<>(graph.getNodes());
-        graph.paths().makeValidOrder(nodes);
-
-        int bufferx = 70;
-        int buffery = 50;
-        int spacex = 70;
-        int spacey = 50;
-
-        int side = nodes.size() / 4;
-
-        if (nodes.size() % 4 != 0) {
-            side++;
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i);
-            node.setCenterX(bufferx + spacex * i);
-            node.setCenterY(buffery);
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i + side >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i + side);
-            node.setCenterX(bufferx + spacex * side);
-            node.setCenterY(buffery + i * spacey);
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i + 2 * side >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i + 2 * side);
-            node.setCenterX(bufferx + spacex * (side - i));
-            node.setCenterY(buffery + spacey * side);
-        }
-
-        for (int i = 0; i < side; i++) {
-            if (i + 3 * side >= nodes.size()) {
-                break;
-            }
-            Node node = nodes.get(i + 3 * side);
-            node.setCenterX(bufferx);
-            node.setCenterY(buffery + spacey * (side - i));
-        }
     }
 
     @NotNull
