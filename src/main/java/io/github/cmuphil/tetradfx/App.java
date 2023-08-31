@@ -12,7 +12,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Scene scene = new Scene(TetradFx.getInstance().getPane());
+        Scene scene = new Scene(TetradFx.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
         primaryStage.setTitle("ScrollPane with Pane");
         primaryStage.show();
