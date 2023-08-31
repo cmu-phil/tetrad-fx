@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p></p>The main display for Tetrad-FX. Currently displays a graph, a data set, and a search result.<p></p>
+ * <p></p>The main display for Tetrad-FX. Currently, displays a graph, a data set, and a search result.<p></p>
  * <p>Yay I added a menu bar! None of the items work yet but I will add menu items that do work.</p>
  *
  * @author josephramsey
@@ -192,40 +192,7 @@ public class TetradFx {
             discreteBtn.setToggleGroup(toggleGroup);
             continuousBtn.setSelected(true);  // Default selected radio button
 
-            // Putting everything together
-            // Load data button setup
-            Button loadDataBtn = new Button("Load Data");
-
-            loadDataBtn.setOnAction(e2 -> {
-                if (selectedFile != null) {
-                    System.out.println("File selected: " + selectedFile.getAbsolutePath());
-
-                    DataSet dataSet;
-
-                    // You can add further processing based on the type of dataset chosen.
-                    if (continuousBtn.isSelected()) {
-                        try {
-                            dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
-                                    "*", true, Delimiter.TAB);
-                            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    } else {
-                        try {
-                            dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"',
-                                    "*", true, Delimiter.TAB);
-                            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                            throw new RuntimeException(ex);
-                        }
-                    }
-
-                } else {
-                    System.out.println("File selection cancelled.");
-                }
-            });
+            Button loadDataBtn = loadDataBtn(selectedFile, continuousBtn, tabs);
 
             HBox choice = new HBox(10, continuousBtn, discreteBtn);
             VBox layout = new VBox(10, choice, loadDataBtn);
@@ -259,6 +226,45 @@ public class TetradFx {
         root.setCenter(tabs);
 
         return root;
+    }
+
+    @NotNull
+    private static Button loadDataBtn(File selectedFile, RadioButton continuousBtn, TabPane tabs) {
+        // Putting everything together
+        // Load data button setup
+        Button loadDataBtn = new Button("Load Data");
+
+        loadDataBtn.setOnAction(e2 -> {
+            if (selectedFile != null) {
+                System.out.println("File selected: " + selectedFile.getAbsolutePath());
+
+                DataSet dataSet;
+
+                // You can add further processing based on the type of dataset chosen.
+                if (continuousBtn.isSelected()) {
+                    try {
+                        dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
+                                "*", true, Delimiter.TAB);
+                        tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else {
+                    try {
+                        dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"',
+                                "*", true, Delimiter.TAB);
+                        tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        throw new RuntimeException(ex);
+                    }
+                }
+
+            } else {
+                System.out.println("File selection cancelled.");
+            }
+        });
+        return loadDataBtn;
     }
 
     private record Result(Graph graph, DataSet dataSet) {
