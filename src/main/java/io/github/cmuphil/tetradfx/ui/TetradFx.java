@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p></p>The main display for Tetrad-FX. Currently, displays a graph, a data set, and a search result.<p></p>
+ * <p>The main display for Tetrad-FX. Currently, displays a graph, a data set, and a search result.</p>
  * <p>Yay I added a menu bar! None of the items work yet but I will add menu items that do work.</p>
  *
  * @author josephramsey
