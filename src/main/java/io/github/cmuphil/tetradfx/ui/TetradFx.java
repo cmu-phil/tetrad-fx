@@ -46,6 +46,7 @@ public class TetradFx {
 
     @NotNull
     private static ScrollPane getGraphDisplayScroll(Graph graph) {
+        layout(graph);
         Pane graphView = new GraphView(graph);
         HBox hBox = new HBox(graphView);
 
@@ -139,10 +140,10 @@ public class TetradFx {
     }
 
     @NotNull
-    private static Result getResult(Parameters parameters) {
+    private static Result getSimulation(Parameters parameters, boolean mixed) {
         DataSet dataSet;
         Graph graph;
-        if (true) {
+        if (mixed) {
             LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
             simulation.createData(parameters, true);
             graph = simulation.getTrueGraph(0);
@@ -163,7 +164,7 @@ public class TetradFx {
     public Pane getRoot(Stage primaryStage) {
         TabPane tabs = new TabPane();
 
-        Result result = getResult(new Parameters());
+        Result result = getSimulation(new Parameters(), true);
         System.out.println("Simulation done");
 
         TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
