@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>The main display for Tetrad-FX. Currently, displays a graph, a data set, and a search result.</p>
- * <p>Yay I added a menu bar! None of the items work yet but I will add menu items that do work.</p>
+ * <p>The main display for Tetrad-FX. Work in progress.</p>
  *
  * @author josephramsey
  */
@@ -179,29 +178,7 @@ public class TetradFx {
         MenuItem exitItem = new MenuItem("Exit");
 
         loadData.setOnAction(e -> {
-            System.out.println("Loading data.");
-
-            FileChooser fileChooser = new FileChooser();
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
-            // Radio buttons setup
-            RadioButton continuousBtn = new RadioButton("Continuous Dataset");
-            RadioButton discreteBtn = new RadioButton("Discrete Dataset");
-            ToggleGroup toggleGroup = new ToggleGroup();
-            continuousBtn.setToggleGroup(toggleGroup);
-            discreteBtn.setToggleGroup(toggleGroup);
-            continuousBtn.setSelected(true);  // Default selected radio button
-
-            Button loadDataBtn = loadDataBtn(selectedFile, continuousBtn, tabs);
-
-            HBox choice = new HBox(10, continuousBtn, discreteBtn);
-            VBox layout = new VBox(10, choice, loadDataBtn);
-
-            Dialog<VBox> dialog = new Dialog<>();
-            dialog.getDialogPane().setContent(layout);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CLOSE);
-            dialog.showAndWait();
+            loadDataAction(primaryStage, tabs);
         });
 
         exitItem.setOnAction(e -> {
@@ -226,6 +203,32 @@ public class TetradFx {
         root.setCenter(tabs);
 
         return root;
+    }
+
+    private static void loadDataAction(Stage primaryStage, TabPane tabs) {
+        System.out.println("Loading data.");
+
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+        // Radio buttons setup
+        RadioButton continuousBtn = new RadioButton("Continuous Dataset");
+        RadioButton discreteBtn = new RadioButton("Discrete Dataset");
+        ToggleGroup toggleGroup = new ToggleGroup();
+        continuousBtn.setToggleGroup(toggleGroup);
+        discreteBtn.setToggleGroup(toggleGroup);
+        continuousBtn.setSelected(true);  // Default selected radio button
+
+        Button loadDataBtn = loadDataBtn(selectedFile, continuousBtn, tabs);
+
+        HBox choice = new HBox(10, continuousBtn, discreteBtn);
+        VBox layout = new VBox(10, choice, loadDataBtn);
+
+        Dialog<VBox> dialog = new Dialog<>();
+        dialog.getDialogPane().setContent(layout);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CLOSE);
+        dialog.showAndWait();
     }
 
     @NotNull
