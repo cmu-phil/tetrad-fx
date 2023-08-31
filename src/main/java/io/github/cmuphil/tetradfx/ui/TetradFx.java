@@ -9,6 +9,8 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -75,66 +77,86 @@ public class TetradFx {
     private static void loadDataAction(Stage primaryStage, TabPane tabs) {
         System.out.println("Loading data.");
 
+        ButtonType applyButtonType = new ButtonType("Apply");
+
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
 
-        // Radio buttons setup
         RadioButton continuousBtn = new RadioButton("Continuous Dataset");
         RadioButton discreteBtn = new RadioButton("Discrete Dataset");
+        RadioButton mixedBtn = new RadioButton("Mixed Dataset");
         ToggleGroup toggleGroup = new ToggleGroup();
         continuousBtn.setToggleGroup(toggleGroup);
         discreteBtn.setToggleGroup(toggleGroup);
+        mixedBtn.setToggleGroup(toggleGroup);
         continuousBtn.setSelected(true);  // Default selected radio button
 
-        Button loadDataBtn = loadDataBtn(selectedFile, continuousBtn, tabs);
+        TextField textField = new TextField();
 
-        HBox choice = new HBox(10, continuousBtn, discreteBtn);
-        VBox layout = new VBox(10, choice, loadDataBtn);
+        // Add a listener to the text property to ensure only integer values are accepted
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {  // "\\d*" matches all digit characters.
+                    textField.setText(newValue.replaceAll("[^\\d]", ""));  // Replace all non-digits.
+                }
+            }
+        });
+
+        HBox choice = new HBox(10, continuousBtn, discreteBtn, mixedBtn, new Label("Number of Categories:"), textField);
+        VBox layout = new VBox(10, choice);
 
         Dialog<VBox> dialog = new Dialog<>();
         dialog.getDialogPane().setContent(layout);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, applyButtonType);
+
+        ((Button)dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e -> {
+            loadTheData(selectedFile, continuousBtn, discreteBtn, mixedBtn, textField, tabs);
+        });
+
         dialog.showAndWait();
     }
 
-    @NotNull
-    private static Button loadDataBtn(File selectedFile, RadioButton continuousBtn, TabPane tabs) {
+    private static void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, RadioButton mixedBtn, TextField textField, TabPane tabs) {
         // Putting everything together
         // Load data button setup
-        Button loadDataBtn = new Button("Load Data");
+        if (selectedFile != null) {
+            System.out.println("File selected: " + selectedFile.getAbsolutePath());
 
-        loadDataBtn.setOnAction(e2 -> {
-            if (selectedFile != null) {
-                System.out.println("File selected: " + selectedFile.getAbsolutePath());
+            DataSet dataSet;
 
-                DataSet dataSet;
-
-                // You can add further processing based on the type of dataset chosen.
-                if (continuousBtn.isSelected()) {
-                    try {
-                        dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
-                                "*", true, Delimiter.TAB);
-                        tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                } else {
-                    try {
-                        dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"',
-                                "*", true, Delimiter.TAB);
-                        tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        throw new RuntimeException(ex);
-                    }
+            // You can add further processing based on the type of dataset chosen.
+            if (continuousBtn.isSelected()) {
+                try {
+                    dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
+                            "*", true, Delimiter.TAB);
+                    tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
-
+            } else if (discreteBtn.isSelected()) {
+                try {
+                    dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"', "*", true, Delimiter.TAB);
+                    tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                }
             } else {
-                System.out.println("File selection cancelled.");
+                try {
+                    int numCategories = Integer.parseInt(textField.getText());
+
+                    dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"', "*", true, numCategories, Delimiter.TAB);
+                    tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
+                }
             }
-        });
-        return loadDataBtn;
+
+        } else {
+            System.out.println("File selection cancelled.");
+        }
     }
 
     private record Result(Graph graph, DataSet dataSet) {
