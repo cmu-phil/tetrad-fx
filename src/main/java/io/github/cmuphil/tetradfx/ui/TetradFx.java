@@ -133,9 +133,8 @@ public class TetradFx {
     }
 
     private static void loadContinuous(File selectedFile, TabPane tabs) {
-        DataSet dataSet;
         try {
-            dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
+            DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB);
             tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
         } catch (IOException ex) {
@@ -145,9 +144,8 @@ public class TetradFx {
     }
 
     private static void loadDiscrete(File selectedFile, TabPane tabs) {
-        DataSet dataSet;
         try {
-            dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"', "*", true, Delimiter.TAB);
+            DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"', "*", true, Delimiter.TAB);
             tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
@@ -156,11 +154,9 @@ public class TetradFx {
     }
 
     private static void loadMixed(File selectedFile, TextField textField, TabPane tabs) {
-        DataSet dataSet;
         try {
             int numCategories = Integer.parseInt(textField.getText());
-
-            dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"', "*", true, numCategories, Delimiter.TAB);
+            DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"', "*", true, numCategories, Delimiter.TAB);
             tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
