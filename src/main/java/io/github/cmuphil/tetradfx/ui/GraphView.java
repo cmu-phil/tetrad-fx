@@ -1,11 +1,14 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.graph.*;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +52,28 @@ public class GraphView extends Pane {
 
         setPrefHeight(content.getPrefHeight());
         setPrefWidth(content.getPrefWidth());
+    }
+
+    @NotNull
+    public static ScrollPane getGraphDisplay(Graph graph) {
+        layout(graph);
+        Pane graphView = new GraphView(graph);
+        HBox hBox = new HBox(graphView);
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(hBox);
+
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        return scrollPane;
+    }
+
+    // This will become a popup menu for the graph view.
+    public static void layout(Graph graph) {
+        LayoutUtil.circleLayout(graph);
+//        LayoutUtil.squareLayout(graph);
+//        LayoutUtil.fruchtermanReingoldLayout(graph);
     }
 
     // Makes a display node for a node in the graph and sets up its event handlers so it can

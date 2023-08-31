@@ -5,7 +5,6 @@ import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
-import edu.cmu.tetrad.graph.LayoutUtil;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
@@ -34,42 +33,6 @@ public class TetradFx {
         return TetradFx.INSTANCE;
     }
 
-    @NotNull
-    private static ScrollPane getGraphDisplayScroll(Graph graph) {
-        layout(graph);
-        Pane graphView = new GraphView(graph);
-        HBox hBox = new HBox(graphView);
-
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(hBox);
-
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-        return scrollPane;
-    }
-
-    @NotNull
-    private static Result getSimulation(Parameters parameters, boolean mixed) {
-        DataSet dataSet;
-        Graph graph;
-        if (mixed) {
-            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
-            simulation.createData(parameters, true);
-            graph = simulation.getTrueGraph(0);
-            dataSet = (DataSet) simulation.getDataModel(0);
-        } else {
-            graph = RandomGraph.randomGraphRandomForwardEdges(1000, 0,
-                    2000, 500, 100, 1000, false);
-
-            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
-            simulation.setCoefRange(0, 0.5);
-            simulation.setSelfLoopCoef(0.1);
-            dataSet = simulation.simulateDataReducedForm(1000);
-        }
-        return new Result(graph, dataSet);
-    }
-
     // Passing primaryStage in here so that I can quit the application from a menu item.
     public Pane getRoot(Stage primaryStage) {
         TabPane tabs = new TabPane();
@@ -78,7 +41,7 @@ public class TetradFx {
         System.out.println("Simulation done");
 
         TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
-        ScrollPane trueGraphScroll = getGraphDisplayScroll(result.graph());
+        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
         // Create the menu bar
         MenuBar menuBar = new MenuBar();
@@ -177,10 +140,26 @@ public class TetradFx {
     private record Result(Graph graph, DataSet dataSet) {
     }
 
-    private static void layout(Graph graph) {
-        LayoutUtil.circleLayout(graph);
-//        LayoutUtil.squareLayout(graph);
-//        LayoutUtil.fruchtermanReingoldLayout(graph);
+    // This will eventually be replaced by some flexible method for making simulations.
+    @NotNull
+    private static Result getSimulation(Parameters parameters, boolean mixed) {
+        DataSet dataSet;
+        Graph graph;
+        if (mixed) {
+            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
+            simulation.createData(parameters, true);
+            graph = simulation.getTrueGraph(0);
+            dataSet = (DataSet) simulation.getDataModel(0);
+        } else {
+            graph = RandomGraph.randomGraphRandomForwardEdges(1000, 0,
+                    2000, 500, 100, 1000, false);
+
+            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
+            simulation.setCoefRange(0, 0.5);
+            simulation.setSelfLoopCoef(0.1);
+            dataSet = simulation.simulateDataReducedForm(1000);
+        }
+        return new Result(graph, dataSet);
     }
 }
 
