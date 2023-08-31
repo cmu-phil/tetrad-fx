@@ -62,10 +62,10 @@ public class TetradFx {
         BorderPane root = new BorderPane();
         root.setTop(menuBar);
 
-        tabs.getTabs().add(new Tab("Tab 1", table));
-        tabs.getTabs().add(new Tab("Tab 2", trueGraphScroll));
+        tabs.getTabs().add(new Tab("s1-data", table));
+        tabs.getTabs().add(new Tab("s2-data", trueGraphScroll));
 
-        tabs.setPrefSize(300, 300);
+        tabs.setPrefSize(800, 600);
 
         root.setCenter(tabs);
 
