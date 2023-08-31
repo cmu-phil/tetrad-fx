@@ -22,32 +22,8 @@ public class LoadDataAttempt extends Application {
         launch(args);
     }
 
-    public void start1(Stage primaryStage) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Data File");
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
-        if (selectedFile != null) {
-            System.out.println("File selected: " + selectedFile.getAbsolutePath());
-        } else {
-            System.out.println("File selection cancelled.");
-        }
-
-        DataSet dataSet;
-
-        try {
-            dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
-                    "*", true, Delimiter.TAB);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println(dataSet);
-    }
-
     @Override
     public void start(Stage primaryStage) {
-        // Radio buttons setup
         RadioButton continuousBtn = new RadioButton("Continuous Dataset");
         RadioButton discreteBtn = new RadioButton("Discrete Dataset");
         ToggleGroup toggleGroup = new ToggleGroup();
@@ -55,7 +31,6 @@ public class LoadDataAttempt extends Application {
         discreteBtn.setToggleGroup(toggleGroup);
         continuousBtn.setSelected(true);  // Default selected radio button
 
-        // Load data button setup
         Button loadDataBtn = new Button("Load Data");
         loadDataBtn.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -66,7 +41,6 @@ public class LoadDataAttempt extends Application {
 
                 DataSet dataSet;
 
-                // You can add further processing based on the type of dataset chosen.
                 if (continuousBtn.isSelected()) {
                     try {
                         dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
@@ -87,11 +61,8 @@ public class LoadDataAttempt extends Application {
             } else {
                 System.out.println("File selection cancelled.");
             }
-
-
         });
 
-        // Putting everything together
         HBox choice = new HBox(10, continuousBtn, discreteBtn);
         VBox layout = new VBox(10, choice, loadDataBtn);
         Scene scene = new Scene(layout, 300, 150);

@@ -9,8 +9,6 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -45,6 +43,23 @@ public class TetradFx {
         TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
+        MenuBar menuBar = getMenuBar(primaryStage, tabs);
+
+        // Add the menu bar to the main scene
+        BorderPane root = new BorderPane();
+        root.setTop(menuBar);
+
+        tabs.getTabs().add(new Tab("s1-data", table));
+        tabs.getTabs().add(new Tab("s2-data", trueGraphScroll));
+
+        tabs.setPrefSize(800, 600);
+        root.setCenter(tabs);
+
+        return root;
+    }
+
+    @NotNull
+    private static MenuBar getMenuBar(Stage primaryStage, TabPane tabs) {
         // Create the menu bar
         MenuBar menuBar = new MenuBar();
 
@@ -59,19 +74,7 @@ public class TetradFx {
 
         // Add menus to the menu bar
         menuBar.getMenus().addAll(fileMenu);
-
-        // Add the menu bar to the main scene
-        BorderPane root = new BorderPane();
-        root.setTop(menuBar);
-
-        tabs.getTabs().add(new Tab("s1-data", table));
-        tabs.getTabs().add(new Tab("s2-data", trueGraphScroll));
-
-        tabs.setPrefSize(800, 600);
-
-        root.setCenter(tabs);
-
-        return root;
+        return menuBar;
     }
 
     private static void loadDataAction(Stage primaryStage, TabPane tabs) {
@@ -94,12 +97,9 @@ public class TetradFx {
         TextField textField = new TextField();
 
         // Add a listener to the text property to ensure only integer values are accepted
-        textField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {  // "\\d*" matches all digit characters.
-                    textField.setText(newValue.replaceAll("[^\\d]", ""));  // Replace all non-digits.
-                }
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {  // "\\d*" matches all digit characters.
+                textField.setText(newValue.replaceAll("[^\\d]", ""));  // Replace all non-digits.
             }
         });
 
@@ -110,59 +110,68 @@ public class TetradFx {
         dialog.getDialogPane().setContent(layout);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, applyButtonType);
 
-        ((Button)dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e -> {
-            loadTheData(selectedFile, continuousBtn, discreteBtn, mixedBtn, textField, tabs);
-        });
+        ((Button) dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e ->
+                loadTheData(selectedFile, continuousBtn, discreteBtn, textField, tabs));
 
         dialog.showAndWait();
     }
 
-    private static void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, RadioButton mixedBtn, TextField textField, TabPane tabs) {
-        // Putting everything together
-        // Load data button setup
+    private static void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, TextField textField, TabPane tabs) {
         if (selectedFile != null) {
-            System.out.println("File selected: " + selectedFile.getAbsolutePath());
-
-            DataSet dataSet;
 
             // You can add further processing based on the type of dataset chosen.
             if (continuousBtn.isSelected()) {
-                try {
-                    dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
-                            "*", true, Delimiter.TAB);
-                    tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                loadContinuous(selectedFile, tabs);
             } else if (discreteBtn.isSelected()) {
-                try {
-                    dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"', "*", true, Delimiter.TAB);
-                    tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    throw new RuntimeException(ex);
-                }
+                loadDiscrete(selectedFile, tabs);
             } else {
-                try {
-                    int numCategories = Integer.parseInt(textField.getText());
-
-                    dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"', "*", true, numCategories, Delimiter.TAB);
-                    tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    throw new RuntimeException(ex);
-                }
+                loadMixed(selectedFile, textField, tabs);
             }
-
         } else {
             System.out.println("File selection cancelled.");
+        }
+    }
+
+    private static void loadContinuous(File selectedFile, TabPane tabs) {
+        DataSet dataSet;
+        try {
+            dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
+                    "*", true, Delimiter.TAB);
+            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+        } catch (IOException ex) {
+            System.out.println("Error loading continuous data.");
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static void loadDiscrete(File selectedFile, TabPane tabs) {
+        DataSet dataSet;
+        try {
+            dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"', "*", true, Delimiter.TAB);
+            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+        } catch (IOException ex) {
+            System.out.println("Error loading discrete data.");
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static void loadMixed(File selectedFile, TextField textField, TabPane tabs) {
+        DataSet dataSet;
+        try {
+            int numCategories = Integer.parseInt(textField.getText());
+
+            dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"', "*", true, numCategories, Delimiter.TAB);
+            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+        } catch (IOException ex) {
+            System.out.println("Error loading mixed data.");
+            throw new RuntimeException(ex);
         }
     }
 
     private record Result(Graph graph, DataSet dataSet) {
     }
 
-    // This will eventually be replaced by some flexible method for making simulations.
+    // This will eventually be replaced by some flexible UI for making simulations.
     @NotNull
     private static Result getSimulation(Parameters parameters, boolean mixed) {
         DataSet dataSet;
