@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A graph display for Tetrad graphs. Currently only for DAGs and CPDAGs, need to
- * add circle endpoints and represent PAGs.
+ * <p></p>A graph display for Tetrad graphs. Currently only for DAGs and CPDAGs.</p>
+ *
+ * TODO: need to add circle endpoints and represent PAGs.
  *
  * @author josephramsey
  */

@@ -8,7 +8,9 @@ import javafx.scene.control.TableView;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A class for displaying data sets in a TableView.
+ * A class for displaying data sets in a TableView. Not much to see here; JavaFX's TableView
+ * is pretty cool for this. It's not editable though; we're thinking of leaving it that way
+ * since it mainly needs to be avialable for viewing data sets, not editing them.
  *
  * @author josephramsey
  */

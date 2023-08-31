@@ -6,7 +6,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * JavaFX App
+ * Tetrad-fx app, an application for Tetrad in JavaFX. Evolving, new.
+ *
+ * <p>Getting a lot of advice for coding from ChatGPT: OpenAI. (2023). ChatGPT (August 3 Version)
+ * [Large language model]. <a href="https://chat.openai.com">https://chat.openai.com</a></p>
+ *
+ * @author josephramsey
  */
 public class App extends Application {
 
