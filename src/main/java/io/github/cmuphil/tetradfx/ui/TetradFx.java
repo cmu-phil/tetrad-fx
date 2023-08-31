@@ -3,19 +3,25 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
+import edu.pitt.dbmi.data.reader.Delimiter;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +54,6 @@ public class TetradFx {
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-//        scrollPane.setPrefSize(400, 400);
-//        scrollPane.setLayoutX(410);  // positioned to the right of scrollPane1
-//        scrollPane.setLayoutY(10);
-
 
         return scrollPane;
     }
@@ -157,7 +159,10 @@ public class TetradFx {
         return new Result(graph, dataSet);
     }
 
+    // Passing primaryStage in here so that I can quit the application from a menu item.
     public Pane getRoot(Stage primaryStage) {
+        TabPane tabs = new TabPane();
+
         Result result = getResult(new Parameters());
         System.out.println("Simulation done");
 
@@ -169,49 +174,82 @@ public class TetradFx {
 
         // Create the File menu with some menu items
         Menu fileMenu = new Menu("File");
-        MenuItem newItem = new MenuItem("New");
-        MenuItem openItem = new MenuItem("Open");
-        MenuItem saveItem = new MenuItem("Save");
+        MenuItem loadData = new MenuItem("Load Data");
         MenuItem exitItem = new MenuItem("Exit");
 
-        newItem.setOnAction(e -> System.out.println("New File"));
-        openItem.setOnAction(e -> System.out.println("Open File"));
-        saveItem.setOnAction(e -> System.out.println("Save File"));
+        loadData.setOnAction(e -> {
+            System.out.println("Loading data.");
+
+            FileChooser fileChooser = new FileChooser();
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+
+            // Radio buttons setup
+            RadioButton continuousBtn = new RadioButton("Continuous Dataset");
+            RadioButton discreteBtn = new RadioButton("Discrete Dataset");
+            ToggleGroup toggleGroup = new ToggleGroup();
+            continuousBtn.setToggleGroup(toggleGroup);
+            discreteBtn.setToggleGroup(toggleGroup);
+            continuousBtn.setSelected(true);  // Default selected radio button
+
+            // Putting everything together
+            // Load data button setup
+            Button loadDataBtn = new Button("Load Data");
+
+            loadDataBtn.setOnAction(e2 -> {
+                if (selectedFile != null) {
+                    System.out.println("File selected: " + selectedFile.getAbsolutePath());
+
+                    DataSet dataSet;
+
+                    // You can add further processing based on the type of dataset chosen.
+                    if (continuousBtn.isSelected()) {
+                        try {
+                            dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
+                                    "*", true, Delimiter.TAB);
+                            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else {
+                        try {
+                            dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"',
+                                    "*", true, Delimiter.TAB);
+                            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            throw new RuntimeException(ex);
+                        }
+                    }
+
+                } else {
+                    System.out.println("File selection cancelled.");
+                }
+            });
+
+            HBox choice = new HBox(10, continuousBtn, discreteBtn);
+            VBox layout = new VBox(10, choice, loadDataBtn);
+
+            Dialog<VBox> dialog = new Dialog<>();
+            dialog.getDialogPane().setContent(layout);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CLOSE);
+            dialog.showAndWait();
+        });
+
         exitItem.setOnAction(e -> {
             System.out.println("Exiting");
             primaryStage.close();
         });
 
-        fileMenu.getItems().addAll(newItem, openItem, saveItem, new SeparatorMenuItem(), exitItem);
-
-        // Create the Edit menu with some menu items
-        Menu editMenu = new Menu("Edit");
-        MenuItem cutItem = new MenuItem("Cut");
-        MenuItem copyItem = new MenuItem("Copy");
-        MenuItem pasteItem = new MenuItem("Paste");
-
-        cutItem.setOnAction(e -> System.out.println("Cut"));
-        copyItem.setOnAction(e -> System.out.println("Copy"));
-        pasteItem.setOnAction(e -> System.out.println("Paste"));
-
-        editMenu.getItems().addAll(cutItem, copyItem, pasteItem);
+        fileMenu.getItems().addAll(loadData, new SeparatorMenuItem(), exitItem);
 
         // Add menus to the menu bar
-        menuBar.getMenus().addAll(fileMenu, editMenu);
+        menuBar.getMenus().addAll(fileMenu);
 
         // Add the menu bar to the main scene
         BorderPane root = new BorderPane();
         root.setTop(menuBar);
 
-        TextArea area1 = new TextArea();
-        area1.setPrefSize(800, 800);
-        ScrollPane scroll1 = new ScrollPane(area1);
-
-        TextArea area2 = new TextArea();
-        area2.setPrefSize(800, 800);
-        ScrollPane scroll2 = new ScrollPane(area2);
-
-        TabPane tabs = new TabPane();
         tabs.getTabs().add(new Tab("Tab 1", table));
         tabs.getTabs().add(new Tab("Tab 2", trueGraphScroll));
 
