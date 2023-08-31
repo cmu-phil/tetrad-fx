@@ -6,7 +6,6 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.LayoutUtil;
-import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
@@ -18,13 +17,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>The main display for Tetrad-FX. Work in progress.</p>
@@ -36,12 +32,6 @@ public class TetradFx {
 
     public static TetradFx getInstance() {
         return TetradFx.INSTANCE;
-    }
-
-    private static void layout(Graph graph) {
-        LayoutUtil.circleLayout(graph);
-//        LayoutUtil.squareLayout(graph);
-//        LayoutUtil.fruchtermanReingoldLayout(graph);
     }
 
     @NotNull
@@ -98,15 +88,8 @@ public class TetradFx {
         MenuItem loadData = new MenuItem("Load Data");
         MenuItem exitItem = new MenuItem("Exit");
 
-        loadData.setOnAction(e -> {
-            loadDataAction(primaryStage, tabs);
-        });
-
-        exitItem.setOnAction(e -> {
-            System.out.println("Exiting");
-            primaryStage.close();
-        });
-
+        loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
+        exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, new SeparatorMenuItem(), exitItem);
 
         // Add menus to the menu bar
@@ -192,6 +175,12 @@ public class TetradFx {
     }
 
     private record Result(Graph graph, DataSet dataSet) {
+    }
+
+    private static void layout(Graph graph) {
+        LayoutUtil.circleLayout(graph);
+//        LayoutUtil.squareLayout(graph);
+//        LayoutUtil.fruchtermanReingoldLayout(graph);
     }
 }
 
