@@ -93,7 +93,11 @@ public class TetradFx {
 
     // This will eventually be replaced by some flexible UI for making simulations.
     @NotNull
-    private static Result getSimulation(Parameters parameters, boolean mixed) {
+    private static Result getSimulation(Parameters parameters) {
+
+        // Temporary hack to switch between mixed and continuous simulations.
+        boolean mixed = false;
+
         DataSet dataSet;
         Graph graph;
         if (mixed) {
@@ -169,7 +173,7 @@ public class TetradFx {
     public Pane getRoot(Stage primaryStage) {
         TabPane tabs = new TabPane();
 
-        Result result = getSimulation(new Parameters(), false);
+        Result result = getSimulation(new Parameters());
         System.out.println("Simulation done");
 
         TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
