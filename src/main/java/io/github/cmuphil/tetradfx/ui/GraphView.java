@@ -20,8 +20,6 @@ import java.util.Map;
  * algorithm from Tetrad. The nodes can be dragged around with the mouse, and the edges will follow.
  * Currently only for DAGs and CPDAGs</p>
  *
- * TODO: need to add circle endpoints and represent PAGs.
- *
  * @author josephramsey
  */
 public class GraphView extends Pane {
