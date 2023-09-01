@@ -51,7 +51,7 @@ public class TetradFx {
         continuousBtn.setToggleGroup(toggleGroup);
         discreteBtn.setToggleGroup(toggleGroup);
         mixedBtn.setToggleGroup(toggleGroup);
-        continuousBtn.setSelected(true);  // Default selected radio button
+        continuousBtn.setSelected(true);
 
         TextField textField = new TextField("3");
 
