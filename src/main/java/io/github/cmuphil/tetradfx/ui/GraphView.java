@@ -240,8 +240,9 @@ public class GraphView extends Pane {
         double radius = 5;
         double sides = 10;
 
-        double centerX = startX + radius * (endX - startX) / Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
-        double centerY = starty + radius * (endY - starty) / Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
+        double sqrt = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
+        double centerX = startX + radius * (endX - startX) / sqrt;
+        double centerY = starty + radius * (endY - starty) / sqrt;
 
         final double ANGLE_STEP = 360.0 / sides;
 
