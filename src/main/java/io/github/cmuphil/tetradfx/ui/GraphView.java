@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>A graph display for Tetrad graphs. Currently only for DAGs and CPDAGs.</p>
+ * <p>Displays a Tetrad graph in a ScrollPane with a Pane. The graph is laid out using a layout
+ * algorithm from Tetrad. The nodes can be dragged around with the mouse, and the edges will follow.
+ * Currently only for DAGs and CPDAGs</p>
  *
  * TODO: need to add circle endpoints and represent PAGs.
  *
