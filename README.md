@@ -7,8 +7,6 @@ We started with these two components since they are the most complicated compone
 We are not committed to making an FX interface, just fooling around right now, but if you have comments one way or the other feel free to leave them in the Issues list.
 
 ##### Plans.
-* Added circle endpoints to the graphs so now they can display arbitrary Tetrad graphs.
-* Added a rudimentary data loader that's availailable from the menu itemr. More work to do.
-* Oh, also, I want to hook this up with JPackage to make self-contained apps. I may as well do that up front.
-
-There are a lot of ideas I draw on from the Swing app, though it's not clear to me yet that we just want a translation of the Swing app and not something new. This will all take me a few days.
+* Add more options to the data loader.
+* Add some search UI facilities.
+* Hook this up with JPackage to make self-contained apps. I may as well do that up front.
