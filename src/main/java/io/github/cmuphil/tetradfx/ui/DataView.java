@@ -8,9 +8,9 @@ import javafx.scene.control.TableView;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A class for displaying data sets in a TableView. Not much to see here; JavaFX's TableView
- * is pretty cool for this. It's not editable though; we're thinking of leaving it that way
- * since it mainly needs to be avialable for viewing data sets, not editing them.
+ * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
+ * though we are wrapping the Tetrad DataSet in a pretty efficient way here so that it will
+ * scale to thousands of variables.</p>
  *
  * @author josephramsey
  */
@@ -39,6 +39,11 @@ public class DataView {
         return table;
     }
 
+    /**
+     * <p>A row in the table. This is a wrapper around the Tetrad DataSet that allows us to
+     * display the data in a TableView without having to copy the data into a new data
+     * structure.</p>
+     */
     public static class DataRow {
         private final int row;
         DataSet dataSet;

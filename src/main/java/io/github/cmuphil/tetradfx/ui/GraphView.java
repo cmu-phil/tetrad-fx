@@ -23,7 +23,7 @@ import java.util.Map;
 public class GraphView extends Pane {
     private double offsetX1, offsetY1;
 
-    public GraphView(Graph graph) {
+    private GraphView(Graph graph) {
         Pane content = new Pane();
 
         Map<Node, DisplayNode> displayNodes = new HashMap<>();
@@ -55,6 +55,11 @@ public class GraphView extends Pane {
         setPrefWidth(content.getPrefWidth());
     }
 
+    /**
+     * Static method to get a ScrollPane with a graph display.
+     * @param graph The graph to display.
+     * @return A ScrollPane with the graph display.
+     */
     @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
         layout(graph);
@@ -71,7 +76,7 @@ public class GraphView extends Pane {
     }
 
     // This will become a popup menu for the graph view.
-    public static void layout(Graph graph) {
+    private static void layout(Graph graph) {
         LayoutUtil.circleLayout(graph);
 //        LayoutUtil.squareLayout(graph);
 //        LayoutUtil.fruchtermanReingoldLayout(graph);
@@ -299,7 +304,7 @@ public class GraphView extends Pane {
     }
 
     // This is just a ordinary ellips which already has a center point, no problem.
-    public static class Ellipse extends javafx.scene.shape.Ellipse implements CenteredShape {
+    private static class Ellipse extends javafx.scene.shape.Ellipse implements CenteredShape {
         public Ellipse(int centerX, int centerY, double radiusX, double radiusY) {
             setRadiusX(radiusX);
             setRadiusY(radiusY);
@@ -309,7 +314,7 @@ public class GraphView extends Pane {
     }
 
     // This is just an ordinary rectangle, to which we add a center point.
-    public static class Rectangle extends javafx.scene.shape.Rectangle implements CenteredShape {
+    private static class Rectangle extends javafx.scene.shape.Rectangle implements CenteredShape {
         public Rectangle(int centerX, int centerY, double width, double height) {
             setWidth(width);
             setHeight(height);
