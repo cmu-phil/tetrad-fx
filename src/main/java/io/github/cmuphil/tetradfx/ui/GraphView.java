@@ -5,7 +5,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +42,7 @@ public class GraphView extends Pane {
             displayEdges.put(edge, _edge);
             content.getChildren().addAll(_edge.getLine(), _edge.getArrowHead1(), _edge.getArrowHead2());
             updateLineAndArrow(edge, _edge.getLine(),
-                    _edge.getArrowHead2(), _edge.getArrowHead2(),
+                    _edge.getArrowHead1(), _edge.getArrowHead2(),
                     displayNodes.get(edge.getNode1()).getShape(),
                     displayNodes.get(edge.getNode2()).getShape());
         }
@@ -173,6 +175,24 @@ public class GraphView extends Pane {
         return shape;
     }
 
+    private static void createArrowhead(Polygon arrowhead1, double lineStartX, double lineStartY, double lineEndX, double lineEndY) {
+        double angle = Math.atan2(lineStartY - lineEndY, lineStartX - lineEndX);
+        double arrowSize = 10;
+
+        arrowhead1.getPoints().addAll(
+                lineEndX + arrowSize * Math.cos(angle - Math.PI / 6.),
+                lineEndY + arrowSize * Math.sin(angle - Math.PI / 6.),
+                lineEndX,
+                lineEndY,
+                lineEndX + arrowSize * Math.cos(angle + Math.PI / 6.),
+                lineEndY + arrowSize * Math.sin(angle + Math.PI / 6.)
+        );
+
+        arrowhead1.setFill(Color.BLACK);
+        arrowhead1.setStroke(Color.BLACK);
+        arrowhead1.setStrokeWidth(2);
+    }
+
     // Currently only support edges with possible arrow endpoints. So, DAGs and CPDAGs. Still
     // need to implement circle endpoints for PAGs.
     private void updateLineAndArrow(Edge edge, Line line, Polygon arrowhead1, Polygon arrowhead2,
@@ -190,44 +210,53 @@ public class GraphView extends Pane {
         line.setEndX(endIntersection[0]);
         line.setEndY(endIntersection[1]);
 
-        double arrowSize = 10;
-        double angle = Math.atan2(line.getStartY() - line.getEndY(), line.getStartX() - line.getEndX());
-
         arrowhead1.getPoints().clear();
         arrowhead2.getPoints().clear();
 
-        double v1 = arrowSize * Math.cos(angle - Math.PI / 6.);
-        double v3 = arrowSize * Math.cos(angle + Math.PI / 6.);
-
-        double v2 = arrowSize * Math.sin(angle - Math.PI / 6.);
-        double v4 = arrowSize * Math.sin(angle + Math.PI / 6.);
+        double lineStartX = line.getStartX();
+        double lineStartY = line.getStartY();
+        double lineEndX = line.getEndX();
+        double lineEndY = line.getEndY();
 
         if (edge.getEndpoint1() == Endpoint.ARROW) {
-            arrowhead1.getPoints().addAll(
-                    line.getStartX() + v1,
-                    line.getStartY() + v2,
-                    line.getStartX(),
-                    line.getStartX(),
-                    line.getStartX() + v3,
-                    line.getStartX() + v4
-            );
+            createArrowhead(arrowhead2, lineEndX, lineEndY, lineStartX, lineStartY);
+        } else if (edge.getEndpoint1() == Endpoint.CIRCLE) {
+            createCircle(arrowhead1, lineStartX, lineStartY, lineEndX, lineEndY);
         }
 
         if (edge.getEndpoint2() == Endpoint.ARROW) {
-            arrowhead2.getPoints().addAll(
-                    line.getEndX() + v1,
-                    line.getEndY() + v2,
-                    line.getEndX(),
-                    line.getEndY(),
-                    line.getEndX() + v3,
-                    line.getEndY() + v4
-            );
+            createArrowhead(arrowhead2, lineStartX, lineStartY, lineEndX, lineEndY);
+        } else if (edge.getEndpoint2() == Endpoint.CIRCLE) {
+            createCircle(arrowhead2, lineEndX, lineEndY, lineStartX, lineStartY);
         }
+    }
+
+    private void createCircle(Polygon polygon, double startX, double starty,
+                              double endX, double endY) {
+        double radius = 5;
+        double sides = 10;
+
+        double centerX = startX + radius * (endX - startX) / Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
+        double centerY = starty + radius * (endY - starty) / Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
+
+        final double ANGLE_STEP = 360.0 / sides;
+
+        for (int i = 0; i < sides; i++) {
+            double angle = i * ANGLE_STEP;
+            double x = centerX + radius * Math.cos(Math.toRadians(angle));
+            double y = centerY + radius * Math.sin(Math.toRadians(angle));
+            polygon.getPoints().addAll(x, y);
+        }
+
+        polygon.setFill(Color.WHITE);
+        polygon.setStroke(Color.BLACK);
+        polygon.setStrokeWidth(2);
     }
 
     // Use binary search to find the intersection of a line with a Shape to a center point.
     // Works for arbitrary Shapes.
-    private double[] findShapeIntersection(Shape Shape, double startX, double startY, double endX, double endY) {
+    private double[] findShapeIntersection(Shape Shape, double startX, double startY, double endX,
+                                           double endY) {
         double[] intersection = new double[2];
 
         int iterations = 15;
@@ -305,7 +334,7 @@ public class GraphView extends Pane {
         }
     }
 
-    // This is just a ordinary ellips which already has a center point, no problem.
+    // This is just a ordinary ellipse which already has a center point, no problem.
     private static class Ellipse extends javafx.scene.shape.Ellipse implements CenteredShape {
         public Ellipse(int centerX, int centerY, double radiusX, double radiusY) {
             setRadiusX(radiusX);

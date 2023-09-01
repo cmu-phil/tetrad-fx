@@ -1,6 +1,12 @@
 package io.github.cmuphil.tetradfx.ui;
 
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Fci;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
+import edu.cmu.tetrad.algcomparison.independence.DegenerateGaussianLRT;
+import edu.cmu.tetrad.algcomparison.independence.FisherZ;
+import edu.cmu.tetrad.algcomparison.independence.SemBicDTest;
+import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
@@ -33,50 +39,6 @@ public class TetradFx {
         return TetradFx.INSTANCE;
     }
 
-    // Passing primaryStage in here so that I can quit the application from a menu item.
-    public Pane getRoot(Stage primaryStage) {
-        TabPane tabs = new TabPane();
-
-        Result result = getSimulation(new Parameters(), true);
-        System.out.println("Simulation done");
-
-        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
-        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
-
-        MenuBar menuBar = getMenuBar(primaryStage, tabs);
-
-        // Add the menu bar to the main scene
-        BorderPane root = new BorderPane();
-        root.setTop(menuBar);
-
-        tabs.getTabs().add(new Tab("s1-data", table));
-        tabs.getTabs().add(new Tab("s2-data", trueGraphScroll));
-
-        tabs.setPrefSize(800, 600);
-        root.setCenter(tabs);
-
-        return root;
-    }
-
-    @NotNull
-    private static MenuBar getMenuBar(Stage primaryStage, TabPane tabs) {
-        // Create the menu bar
-        MenuBar menuBar = new MenuBar();
-
-        // Create the File menu with some menu items
-        Menu fileMenu = new Menu("File");
-        MenuItem loadData = new MenuItem("Load Data");
-        MenuItem exitItem = new MenuItem("Exit");
-
-        loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
-        exitItem.setOnAction(e -> primaryStage.close());
-        fileMenu.getItems().addAll(loadData, new SeparatorMenuItem(), exitItem);
-
-        // Add menus to the menu bar
-        menuBar.getMenus().addAll(fileMenu);
-        return menuBar;
-    }
-
     private static void loadDataAction(Stage primaryStage, TabPane tabs) {
         System.out.println("Loading data.");
 
@@ -96,14 +58,14 @@ public class TetradFx {
 
         TextField textField = new TextField();
 
-        // Add a listener to the text property to ensure only integer values are accepted
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {  // "\\d*" matches all digit characters.
-                textField.setText(newValue.replaceAll("[^\\d]", ""));  // Replace all non-digits.
+            if (!newValue.matches("\\d*")) {
+                textField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
 
-        HBox choice = new HBox(10, continuousBtn, discreteBtn, mixedBtn, new Label("Number of Categories:"), textField);
+        HBox choice = new HBox(10, continuousBtn, discreteBtn, mixedBtn,
+                new Label("Number of Categories:"), textField);
         VBox layout = new VBox(10, choice);
 
         Dialog<VBox> dialog = new Dialog<>();
@@ -114,6 +76,44 @@ public class TetradFx {
                 loadTheData(selectedFile, continuousBtn, discreteBtn, textField, tabs));
 
         dialog.showAndWait();
+    }
+
+    @NotNull
+    private static MenuBar getMenuBar(Stage primaryStage, TabPane tabs) {
+        MenuBar menuBar = new MenuBar();
+
+        Menu fileMenu = new Menu("File");
+        MenuItem loadData = new MenuItem("Load Data");
+        MenuItem exitItem = new MenuItem("Exit");
+
+        loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
+        exitItem.setOnAction(e -> primaryStage.close());
+        fileMenu.getItems().addAll(loadData, new SeparatorMenuItem(), exitItem);
+
+        menuBar.getMenus().addAll(fileMenu);
+        return menuBar;
+    }
+
+    // This will eventually be replaced by some flexible UI for making simulations.
+    @NotNull
+    private static Result getSimulation(Parameters parameters, boolean mixed) {
+        DataSet dataSet;
+        Graph graph;
+        if (mixed) {
+            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
+            simulation.createData(parameters, true);
+            graph = simulation.getTrueGraph(0);
+            dataSet = (DataSet) simulation.getDataModel(0);
+        } else {
+            graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,
+                    10, 500, 100, 1000, false);
+
+            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
+            simulation.setCoefRange(0, 0.5);
+            simulation.setSelfLoopCoef(0.1);
+            dataSet = simulation.simulateDataReducedForm(1000);
+        }
+        return new Result(graph, dataSet);
     }
 
     private static void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, TextField textField, TabPane tabs) {
@@ -167,26 +167,33 @@ public class TetradFx {
     private record Result(Graph graph, DataSet dataSet) {
     }
 
-    // This will eventually be replaced by some flexible UI for making simulations.
-    @NotNull
-    private static Result getSimulation(Parameters parameters, boolean mixed) {
-        DataSet dataSet;
-        Graph graph;
-        if (mixed) {
-            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
-            simulation.createData(parameters, true);
-            graph = simulation.getTrueGraph(0);
-            dataSet = (DataSet) simulation.getDataModel(0);
-        } else {
-            graph = RandomGraph.randomGraphRandomForwardEdges(1000, 0,
-                    2000, 500, 100, 1000, false);
+    // Passing primaryStage in here so that I can quit the application from a menu item
+    // and pop up dialogs.
+    public Pane getRoot(Stage primaryStage) {
+        TabPane tabs = new TabPane();
 
-            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
-            simulation.setCoefRange(0, 0.5);
-            simulation.setSelfLoopCoef(0.1);
-            dataSet = simulation.simulateDataReducedForm(1000);
-        }
-        return new Result(graph, dataSet);
+        Result result = getSimulation(new Parameters(), false);
+        System.out.println("Simulation done");
+
+        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
+        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
+
+        Gfci fci = new Gfci(new SemBicDTest(), new SemBicScore());
+        Graph pag = fci.search(result.dataSet(), new Parameters());
+
+        MenuBar menuBar = getMenuBar(primaryStage, tabs);
+
+        BorderPane root = new BorderPane();
+        root.setTop(menuBar);
+
+        tabs.getTabs().add(new Tab("s1-data", table));
+        tabs.getTabs().add(new Tab("s2-data", trueGraphScroll));
+        tabs.getTabs().add(new Tab("fci", GraphView.getGraphDisplay(pag)));
+
+        tabs.setPrefSize(800, 600);
+        root.setCenter(tabs);
+
+        return root;
     }
 }
 
