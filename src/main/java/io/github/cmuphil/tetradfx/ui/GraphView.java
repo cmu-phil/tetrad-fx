@@ -84,18 +84,7 @@ public class GraphView extends Pane {
         String name = node.getName();
         Text text = new Text(name);
         text.setFont(Font.font(20));
-        Shape shape;
-        if (node.getNodeType() == NodeType.MEASURED) {
-            shape = new Rectangle(node.getCenterX(), node.getCenterY(),
-                    text.getLayoutBounds().getWidth() + 12,
-                    text.getLayoutBounds().getHeight() + 2);
-        } else if (node.getNodeType() == NodeType.LATENT || node.getNodeType() == NodeType.ERROR) {
-            shape = new Ellipse(node.getCenterX(), node.getCenterY(),
-                    text.getLayoutBounds().getWidth() / 2 + 12,
-                    text.getLayoutBounds().getHeight() / 2 + 2);
-        } else {
-            throw new IllegalArgumentException("That node type is not configured: " + node.getNodeType());
-        }
+        Shape shape = getShape(node, text);
 
         shape.setFill(Color.WHITE);
         shape.setStroke(Color.BLACK);
@@ -160,6 +149,23 @@ public class GraphView extends Pane {
         return new DisplayNode(shape, text);
     }
 
+    @NotNull
+    private static Shape getShape(Node node, Text text) {
+        Shape shape;
+        if (node.getNodeType() == NodeType.MEASURED) {
+            shape = new Rectangle(node.getCenterX(), node.getCenterY(),
+                    text.getLayoutBounds().getWidth() + 12,
+                    text.getLayoutBounds().getHeight() + 2);
+        } else if (node.getNodeType() == NodeType.LATENT || node.getNodeType() == NodeType.ERROR) {
+            shape = new Ellipse(node.getCenterX(), node.getCenterY(),
+                    text.getLayoutBounds().getWidth() / 2 + 12,
+                    text.getLayoutBounds().getHeight() / 2 + 2);
+        } else {
+            throw new IllegalArgumentException("That node type is not configured: " + node.getNodeType());
+        }
+        return shape;
+    }
+
     // Currently only support edges with possible arrow endpoints. So, DAGs and CPDAGs. Still
     // need to implement circle endpoints for PAGs.
     private void updateLineAndArrow(Edge edge, Line line, Polygon arrowhead1, Polygon arrowhead2,
@@ -183,25 +189,31 @@ public class GraphView extends Pane {
         arrowhead1.getPoints().clear();
         arrowhead2.getPoints().clear();
 
+        double v1 = arrowSize * Math.cos(angle - Math.PI / 6.);
+        double v3 = arrowSize * Math.cos(angle + Math.PI / 6.);
+
+        double v2 = arrowSize * Math.sin(angle - Math.PI / 6.);
+        double v4 = arrowSize * Math.sin(angle + Math.PI / 6.);
+
         if (edge.getEndpoint1() == Endpoint.ARROW) {
             arrowhead1.getPoints().addAll(
-                    line.getStartX() + arrowSize * Math.cos(angle - Math.PI / 6),
-                    line.getStartY() + arrowSize * Math.sin(angle - Math.PI / 6),
+                    line.getStartX() + v1,
+                    line.getStartY() + v2,
                     line.getStartX(),
                     line.getStartX(),
-                    line.getStartX() + arrowSize * Math.cos(angle + Math.PI / 6),
-                    line.getStartX() + arrowSize * Math.sin(angle + Math.PI / 6)
+                    line.getStartX() + v3,
+                    line.getStartX() + v4
             );
         }
 
         if (edge.getEndpoint2() == Endpoint.ARROW) {
             arrowhead2.getPoints().addAll(
-                    line.getEndX() + arrowSize * Math.cos(angle - Math.PI / 6),
-                    line.getEndY() + arrowSize * Math.sin(angle - Math.PI / 6),
+                    line.getEndX() + v1,
+                    line.getEndY() + v2,
                     line.getEndX(),
                     line.getEndY(),
-                    line.getEndX() + arrowSize * Math.cos(angle + Math.PI / 6),
-                    line.getEndY() + arrowSize * Math.sin(angle + Math.PI / 6)
+                    line.getEndX() + v3,
+                    line.getEndY() + v4
             );
         }
     }
