@@ -38,9 +38,9 @@ public class GraphView extends Pane {
         for (Edge edge : graph.getEdges()) {
             DisplayEdge _edge = new DisplayEdge();
             displayEdges.put(edge, _edge);
-            content.getChildren().addAll(_edge.getLine(), _edge.getArrowHead1(), _edge.getArrowHead2());
+            content.getChildren().addAll(_edge.getLine(), _edge.getEdgemark1(), _edge.getEdgemark2());
             updateLineAndArrow(edge, _edge.getLine(),
-                    _edge.getArrowHead1(), _edge.getArrowHead2(),
+                    _edge.getEdgemark1(), _edge.getEdgemark2(),
                     displayNodes.get(edge.getNode1()).getShape(),
                     displayNodes.get(edge.getNode2()).getShape());
         }
@@ -118,7 +118,7 @@ public class GraphView extends Pane {
                 Node n2 = Edges.getDirectedEdgeHead(edge);
 
                 updateLineAndArrow(edge, displayEdges.get(edge).getLine(),
-                        displayEdges.get(edge).getArrowHead1(), displayEdges.get(edge).getArrowHead2(),
+                        displayEdges.get(edge).getEdgemark1(), displayEdges.get(edge).getEdgemark2(),
                         displayNodes.get(n1).getShape(), displayNodes.get(n2).getShape());
             }
         });
@@ -148,7 +148,7 @@ public class GraphView extends Pane {
                 }
 
                 updateLineAndArrow(edge, displayEdges.get(edge).getLine(),
-                        displayEdges.get(edge).getArrowHead1(), displayEdges.get(edge).getArrowHead2(),
+                        displayEdges.get(edge).getEdgemark1(), displayEdges.get(edge).getEdgemark2(),
                         displayNodes.get(n1).getShape(), displayNodes.get(n2).getShape());
             }
         });
@@ -173,27 +173,9 @@ public class GraphView extends Pane {
         return shape;
     }
 
-    private static void createArrowhead(Polygon arrowhead1, double lineStartX, double lineStartY, double lineEndX, double lineEndY) {
-        double angle = Math.atan2(lineStartY - lineEndY, lineStartX - lineEndX);
-        double arrowSize = 10;
-
-        arrowhead1.getPoints().addAll(
-                lineEndX + arrowSize * Math.cos(angle - Math.PI / 6.),
-                lineEndY + arrowSize * Math.sin(angle - Math.PI / 6.),
-                lineEndX,
-                lineEndY,
-                lineEndX + arrowSize * Math.cos(angle + Math.PI / 6.),
-                lineEndY + arrowSize * Math.sin(angle + Math.PI / 6.)
-        );
-
-        arrowhead1.setFill(Color.BLACK);
-        arrowhead1.setStroke(Color.BLACK);
-        arrowhead1.setStrokeWidth(2);
-    }
-
     // Currently only support edges with possible arrow endpoints. So, DAGs and CPDAGs. Still
     // need to implement circle endpoints for PAGs.
-    private void updateLineAndArrow(Edge edge, Line line, Polygon arrowhead1, Polygon arrowhead2,
+    private void updateLineAndArrow(Edge edge, Line line, Polygon edgemark1, Polygon edgemark2,
                                     Shape startShape, Shape endShape) {
         double startX = ((CenteredShape) startShape).getCenterX();
         double startY = ((CenteredShape) startShape).getCenterY();
@@ -208,8 +190,8 @@ public class GraphView extends Pane {
         line.setEndX(endIntersection[0]);
         line.setEndY(endIntersection[1]);
 
-        arrowhead1.getPoints().clear();
-        arrowhead2.getPoints().clear();
+        edgemark1.getPoints().clear();
+        edgemark2.getPoints().clear();
 
         double lineStartX = line.getStartX();
         double lineStartY = line.getStartY();
@@ -217,19 +199,43 @@ public class GraphView extends Pane {
         double lineEndY = line.getEndY();
 
         if (edge.getEndpoint1() == Endpoint.ARROW) {
-            createArrowhead(arrowhead2, lineEndX, lineEndY, lineStartX, lineStartY);
+            createArrowhead(edgemark2, lineEndX, lineEndY, lineStartX, lineStartY);
         } else if (edge.getEndpoint1() == Endpoint.CIRCLE) {
-            createCircle(arrowhead1, lineStartX, lineStartY, lineEndX, lineEndY);
+            createCircle(edgemark1, lineStartX, lineStartY, lineEndX, lineEndY);
         }
 
         if (edge.getEndpoint2() == Endpoint.ARROW) {
-            createArrowhead(arrowhead2, lineStartX, lineStartY, lineEndX, lineEndY);
+            createArrowhead(edgemark2, lineStartX, lineStartY, lineEndX, lineEndY);
         } else if (edge.getEndpoint2() == Endpoint.CIRCLE) {
-            createCircle(arrowhead2, lineEndX, lineEndY, lineStartX, lineStartY);
+            createCircle(edgemark2, lineEndX, lineEndY, lineStartX, lineStartY);
         }
     }
 
-    private void createCircle(Polygon polygon, double startX, double starty,
+    /**
+     * Changes the edge mark polygon to be an arrowhead.
+     */
+    private static void createArrowhead(Polygon edgemark, double lineStartX, double lineStartY, double lineEndX, double lineEndY) {
+        double angle = Math.atan2(lineStartY - lineEndY, lineStartX - lineEndX);
+        double arrowSize = 10;
+
+        edgemark.getPoints().addAll(
+                lineEndX + arrowSize * Math.cos(angle - Math.PI / 6.),
+                lineEndY + arrowSize * Math.sin(angle - Math.PI / 6.),
+                lineEndX,
+                lineEndY,
+                lineEndX + arrowSize * Math.cos(angle + Math.PI / 6.),
+                lineEndY + arrowSize * Math.sin(angle + Math.PI / 6.)
+        );
+
+        edgemark.setFill(Color.BLACK);
+        edgemark.setStroke(Color.BLACK);
+        edgemark.setStrokeWidth(2);
+    }
+
+    /**
+     * Changes the edge mark polygon to be a circle.
+     */
+    private void createCircle(Polygon edgemark, double startX, double starty,
                               double endX, double endY) {
         double radius = 5;
         double sides = 10;
@@ -243,12 +249,12 @@ public class GraphView extends Pane {
             double angle = i * ANGLE_STEP;
             double x = centerX + radius * Math.cos(Math.toRadians(angle));
             double y = centerY + radius * Math.sin(Math.toRadians(angle));
-            polygon.getPoints().addAll(x, y);
+            edgemark.getPoints().addAll(x, y);
         }
 
-        polygon.setFill(Color.WHITE);
-        polygon.setStroke(Color.BLACK);
-        polygon.setStrokeWidth(2);
+        edgemark.setFill(Color.WHITE);
+        edgemark.setStroke(Color.BLACK);
+        edgemark.setStrokeWidth(2);
     }
 
     // Use binary search to find the intersection of a line with a Shape to a center point.
@@ -298,37 +304,37 @@ public class GraphView extends Pane {
     // Represents an edge in the graph display.
     private static class DisplayEdge {
         private final Line line;
-        private final Polygon arrowHead1;
-        private final Polygon arrowHead2;
+        private final Polygon edgemark1;
+        private final Polygon edgemark2;
 
         public DisplayEdge() {
             Line line = new Line();
             line.setStroke(Color.BLACK);
             this.line = line;
 
-            Polygon arrowHead1 = new Polygon();
-            arrowHead1.setStroke(Color.BLACK);
-            arrowHead1.setFill(Color.BLACK);
+            Polygon edgemark1 = new Polygon();
+            edgemark1.setStroke(Color.BLACK);
+            edgemark1.setFill(Color.BLACK);
 
-            this.arrowHead1 = arrowHead1;
+            this.edgemark1 = edgemark1;
 
-            Polygon arrowHead2 = new Polygon();
-            arrowHead2.setStroke(Color.BLACK);
-            arrowHead2.setFill(Color.BLACK);
+            Polygon edgemark2 = new Polygon();
+            edgemark2.setStroke(Color.BLACK);
+            edgemark2.setFill(Color.BLACK);
 
-            this.arrowHead2 = arrowHead2;
+            this.edgemark2 = edgemark2;
         }
 
         public Line getLine() {
             return line;
         }
 
-        public Polygon getArrowHead1() {
-            return arrowHead1;
+        public Polygon getEdgemark1() {
+            return edgemark1;
         }
 
-        public Polygon getArrowHead2() {
-            return arrowHead2;
+        public Polygon getEdgemark2() {
+            return edgemark2;
         }
     }
 
