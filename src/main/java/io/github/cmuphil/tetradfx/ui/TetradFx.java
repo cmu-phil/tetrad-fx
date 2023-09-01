@@ -5,13 +5,21 @@ import edu.cmu.tetrad.algcomparison.graph.RandomForward;
 import edu.cmu.tetrad.algcomparison.independence.SemBicDTest;
 import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
+import edu.cmu.tetrad.data.DataModel;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
+import edu.cmu.tetrad.util.DataConvertUtils;
 import edu.cmu.tetrad.util.Parameters;
+import edu.pitt.dbmi.data.reader.Data;
+import edu.pitt.dbmi.data.reader.DataColumn;
 import edu.pitt.dbmi.data.reader.Delimiter;
+import edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader;
+import edu.pitt.dbmi.data.reader.tabular.TabularColumnReader;
+import edu.pitt.dbmi.data.reader.tabular.TabularDataFileReader;
+import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -53,7 +61,7 @@ public class TetradFx {
         mixedBtn.setToggleGroup(toggleGroup);
         continuousBtn.setSelected(true);  // Default selected radio button
 
-        TextField textField = new TextField();
+        TextField textField = new TextField("3");
 
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
@@ -136,7 +144,7 @@ public class TetradFx {
     private static void loadContinuous(File selectedFile, TabPane tabs) {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
-                    "*", true, Delimiter.TAB);
+                    "*", true, Delimiter.TAB, false);
             tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
@@ -146,7 +154,8 @@ public class TetradFx {
 
     private static void loadDiscrete(File selectedFile, TabPane tabs) {
         try {
-            DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//", '\"', "*", true, Delimiter.TAB);
+            DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
+                    '\"', "*", true, Delimiter.TAB, false);
             tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
@@ -156,8 +165,9 @@ public class TetradFx {
 
     private static void loadMixed(File selectedFile, TextField textField, TabPane tabs) {
         try {
-            int numCategories = Integer.parseInt(textField.getText());
-            DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"', "*", true, numCategories, Delimiter.TAB);
+            int maxNumCategories = Integer.parseInt(textField.getText());
+            DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"',
+                    "*", true, maxNumCategories, Delimiter.TAB, false);
             tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
@@ -195,6 +205,50 @@ public class TetradFx {
         root.setCenter(tabs);
 
         return root;
+    }
+
+    public static DataSet loadDiscreteData(File file, String commentMarker, char quoteCharacter,
+                                           String missingValueMarker, boolean hasHeader, Delimiter delimiter)
+            throws IOException {
+        TabularColumnReader columnReader = new TabularColumnFileReader(file.toPath(), delimiter);
+        DataColumn[] dataColumns = columnReader.readInDataColumns(new int[]{}, true);
+
+        columnReader.setCommentMarker(commentMarker);
+
+        TabularDataReader dataReader = new TabularDataFileReader(file.toPath(), delimiter);
+
+        // Need to specify commentMarker, .... again to the TabularDataFileReader
+        dataReader.setCommentMarker(commentMarker);
+        dataReader.setMissingDataMarker(missingValueMarker);
+        dataReader.setQuoteCharacter(quoteCharacter);
+
+        Data data = dataReader.read(dataColumns, hasHeader);
+        DataModel dataModel = DataConvertUtils.toDataModel(data);
+
+        return (DataSet) dataModel;
+    }
+
+    @NotNull
+    public static DataSet loadMixedData(File file, String commentMarker, char quoteCharacter,
+                                        String missingValueMarker, boolean hasHeader, int maxNumCategories, Delimiter delimiter)
+            throws IOException {
+        TabularColumnReader columnReader = new TabularColumnFileReader(file.toPath(), delimiter);
+        DataColumn[] dataColumns = columnReader.readInDataColumns(new int[]{0}, false);
+
+        columnReader.setCommentMarker(commentMarker);
+
+        TabularDataReader dataReader = new TabularDataFileReader(file.toPath(), delimiter);
+
+        // Need to specify commentMarker, .... again to the TabularDataFileReader
+        dataReader.setCommentMarker(commentMarker);
+        dataReader.setMissingDataMarker(missingValueMarker);
+        dataReader.setQuoteCharacter(quoteCharacter);
+        dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
+
+        Data data = dataReader.read(dataColumns, hasHeader);
+        DataModel dataModel = DataConvertUtils.toDataModel(data);
+
+        return (DataSet) dataModel;
     }
 }
 
