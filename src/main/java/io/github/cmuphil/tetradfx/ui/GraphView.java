@@ -20,6 +20,8 @@ import java.util.Map;
  * algorithm from Tetrad. The nodes can be dragged around with the mouse, and the edges will follow.
  * Currently only for DAGs and CPDAGs</p>
  *
+ * <p>Scales well to large, dense graphs.</p>
+ *
  * @author josephramsey
  */
 public class GraphView extends Pane {
