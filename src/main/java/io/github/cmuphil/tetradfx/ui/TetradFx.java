@@ -188,7 +188,7 @@ public class TetradFx {
         root.setTop(menuBar);
 
         tabs.getTabs().add(new Tab("s1-data", table));
-        tabs.getTabs().add(new Tab("s2-data", trueGraphScroll));
+        tabs.getTabs().add(new Tab("s2-graph", trueGraphScroll));
         tabs.getTabs().add(new Tab("fci", GraphView.getGraphDisplay(pag)));
 
         tabs.setPrefSize(800, 600);
