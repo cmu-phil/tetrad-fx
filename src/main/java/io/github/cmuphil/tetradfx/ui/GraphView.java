@@ -116,8 +116,8 @@ public class GraphView extends Pane {
             text.setY(newY + text.getLayoutBounds().getHeight() / 4);
 
             for (Edge edge : graph.getEdges(node)) {
-                Node n1 = Edges.getDirectedEdgeTail(edge);
-                Node n2 = Edges.getDirectedEdgeHead(edge);
+                Node n1 = edge.getNode1();
+                Node n2 = edge.getNode2();
 
                 updateLineAndArrow(edge, displayEdges.get(edge).getLine(),
                         displayEdges.get(edge).getEdgemark1(), displayEdges.get(edge).getEdgemark2(),
@@ -139,15 +139,8 @@ public class GraphView extends Pane {
             text.setY(newY + text.getLayoutBounds().getHeight() / 4);
 
             for (Edge edge : graph.getEdges(node)) {
-                Node n1, n2;
-
-                if (edge.isDirected()) {
-                    n1 = Edges.getDirectedEdgeTail(edge);
-                    n2 = Edges.getDirectedEdgeHead(edge);
-                } else {
-                    n1 = edge.getNode1();
-                    n2 = edge.getNode2();
-                }
+                Node n1 = edge.getNode1();
+                Node n2 = edge.getNode2();
 
                 updateLineAndArrow(edge, displayEdges.get(edge).getLine(),
                         displayEdges.get(edge).getEdgemark1(), displayEdges.get(edge).getEdgemark2(),
