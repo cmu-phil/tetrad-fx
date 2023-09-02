@@ -1,10 +1,16 @@
 package io.github.cmuphil.tetradfx.ui;
 
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.Boss;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
+import edu.cmu.tetrad.algcomparison.independence.SemBicTest;
+import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
+import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.util.Parameters;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public class DataView {
 
     @NotNull
-    public static TableView<DataRow> getTableView(DataSet dataSet) {
+    public static TableView<DataRow> getTableView(DataSet dataSet, TabPane tabbedPane) {
         TableView<DataRow> table = new TableView<>();
 
         int numberOfColumns = dataSet.getNumColumns();
@@ -34,8 +40,19 @@ public class DataView {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
+        ContextMenu contextMenu = getContextMenu(table, dataSet, tabbedPane);
+
+        // Show context menu on right-click on the label
+        table.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.SECONDARY ||
+                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+                contextMenu.show(table, event.getScreenX(), event.getScreenY());
+            }
+        });
+
         table.setPrefHeight(300);
         table.setPrefWidth(400);
+        table.setSelectionModel(null);
         return table;
     }
 
@@ -62,6 +79,45 @@ public class DataView {
                 return new SimpleStringProperty(variable.getCategory(dataSet.getInt(row, col)));
             }
         }
+    }
+
+    @NotNull
+    private static ContextMenu getContextMenu(TableView pane, DataSet dataSet, TabPane tabbedPane) {
+        // Create a context menu
+        ContextMenu contextMenu = new ContextMenu();
+
+        Menu layout = new Menu("Run a search");
+
+        // Create menu items
+        MenuItem item1 = new MenuItem("BOSS");
+        item1.setOnAction(e -> {
+            Boss boss = new Boss(new SemBicScore());
+            Graph graph = boss.search(dataSet, new Parameters());
+            ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
+            tabbedPane.getTabs().add(new Tab("BOSS", graphScroll));
+        });
+
+        MenuItem item2 = new MenuItem("BFCI");
+        item2.setOnAction(e -> {
+            Bfci fci = new Bfci(new SemBicTest(), new SemBicScore());
+            Graph graph = fci.search(dataSet, new Parameters());
+            ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
+            tabbedPane.getTabs().add(new Tab("BFCI", graphScroll));
+        });
+
+        // Add menu items to the context menu
+        layout.getItems().addAll(item1, item2);
+        contextMenu.getItems().addAll(layout);
+
+        // Show context menu on right-click on the pane
+        pane.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY ||
+                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+                contextMenu.show(pane, event.getScreenX(), event.getScreenY());
+            }
+        });
+
+        return contextMenu;
     }
 }
 

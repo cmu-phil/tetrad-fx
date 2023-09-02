@@ -134,34 +134,34 @@ public class TetradFx {
         }
     }
 
-    private static void loadContinuous(File selectedFile, TabPane tabs) {
+    private static void loadContinuous(File selectedFile, TabPane tabbedpane) {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+            tabbedpane.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedpane)));
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
         }
     }
 
-    private static void loadDiscrete(File selectedFile, TabPane tabs) {
+    private static void loadDiscrete(File selectedFile, TabPane tabbedPane) {
         try {
             DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+            tabbedPane.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane)));
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
             throw new RuntimeException(ex);
         }
     }
 
-    private static void loadMixed(File selectedFile, TextField textField, TabPane tabs) {
+    private static void loadMixed(File selectedFile, TextField textField, TabPane tabbedPane) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            tabs.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet)));
+            tabbedPane.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane)));
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
@@ -171,28 +171,24 @@ public class TetradFx {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        TabPane tabs = new TabPane();
+        TabPane tabbedPane = new TabPane();
 
         Result result = getSimulation(new Parameters());
         System.out.println("Simulation done");
 
-        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
+        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), tabbedPane);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
-        Bfci fci = new Bfci(new SemBicTest(), new SemBicScore());
-        Graph pag = fci.search(result.dataSet(), new Parameters());
-
-        MenuBar menuBar = getMenuBar(primaryStage, tabs);
+        MenuBar menuBar = getMenuBar(primaryStage, tabbedPane);
 
         BorderPane root = new BorderPane();
         root.setTop(menuBar);
 
-        tabs.getTabs().add(new Tab("s1-data", table));
-        tabs.getTabs().add(new Tab("s2-graph", trueGraphScroll));
-        tabs.getTabs().add(new Tab("bfci", GraphView.getGraphDisplay(pag)));
+        tabbedPane.getTabs().add(new Tab("s1-data", table));
+        tabbedPane.getTabs().add(new Tab("s2-graph", trueGraphScroll));
 
-        tabs.setPrefSize(1000, 800);
-        root.setCenter(tabs);
+        tabbedPane.setPrefSize(1000, 800);
+        root.setCenter(tabbedPane);
 
         return root;
     }
