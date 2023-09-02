@@ -2,8 +2,8 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.Boss;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
-import edu.cmu.tetrad.algcomparison.independence.SemBicTest;
-import edu.cmu.tetrad.algcomparison.score.SemBicScore;
+import edu.cmu.tetrad.algcomparison.independence.*;
+import edu.cmu.tetrad.algcomparison.score.*;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
 import edu.cmu.tetrad.graph.Graph;
@@ -90,8 +90,9 @@ public class DataView {
 
         // Create menu items
         MenuItem item1 = new MenuItem("BOSS");
+
         item1.setOnAction(e -> {
-            Boss boss = new Boss(new SemBicScore());
+            Boss boss = new Boss(getScore(dataSet));
             Graph graph = boss.search(dataSet, new Parameters());
             ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
             tabbedPane.getTabs().add(new Tab("BOSS", graphScroll));
@@ -99,7 +100,7 @@ public class DataView {
 
         MenuItem item2 = new MenuItem("BFCI");
         item2.setOnAction(e -> {
-            Bfci fci = new Bfci(new SemBicTest(), new SemBicScore());
+            Bfci fci = new Bfci(getTest(dataSet), getScore(dataSet));
             Graph graph = fci.search(dataSet, new Parameters());
             ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
             tabbedPane.getTabs().add(new Tab("BFCI", graphScroll));
@@ -118,6 +119,27 @@ public class DataView {
         });
 
         return contextMenu;
+    }
+
+    @NotNull
+    private static ScoreWrapper getScore(DataSet dataSet) {
+        if (dataSet.isContinuous()) {
+            return new SemBicScore();
+        } else if (dataSet.isDiscrete()) {
+            return new BdeuScore();
+        } else {
+            return new ConditionalGaussianBicScore();
+        }
+    }
+
+    private static IndependenceWrapper getTest(DataSet dataSet) {
+        if (dataSet.isContinuous()) {
+            return new FisherZ();
+        } else if (dataSet.isDiscrete()) {
+            return new ChiSquare();
+        } else {
+            return new ConditionalGaussianLRT();
+        }
     }
 }
 
