@@ -6,7 +6,19 @@ We started with these two components since they are the most complicated compone
 
 We are not committed to making an FX interface, just fooling around right now, but if you have comments one way or the other feel free to leave them in the Issues list.
 
+##### So far:
+
+Here’s what I have in tetrad-fx so far:
+* Data display
+* Graph display for all simple Tetrad graph types.
+    * Can drag the edges around.
+    * Can do some different layouts, circle, square, force.
+* Programmatic algorithm result, now BFCI.
+* Menu item to load a dataset in a simple format.
+* Menu item to exit.
+* Parameter definitions are now in the lib jar where they belong, which is one step closer to having a legit tetrad lib.
+
 ##### Plans.
-* Add more options to the data loader.
-* Add some search UI facilities.
-* Hook this up with JPackage to make self-contained apps. I may as well do that up front.
+
+* Tne next thing I want to do is add a rudimentary search menu.
+* I also wan t to hook this up with JPackage to make self-contained apps.
