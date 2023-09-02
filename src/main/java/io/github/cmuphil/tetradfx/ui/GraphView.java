@@ -194,7 +194,7 @@ public class GraphView extends Pane {
         double lineEndY = line.getEndY();
 
         if (edge.getEndpoint1() == Endpoint.ARROW) {
-            createArrowhead(edgemark2, lineEndX, lineEndY, lineStartX, lineStartY);
+            createArrowhead(edgemark1, lineEndX, lineEndY, lineStartX, lineStartY);
         } else if (edge.getEndpoint1() == Endpoint.CIRCLE) {
             createCircle(edgemark1, lineStartX, lineStartY, lineEndX, lineEndY);
         }

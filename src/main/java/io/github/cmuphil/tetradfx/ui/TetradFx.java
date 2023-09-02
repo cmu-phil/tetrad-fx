@@ -106,8 +106,8 @@ public class TetradFx {
             graph = simulation.getTrueGraph(0);
             dataSet = (DataSet) simulation.getDataModel(0);
         } else {
-            graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,
-                    10, 500, 100, 1000, false);
+            graph = RandomGraph.randomGraphRandomForwardEdges(20, 0,
+                    40, 500, 100, 1000, false);
 
             LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
             simulation.setCoefRange(0, 0.5);
