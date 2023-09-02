@@ -18,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 /**
  * <p>Displays a Tetrad graph in a ScrollPane with a Pane. The graph is laid out using a layout
  * algorithm from Tetrad. The nodes can be dragged around with the mouse, and the edges will follow.
@@ -34,7 +37,6 @@ public class GraphView extends Pane {
 
     private GraphView(Graph graph) {
         Pane content = new Pane();
-//        content.setPrefSize(1000, 1000);
 
         displayNodes = new HashMap<>();
         displayEdges = new HashMap<>();
@@ -74,6 +76,11 @@ public class GraphView extends Pane {
                 contextMenu.show(content, event.getScreenX(), event.getScreenY());
             }
         });
+
+//        content.setPrefWidth(max(1000, content.getWidth()));
+//        content.setPrefWidth(max(1000, content.getWidth()));
+//        content.setPrefSize(1000, 600);
+
     }
 
     /**
@@ -83,8 +90,8 @@ public class GraphView extends Pane {
      */
     @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
-        Pane graphView = new GraphView(graph);
         LayoutUtil.circleLayout(graph);
+        Pane graphView = new GraphView(graph);
         HBox hBox = new HBox(graphView);
 
         ScrollPane scrollPane = new ScrollPane();
