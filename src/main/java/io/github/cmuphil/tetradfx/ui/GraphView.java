@@ -107,12 +107,12 @@ public class GraphView extends Pane {
         Menu layout = new Menu("Layout");
 
         // Create menu items
-        MenuItem item1 = new MenuItem("Layout circle");
+        MenuItem item1 = new MenuItem("Circle");
         item1.setOnAction(e -> {
             layout(graph, 1);
         });
 
-        MenuItem item2 = new MenuItem("Layout square");
+        MenuItem item2 = new MenuItem("Square");
         item2.setOnAction(e -> {
             layout(graph, 2);
         });
