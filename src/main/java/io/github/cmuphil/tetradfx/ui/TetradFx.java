@@ -1,8 +1,12 @@
 package io.github.cmuphil.tetradfx.ui;
 
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.Boss;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Fci;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
 import edu.cmu.tetrad.algcomparison.independence.SemBicDTest;
+import edu.cmu.tetrad.algcomparison.independence.SemBicTest;
 import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
@@ -181,7 +185,7 @@ public class TetradFx {
         TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet());
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
-        Gfci fci = new Gfci(new SemBicDTest(), new SemBicScore());
+        Bfci fci = new Bfci(new SemBicTest(), new SemBicScore());
         Graph pag = fci.search(result.dataSet(), new Parameters());
 
         MenuBar menuBar = getMenuBar(primaryStage, tabs);
@@ -191,9 +195,9 @@ public class TetradFx {
 
         tabs.getTabs().add(new Tab("s1-data", table));
         tabs.getTabs().add(new Tab("s2-graph", trueGraphScroll));
-        tabs.getTabs().add(new Tab("fci", GraphView.getGraphDisplay(pag)));
+        tabs.getTabs().add(new Tab("bfci", GraphView.getGraphDisplay(pag)));
 
-        tabs.setPrefSize(800, 600);
+        tabs.setPrefSize(1000, 800);
         root.setCenter(tabs);
 
         return root;

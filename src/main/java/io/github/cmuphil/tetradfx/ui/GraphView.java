@@ -1,7 +1,11 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.graph.*;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -13,7 +17,6 @@ import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>Displays a Tetrad graph in a ScrollPane with a Pane. The graph is laid out using a layout
@@ -25,22 +28,26 @@ import java.util.Map;
  * @author josephramsey
  */
 public class GraphView extends Pane {
+    private final HashMap<Node, DisplayNode> displayNodes;
+    private final HashMap<Edge, DisplayEdge> displayEdges;
     private double offsetX1, offsetY1;
 
     private GraphView(Graph graph) {
         Pane content = new Pane();
+//        content.setPrefSize(1000, 1000);
 
-        Map<Node, DisplayNode> displayNodes = new HashMap<>();
-        Map<Edge, DisplayEdge> displayEdges = new HashMap<>();
+        displayNodes = new HashMap<>();
+        displayEdges = new HashMap<>();
 
         for (Node node : graph.getNodes()) {
-            displayNodes.put(node, makeDisplayNode(node, graph, displayNodes, displayEdges));
+            displayNodes.put(node, makeDisplayNode(node, graph));
         }
 
         for (Edge edge : graph.getEdges()) {
             DisplayEdge _edge = new DisplayEdge();
             displayEdges.put(edge, _edge);
             content.getChildren().addAll(_edge.getLine(), _edge.getEdgemark1(), _edge.getEdgemark2());
+
             updateLineAndArrow(edge, _edge.getLine(),
                     _edge.getEdgemark1(), _edge.getEdgemark2(),
                     displayNodes.get(edge.getNode1()).getShape(),
@@ -57,6 +64,16 @@ public class GraphView extends Pane {
 
         setPrefHeight(content.getPrefHeight());
         setPrefWidth(content.getPrefWidth());
+
+        ContextMenu contextMenu = getContextMenu(content, graph);
+
+        // Show context menu on right-click on the label
+        content.setOnMousePressed(event -> {
+            if (event.getButton() == MouseButton.SECONDARY ||
+                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+                contextMenu.show(content, event.getScreenX(), event.getScreenY());
+            }
+        });
     }
 
     /**
@@ -66,12 +83,15 @@ public class GraphView extends Pane {
      */
     @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
-        layout(graph);
         Pane graphView = new GraphView(graph);
+        LayoutUtil.circleLayout(graph);
         HBox hBox = new HBox(graphView);
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(hBox);
+
+//        graphView.prefWidthProperty().bind(scrollPane.widthProperty());
+//        graphView.prefHeightProperty().bind(scrollPane.heightProperty());
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -79,17 +99,86 @@ public class GraphView extends Pane {
         return scrollPane;
     }
 
+    @NotNull
+    private ContextMenu getContextMenu(Pane pane, Graph graph) {
+        // Create a context menu
+        ContextMenu contextMenu = new ContextMenu();
+
+        Menu layout = new Menu("Layout");
+
+        // Create menu items
+        MenuItem item1 = new MenuItem("Layout circle");
+        item1.setOnAction(e -> {
+            layout(graph, 1);
+        });
+
+        MenuItem item2 = new MenuItem("Layout square");
+        item2.setOnAction(e -> {
+            layout(graph, 2);
+        });
+
+        MenuItem item3 = new MenuItem("Force");
+        item3.setOnAction(e -> {
+            layout(graph, 3);
+        });
+
+        // Add menu items to the context menu
+        layout.getItems().addAll(item1, item2, item3);
+        contextMenu.getItems().addAll(layout);
+
+        // Show context menu on right-click on the pane
+        pane.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY ||
+                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+                contextMenu.show(pane, event.getScreenX(), event.getScreenY());
+            }
+        });
+
+        return contextMenu;
+    }
+
     // This will become a popup menu for the graph view.
-    private static void layout(Graph graph) {
-        LayoutUtil.circleLayout(graph);
-//        LayoutUtil.squareLayout(graph);
-//        LayoutUtil.fruchtermanReingoldLayout(graph);
+    private void layout(Graph graph, int layoutType) {
+        switch (layoutType) {
+            case 1:
+                LayoutUtil.circleLayout(graph);
+                break;
+            case 2:
+                LayoutUtil.squareLayout(graph);
+                break;
+            case 3:
+                LayoutUtil.fruchtermanReingoldLayout(graph);
+                break;
+            default:
+                throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
+        }
+
+        for (Node node : graph.getNodes()) {
+            double newX = node.getCenterX();
+            double newY = node.getCenterY();
+
+            Shape shape = displayNodes.get(node).getShape();
+            Text text = displayNodes.get(node).getText();
+
+            ((CenteredShape) shape).setCenterX(newX);
+            ((CenteredShape) shape).setCenterY(newY);
+            text.setX(newX - text.getLayoutBounds().getWidth() / 2);
+            text.setY(newY + text.getLayoutBounds().getHeight() / 4);
+
+            for (Edge edge : graph.getEdges(node)) {
+                Node n1 = edge.getNode1();
+                Node n2 = edge.getNode2();
+
+                updateLineAndArrow(edge, displayEdges.get(edge).getLine(),
+                        displayEdges.get(edge).getEdgemark1(), displayEdges.get(edge).getEdgemark2(),
+                        displayNodes.get(n1).getShape(), displayNodes.get(n2).getShape());
+            }
+        }
     }
 
     // Makes a display node for a node in the graph and sets up its event handlers so it can
     // be dragged around with attached edges.
-    private DisplayNode makeDisplayNode(Node node, Graph graph, Map<Node, DisplayNode> displayNodes,
-                                        Map<Edge, DisplayEdge> displayEdges) {
+    private DisplayNode makeDisplayNode(Node node, Graph graph) {
         String name = node.getName();
         Text text = new Text(name);
         text.setFont(Font.font(20));
