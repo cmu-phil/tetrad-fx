@@ -95,7 +95,9 @@ public class DataView {
             Boss boss = new Boss(getScore(dataSet));
             Graph graph = boss.search(dataSet, new Parameters());
             ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
-            tabbedPane.getTabs().add(new Tab("BOSS", graphScroll));
+            Tab boss1 = new Tab("BOSS", graphScroll);
+            tabbedPane.getTabs().add(boss1);
+            tabbedPane.getSelectionModel().select(boss1);
         });
 
         MenuItem item2 = new MenuItem("BFCI");
@@ -103,7 +105,9 @@ public class DataView {
             Bfci fci = new Bfci(getTest(dataSet), getScore(dataSet));
             Graph graph = fci.search(dataSet, new Parameters());
             ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
-            tabbedPane.getTabs().add(new Tab("BFCI", graphScroll));
+            Tab bfci = new Tab("BFCI", graphScroll);
+            tabbedPane.getTabs().add(bfci);
+            tabbedPane.getSelectionModel().select(bfci);
         });
 
         // Add menu items to the context menu
