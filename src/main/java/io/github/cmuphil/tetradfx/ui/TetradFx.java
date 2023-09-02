@@ -1,14 +1,10 @@
 package io.github.cmuphil.tetradfx.ui;
 
-import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
-import edu.cmu.tetrad.algcomparison.independence.SemBicTest;
-import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
-import edu.cmu.tetrad.graph.LayoutUtil;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
@@ -82,11 +78,15 @@ public class TetradFx {
 
         Menu fileMenu = new Menu("File");
         MenuItem loadData = new MenuItem("Load Data");
+        MenuItem addSimulation1 = new MenuItem("Add Continuous Simulation");
+        MenuItem addSimulation2 = new MenuItem("Add Mixed Simulation");
         MenuItem exitItem = new MenuItem("Exit");
 
         loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
+        addSimulation1.setOnAction(e -> addSimulation(tabs, false));
+        addSimulation2.setOnAction(e -> addSimulation(tabs, true));
         exitItem.setOnAction(e -> primaryStage.close());
-        fileMenu.getItems().addAll(loadData, new SeparatorMenuItem(), exitItem);
+        fileMenu.getItems().addAll(loadData, addSimulation1, addSimulation2, new SeparatorMenuItem(), exitItem);
 
         menuBar.getMenus().addAll(fileMenu);
         return menuBar;
@@ -94,28 +94,23 @@ public class TetradFx {
 
     // This will eventually be replaced by some flexible UI for making simulations.
     @NotNull
-    private static Result getSimulation(Parameters parameters) {
-
-        // Temporary hack to switch between mixed and continuous simulations.
-        boolean mixed = false;
-
-        DataSet dataSet;
-        Graph graph;
+    private static Result getSimulation(Parameters parameters, boolean mixed) {
         if (mixed) {
             LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
             simulation.createData(parameters, true);
-            graph = simulation.getTrueGraph(0);
-            dataSet = (DataSet) simulation.getDataModel(0);
+            Graph graph = simulation.getTrueGraph(0);
+            DataSet dataSet = (DataSet) simulation.getDataModel(0);
+            return new Result(graph, dataSet);
         } else {
-            graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
+            Graph graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
                     200, 500, 100, 1000, false);
 
             LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
-            dataSet = simulation.simulateDataReducedForm(1000);
+            DataSet dataSet = simulation.simulateDataReducedForm(1000);
+            return new Result(graph, dataSet);
         }
-        return new Result(graph, dataSet);
     }
 
     private static void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, TextField textField, TabPane tabs) {
@@ -173,24 +168,32 @@ public class TetradFx {
     public Pane getRoot(Stage primaryStage) {
         TabPane tabbedPane = new TabPane();
 
-        Result result = getSimulation(new Parameters());
-        System.out.println("Simulation done");
-
-        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), tabbedPane);
-        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
-
-        MenuBar menuBar = getMenuBar(primaryStage, tabbedPane);
-
         BorderPane root = new BorderPane();
+        MenuBar menuBar = getMenuBar(primaryStage, tabbedPane);
         root.setTop(menuBar);
 
-        tabbedPane.getTabs().add(new Tab("s1-data", table));
-        tabbedPane.getTabs().add(new Tab("s2-graph", trueGraphScroll));
+//        addSimulation(tabbedPane);
 
         tabbedPane.setPrefSize(1000, 800);
         root.setCenter(tabbedPane);
 
         return root;
+    }
+
+    private static void addSimulation( TabPane tabbedPane, boolean mixed) {
+        Result result = getSimulation(new Parameters(), mixed);
+        System.out.println("Simulation done");
+
+        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), tabbedPane);
+        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
+
+        Tab t1 = new Tab("s2-graph", trueGraphScroll);
+        Tab t2 = new Tab("s1-data", table);
+
+        tabbedPane.getTabs().add(t1);
+        tabbedPane.getTabs().add(t2);
+
+        tabbedPane.getSelectionModel().select(t2);
     }
 
     private record Result(Graph graph, DataSet dataSet) {
