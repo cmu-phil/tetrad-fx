@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public class DataView {
 
     @NotNull
-    public static TableView<DataRow> getTableView(DataSet dataSet, TabPane tabbedPane) {
+    public static TableView<DataRow> getTableView(DataSet dataSet, TabPane tabs) {
         TableView<DataRow> table = new TableView<>();
 
         int numberOfColumns = dataSet.getNumColumns();
@@ -40,7 +40,7 @@ public class DataView {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
-        ContextMenu contextMenu = getContextMenu(table, dataSet, tabbedPane);
+        ContextMenu contextMenu = getContextMenu(table, dataSet, tabs);
 
         // Show context menu on right-click on the label
         table.setOnMousePressed(event -> {
@@ -82,7 +82,7 @@ public class DataView {
     }
 
     @NotNull
-    private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet, TabPane tabbedPane) {
+    private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet, TabPane tabs) {
 
         // Create a context menu
         ContextMenu contextMenu = new ContextMenu();
@@ -97,8 +97,8 @@ public class DataView {
             Graph graph = boss.search(dataSet, new Parameters());
             ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
             Tab boss1 = new Tab("BOSS", graphScroll);
-            tabbedPane.getTabs().add(boss1);
-            tabbedPane.getSelectionModel().select(boss1);
+            tabs.getTabs().add(boss1);
+            tabs.getSelectionModel().select(boss1);
         });
 
         MenuItem item2 = new MenuItem("BFCI");
@@ -107,8 +107,8 @@ public class DataView {
             Graph graph = fci.search(dataSet, new Parameters());
             ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
             Tab bfci = new Tab("BFCI", graphScroll);
-            tabbedPane.getTabs().add(bfci);
-            tabbedPane.getSelectionModel().select(bfci);
+            tabs.getTabs().add(bfci);
+            tabs.getSelectionModel().select(bfci);
         });
 
         // Add menu items to the context menu

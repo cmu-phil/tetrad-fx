@@ -1,6 +1,7 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.algcomparison.graph.RandomForward;
+import edu.cmu.tetrad.algcomparison.simulation.BayesNetSimulation;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.SimpleDataLoader;
@@ -83,19 +84,22 @@ public class TetradFx {
         MenuItem loadData = new MenuItem("Load Data");
 
         Menu simulation = new Menu("Simulation");
-        MenuItem continuousSimulation1 = new MenuItem("Continuous");
+        MenuItem continuousSimulation = new MenuItem("Continuous");
+        MenuItem discreteSimulation = new MenuItem("Discrete");
         MenuItem mixedSimulation = new MenuItem("Mixed");
-        simulation.getItems().addAll(continuousSimulation1, mixedSimulation);
+        simulation.getItems().addAll(continuousSimulation, discreteSimulation, mixedSimulation);
         MenuItem exitItem = new MenuItem("Exit");
 
         loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
-        continuousSimulation1.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
+        continuousSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
+        discreteSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         mixedSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
-        continuousSimulation1.setOnAction(e -> addSimulation(tabs, false));
-        mixedSimulation.setOnAction(e -> addSimulation(tabs, true));
+        continuousSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.CONTINUOUS));
+        discreteSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.DISCRETE));
+        mixedSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.MIXED));
         exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
 
@@ -105,21 +109,26 @@ public class TetradFx {
 
     // This will eventually be replaced by some flexible UI for making simulations.
     @NotNull
-    private static Result getSimulation(Parameters parameters, boolean mixed) {
-        if (mixed) {
-            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
+    private static Result getSimulation(Parameters parameters, SimulationType type) {
+        if (type == SimulationType.CONTINUOUS) {
+            Graph graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
+                    200, 500, 100, 1000, false);
+            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
+            simulation.setCoefRange(0, 0.5);
+            simulation.setSelfLoopCoef(0.1);
+            DataSet dataSet = simulation.simulateDataReducedForm(1000);
+            return new Result(graph, dataSet);
+        } else if (type == SimulationType.DISCRETE) {
+            BayesNetSimulation simulation = new BayesNetSimulation(new RandomForward());
             simulation.createData(parameters, true);
             Graph graph = simulation.getTrueGraph(0);
             DataSet dataSet = (DataSet) simulation.getDataModel(0);
             return new Result(graph, dataSet);
         } else {
-            Graph graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
-                    200, 500, 100, 1000, false);
-
-            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
-            simulation.setCoefRange(0, 0.5);
-            simulation.setSelfLoopCoef(0.1);
-            DataSet dataSet = simulation.simulateDataReducedForm(1000);
+            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
+            simulation.createData(parameters, true);
+            Graph graph = simulation.getTrueGraph(0);
+            DataSet dataSet = (DataSet) simulation.getDataModel(0);
             return new Result(graph, dataSet);
         }
     }
@@ -140,28 +149,28 @@ public class TetradFx {
         }
     }
 
-    private static void loadContinuous(File selectedFile, TabPane tabbedPane) {
+    private static void loadContinuous(File selectedFile, TabPane tabs) {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane));
-            tabbedPane.getTabs().clear();
-            tabbedPane.getTabs().add(tab);
-            tabbedPane.getSelectionModel().select(tab);
+            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
+            tabs.getTabs().clear();
+            tabs.getTabs().add(tab);
+            tabs.getSelectionModel().select(tab);
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
         }
     }
 
-    private static void loadDiscrete(File selectedFile, TabPane tabbedPane) {
+    private static void loadDiscrete(File selectedFile, TabPane tabs) {
         try {
             DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane));
-            tabbedPane.getTabs().clear();
-            tabbedPane.getTabs().add(tab);
-            tabbedPane.getSelectionModel().select(tab);
+            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
+            tabs.getTabs().clear();
+            tabs.getTabs().add(tab);
+            tabs.getSelectionModel().select(tab);
 
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
@@ -169,55 +178,85 @@ public class TetradFx {
         }
     }
 
-    private static void loadMixed(File selectedFile, TextField textField, TabPane tabbedPane) {
+    private static void loadMixed(File selectedFile, TextField textField, TabPane tabs) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane));
-            tabbedPane.getTabs().clear();
-            tabbedPane.getTabs().add(tab);
-            tabbedPane.getSelectionModel().select(tab);
+            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
+            tabs.getTabs().clear();
+            tabs.getTabs().add(tab);
+            tabs.getSelectionModel().select(tab);
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
         }
     }
 
+    private static void sampleSimulation(TabPane tabs) {
+        Graph graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,
+                20, 500, 100, 1000, false);
+
+        LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
+        simulation.setCoefRange(0, 0.5);
+        simulation.setSelfLoopCoef(0.1);
+        DataSet dataSet = simulation.simulateDataReducedForm(1000);
+
+        TableView<DataView.DataRow> table = DataView.getTableView(dataSet, tabs);
+        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(graph);
+
+        Tab t1 = new Tab("Sample Graph", trueGraphScroll);
+        Tab t2 = new Tab("Sample Data", table);
+
+        tabs.getTabs().clear();
+        tabs.getTabs().add(t1);
+        tabs.getTabs().add(t2);
+
+        tabs.getSelectionModel().select(t2);
+    }
+
+    private static void addSimulation(TabPane tabs, SimulationType type) {
+        Result result = getSimulation(new Parameters(), type);
+        System.out.println("Simulation done");
+
+        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), tabs);
+        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
+
+        Tab t1 = new Tab("Simulation Graph", trueGraphScroll);
+        Tab t2 = new Tab("Simulation Data", table);
+
+        tabs.getTabs().clear();
+        tabs.getTabs().add(t1);
+        tabs.getTabs().add(t2);
+
+        tabs.getSelectionModel().select(t2);
+    }
+
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        TabPane tabbedPane = new TabPane();
-        tabbedPane.setSide(Side.TOP);
+        TabPane tabs = new TabPane();
+        tabs.setSide(Side.TOP);
 
         BorderPane root = new BorderPane();
-        MenuBar menuBar = getMenuBar(primaryStage, tabbedPane);
+        MenuBar menuBar = getMenuBar(primaryStage, tabs);
         root.setTop(menuBar);
 
-        tabbedPane.setPrefSize(1000, 800);
-        root.setCenter(tabbedPane);
+        tabs.setPrefSize(1000, 800);
+        root.setCenter(tabs);
+
+        sampleSimulation(tabs);
 
         return root;
     }
 
-    private static void addSimulation( TabPane tabbedPane, boolean mixed) {
-        Result result = getSimulation(new Parameters(), mixed);
-        System.out.println("Simulation done");
-
-        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), tabbedPane);
-        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
-
-        Tab t1 = new Tab("s2-graph", trueGraphScroll);
-        Tab t2 = new Tab("s1-data", table);
-
-        tabbedPane.getTabs().clear();
-        tabbedPane.getTabs().add(t1);
-        tabbedPane.getTabs().add(t2);
-
-        tabbedPane.getSelectionModel().select(t2);
+    private record Result(Graph graph, DataSet dataSet) {
     }
 
-    private record Result(Graph graph, DataSet dataSet) {
+    public static enum SimulationType {
+        CONTINUOUS,
+        DISCRETE,
+        MIXED
     }
 }
 
