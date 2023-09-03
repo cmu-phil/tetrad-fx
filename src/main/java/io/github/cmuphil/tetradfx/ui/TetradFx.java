@@ -24,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
+import static edu.cmu.tetrad.data.SimpleDataLoader.loadMixedData;
+
 /**
  * <p>The main display for Tetrad-FX. Work in progress.</p>
  *
@@ -181,7 +183,7 @@ public class TetradFx {
     private static void loadMixed(File selectedFile, TextField textField, TabPane tabs) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
-            DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"',
+            DataSet dataSet = loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
             Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
             tabs.getTabs().clear();
@@ -253,7 +255,7 @@ public class TetradFx {
     private record Result(Graph graph, DataSet dataSet) {
     }
 
-    public static enum SimulationType {
+    public enum SimulationType {
         CONTINUOUS,
         DISCRETE,
         MIXED

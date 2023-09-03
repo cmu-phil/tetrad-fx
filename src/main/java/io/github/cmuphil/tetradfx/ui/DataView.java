@@ -6,8 +6,14 @@ import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Fci;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.GraspFci;
-import edu.cmu.tetrad.algcomparison.independence.*;
-import edu.cmu.tetrad.algcomparison.score.*;
+import edu.cmu.tetrad.algcomparison.independence.ChiSquare;
+import edu.cmu.tetrad.algcomparison.independence.ConditionalGaussianLRT;
+import edu.cmu.tetrad.algcomparison.independence.FisherZ;
+import edu.cmu.tetrad.algcomparison.independence.IndependenceWrapper;
+import edu.cmu.tetrad.algcomparison.score.BdeuScore;
+import edu.cmu.tetrad.algcomparison.score.ConditionalGaussianBicScore;
+import edu.cmu.tetrad.algcomparison.score.ScoreWrapper;
+import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
 import edu.cmu.tetrad.graph.Graph;
@@ -17,7 +23,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +99,7 @@ public class DataView {
         ContextMenu contextMenu = new ContextMenu();
         Menu layout = new Menu("Do a Search");
 
-        List<Algorithm> algorithms = new ArrayList();
+        List<Algorithm> algorithms = new ArrayList<>();
         ScoreWrapper score = getScore(dataSet);
 
         algorithms.add(new Boss(score));
@@ -109,6 +114,23 @@ public class DataView {
         algorithms.add(new Bfci(test, score));
         algorithms.add(new GraspFci(test, score));
 
+        List<MenuItem> items = getMenuItems(dataSet, tabs, algorithms);
+
+        layout.getItems().addAll(items);
+        contextMenu.getItems().addAll(layout);
+
+        pane.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY ||
+                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+                contextMenu.show(pane, event.getScreenX(), event.getScreenY());
+            }
+        });
+
+        return contextMenu;
+    }
+
+    @NotNull
+    private static List<MenuItem> getMenuItems(DataSet dataSet, TabPane tabs, List<Algorithm> algorithms) {
         List<MenuItem> items = new ArrayList<>();
 
         for (Algorithm algorithm : algorithms) {
@@ -123,18 +145,7 @@ public class DataView {
 
             items.add(item);
         }
-
-        layout.getItems().addAll(items);
-        contextMenu.getItems().addAll(layout);
-
-        pane.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY ||
-                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
-                contextMenu.show(pane, event.getScreenX(), event.getScreenY());
-            }
-        });
-
-        return contextMenu;
+        return items;
     }
 
     @NotNull
