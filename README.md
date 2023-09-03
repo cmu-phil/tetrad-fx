@@ -12,12 +12,11 @@ Here’s what I have in tetrad-fx so far:
 * Data display
 * Graph display for all simple Tetrad graph types.
     * Can drag the edges around.
-    * Can do some different layouts, circle, square, force.
-* Programmatic algorithm result, now BFCI.
+    * Can do some different layouts, circle, square, force. Right-click on the graph for a context menu.
 * Menu item to load a dataset in a simple format.
 * Menu item to exit.
 * Parameter definitions are now in the lib jar where they belong, which is one step closer to having a legit tetrad lib.
-* Added rudimentary search--you right-click on a dataset, select a search, and it runs the search using default test, score, and parameters and adds the tab for the graph. Just a couple of algorithms currently, BOSS and BFCI.
+* Added rudimentary search--you right-click on a dataset for a context menu, select a search, and it runs the search using default test, score, and parameters and adds the tab for the graph. Just a couple of algorithms currently, BOSS and BFCI.
 
 ##### Plans.
 
