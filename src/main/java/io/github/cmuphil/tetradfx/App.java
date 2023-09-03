@@ -4,6 +4,7 @@ import io.github.cmuphil.tetradfx.ui.TetradFx;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Tetrad-fx app, an application for Tetrad in JavaFX. Evolving, new.
@@ -17,6 +18,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+//        primaryStage.setFullScreen(false);
+//        primaryStage.setResizable(true);
+        primaryStage.initStyle(StageStyle.UTILITY);
+
         Scene scene = new Scene(TetradFx.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
         primaryStage.setTitle("ScrollPane with Pane");

@@ -11,6 +11,7 @@ import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -37,21 +38,22 @@ public class TetradFx {
     private static void loadDataAction(Stage primaryStage, TabPane tabs) {
         System.out.println("Loading data.");
 
-        ButtonType applyButtonType = new ButtonType("Apply");
+        ButtonType applyButtonType = new ButtonType("Load");
 
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
 
         RadioButton continuousBtn = new RadioButton("Continuous Dataset");
         RadioButton discreteBtn = new RadioButton("Discrete Dataset");
-        RadioButton mixedBtn = new RadioButton("Mixed Dataset");
+        RadioButton mixedBtn = new RadioButton("General");
         ToggleGroup toggleGroup = new ToggleGroup();
         continuousBtn.setToggleGroup(toggleGroup);
         discreteBtn.setToggleGroup(toggleGroup);
         mixedBtn.setToggleGroup(toggleGroup);
-        continuousBtn.setSelected(true);
+        mixedBtn.setSelected(true);
 
         TextField textField = new TextField("3");
+        textField.setPrefColumnCount(2);
 
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
@@ -59,8 +61,8 @@ public class TetradFx {
             }
         });
 
-        HBox choice = new HBox(10, continuousBtn, discreteBtn, mixedBtn,
-                new Label("Number of Categories:"), textField);
+        HBox choice = new HBox(10, mixedBtn, new Label("(Number of Categories:"), textField, new Label(")"),
+                continuousBtn, discreteBtn);
         VBox layout = new VBox(10, choice);
 
         Dialog<VBox> dialog = new Dialog<>();
@@ -79,15 +81,23 @@ public class TetradFx {
 
         Menu fileMenu = new Menu("File");
         MenuItem loadData = new MenuItem("Load Data");
-        MenuItem addSimulation1 = new MenuItem("Add Continuous Simulation");
-        MenuItem addSimulation2 = new MenuItem("Add Mixed Simulation");
+
+        Menu addSimulation = new Menu("Add Simulation");
+        MenuItem addSimulation1 = new MenuItem("Continuous");
+        MenuItem addSimulation2 = new MenuItem("Mixed");
+        addSimulation.getItems().addAll(addSimulation1, addSimulation2);
         MenuItem exitItem = new MenuItem("Exit");
+
+        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+        addSimulation1.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
+        addSimulation2.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
+        exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
         addSimulation1.setOnAction(e -> addSimulation(tabs, false));
         addSimulation2.setOnAction(e -> addSimulation(tabs, true));
         exitItem.setOnAction(e -> primaryStage.close());
-        fileMenu.getItems().addAll(loadData, addSimulation1, addSimulation2, new SeparatorMenuItem(), exitItem);
+        fileMenu.getItems().addAll(loadData, addSimulation, new SeparatorMenuItem(), exitItem);
 
         menuBar.getMenus().addAll(fileMenu);
         return menuBar;
@@ -130,11 +140,14 @@ public class TetradFx {
         }
     }
 
-    private static void loadContinuous(File selectedFile, TabPane tabbedpane) {
+    private static void loadContinuous(File selectedFile, TabPane tabbedPane) {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            tabbedpane.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedpane)));
+            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane));
+            tabbedPane.getTabs().add(tab);
+            tabbedPane.getSelectionModel().select(tab);
+
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
@@ -145,7 +158,10 @@ public class TetradFx {
         try {
             DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            tabbedPane.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane)));
+            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane));
+            tabbedPane.getTabs().add(tab);
+            tabbedPane.getSelectionModel().select(tab);
+
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
             throw new RuntimeException(ex);
@@ -157,7 +173,9 @@ public class TetradFx {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            tabbedPane.getTabs().add(new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane)));
+            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabbedPane));
+            tabbedPane.getTabs().add(tab);
+            tabbedPane.getSelectionModel().select(tab);
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
@@ -168,7 +186,7 @@ public class TetradFx {
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
         TabPane tabbedPane = new TabPane();
-        tabbedPane.setSide(Side.BOTTOM);
+        tabbedPane.setSide(Side.TOP);
 
         BorderPane root = new BorderPane();
         MenuBar menuBar = getMenuBar(primaryStage, tabbedPane);
