@@ -9,6 +9,7 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -167,12 +168,11 @@ public class TetradFx {
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
         TabPane tabbedPane = new TabPane();
+        tabbedPane.setSide(Side.BOTTOM);
 
         BorderPane root = new BorderPane();
         MenuBar menuBar = getMenuBar(primaryStage, tabbedPane);
         root.setTop(menuBar);
-
-//        addSimulation(tabbedPane);
 
         tabbedPane.setPrefSize(1000, 800);
         root.setCenter(tabbedPane);

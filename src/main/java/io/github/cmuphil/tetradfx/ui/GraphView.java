@@ -33,12 +33,12 @@ public class GraphView extends Pane {
     private double offsetX1, offsetY1;
     private static final Color NODE_FILL_COLOR = Color.rgb(148, 198, 226);
     private static final Color NODE_EDGE_COLOR = Color.rgb(146, 154, 166);
-    private static final Color NODE_SELECTED_FILL_COLOR = Color.rgb(244, 219, 110);
-    private static final Color NODE_SELECTED_EDGE_COLOR = Color.rgb(215, 193, 97);
-    private static final Color NODE_TEXT_COLOR = Color.rgb(0, 1, 53);
+//    private static final Color NODE_SELECTED_FILL_COLOR = Color.rgb(244, 219, 110);
+//    private static final Color NODE_SELECTED_EDGE_COLOR = Color.rgb(215, 193, 97);
+//    private static final Color NODE_TEXT_COLOR = Color.rgb(0, 1, 53);d
     private static final Color LINE_COLOR = Color.rgb(26, 113, 169);
-    private static final Color SELECTED_LINE_COLOR = Color.rgb(244, 0, 20);
-    private static final Color HIGHLIGHTED_LINE_COLOR = Color.rgb(238, 180, 34);
+//    private static final Color SELECTED_LINE_COLOR = Color.rgb(244, 0, 20);
+//    private static final Color HIGHLIGHTED_LINE_COLOR = Color.rgb(238, 180, 34);
 
     private GraphView(Graph graph) {
         Pane content = new Pane();
@@ -175,10 +175,8 @@ public class GraphView extends Pane {
         text.setFont(Font.font(20));
         Shape shape = getShape(node, text);
 
-//        shape.setFill(Color.WHITE);
         shape.setFill(NODE_FILL_COLOR);
-//        shape.setStroke(Color.BLACK);
-        shape.setStroke(NODE_EDGE_COLOR);
+        shape.setStroke(LINE_COLOR);
         shape.setStrokeWidth(2);
 
         text.setX(((CenteredShape) shape).getCenterX() - text.getLayoutBounds().getWidth() / 2 + 2);
@@ -331,7 +329,7 @@ public class GraphView extends Pane {
         }
 
         edgemark.setFill(Color.WHITE);
-        edgemark.setStroke(Color.BLACK);
+        edgemark.setStroke(NODE_EDGE_COLOR);
         edgemark.setStrokeWidth(2);
     }
 
@@ -387,13 +385,10 @@ public class GraphView extends Pane {
 
         public DisplayEdge() {
             Line line = new Line();
-//            line.setStroke(Color.BLACK);
             line.setStroke(LINE_COLOR);
             this.line = line;
 
             Polygon edgemark1 = new Polygon();
-//            edgemark1.setStroke(Color.BLACK);
-//            edgemark1.setFill(Color.BLACK);
 
             edgemark1.setStroke(LINE_COLOR);
             edgemark1.setFill(LINE_COLOR);
