@@ -18,8 +18,3 @@ Here’s what I have in tetrad-fx so far:
 * Parameter definitions are now in the lib jar where they belong, which is one step closer to having a legit tetrad lib.
 * Added rudimentary search--you right-click on a dataset for a context menu, select a search, and it runs the search using default test, score, and parameters and adds the tab for the graph. Just a couple of algorithms currently, BOSS and BFCI.
 * Pulled over the graph rendering colors from the Swing app--these can eventually be configurable. (FX is good at that sort of configurbility.)
-
-##### Plans.
-
-* Tne next thing I want to do is add a rudimentary search menu.
-* I also wan t to hook this up with JPackage to make self-contained apps.
