@@ -18,9 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
 /**
  * <p>Displays a Tetrad graph in a ScrollPane with a Pane. The graph is laid out using a layout
  * algorithm from Tetrad. The nodes can be dragged around with the mouse, and the edges will follow.
@@ -76,11 +73,6 @@ public class GraphView extends Pane {
                 contextMenu.show(content, event.getScreenX(), event.getScreenY());
             }
         });
-
-//        content.setPrefWidth(max(1000, content.getWidth()));
-//        content.setPrefWidth(max(1000, content.getWidth()));
-//        content.setPrefSize(1000, 600);
-
     }
 
     /**
@@ -97,9 +89,6 @@ public class GraphView extends Pane {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(hBox);
 
-//        graphView.prefWidthProperty().bind(scrollPane.widthProperty());
-//        graphView.prefHeightProperty().bind(scrollPane.heightProperty());
-
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
@@ -115,19 +104,13 @@ public class GraphView extends Pane {
 
         // Create menu items
         MenuItem item1 = new MenuItem("Circle");
-        item1.setOnAction(e -> {
-            layout(graph, 1);
-        });
+        item1.setOnAction(e -> layout(graph, 1));
 
         MenuItem item2 = new MenuItem("Square");
-        item2.setOnAction(e -> {
-            layout(graph, 2);
-        });
+        item2.setOnAction(e -> layout(graph, 2));
 
         MenuItem item3 = new MenuItem("Force");
-        item3.setOnAction(e -> {
-            layout(graph, 3);
-        });
+        item3.setOnAction(e -> layout(graph, 3));
 
         // Add menu items to the context menu
         layout.getItems().addAll(item1, item2, item3);
@@ -147,17 +130,10 @@ public class GraphView extends Pane {
     // This will become a popup menu for the graph view.
     private void layout(Graph graph, int layoutType) {
         switch (layoutType) {
-            case 1:
-                LayoutUtil.circleLayout(graph);
-                break;
-            case 2:
-                LayoutUtil.squareLayout(graph);
-                break;
-            case 3:
-                LayoutUtil.fruchtermanReingoldLayout(graph);
-                break;
-            default:
-                throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
+            case 1 -> LayoutUtil.circleLayout(graph);
+            case 2 -> LayoutUtil.squareLayout(graph);
+            case 3 -> LayoutUtil.fruchtermanReingoldLayout(graph);
+            default -> throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
         }
 
         for (Node node : graph.getNodes()) {
@@ -183,7 +159,7 @@ public class GraphView extends Pane {
         }
     }
 
-    // Makes a display node for a node in the graph and sets up its event handlers so it can
+    // Makes a display node for a node in the graph and sets up its event handlers, so it can
     // be dragged around with attached edges.
     private DisplayNode makeDisplayNode(Node node, Graph graph) {
         String name = node.getName();
@@ -430,7 +406,7 @@ public class GraphView extends Pane {
         }
     }
 
-    // This is just a ordinary ellipse which already has a center point, no problem.
+    // This is just an ordinary ellipse which already has a center point, no problem.
     private static class Ellipse extends javafx.scene.shape.Ellipse implements CenteredShape {
         public Ellipse(int centerX, int centerY, double radiusX, double radiusY) {
             setRadiusX(radiusX);

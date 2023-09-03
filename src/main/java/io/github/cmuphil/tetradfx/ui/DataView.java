@@ -63,7 +63,7 @@ public class DataView {
      */
     public static class DataRow {
         private final int row;
-        DataSet dataSet;
+        private final DataSet dataSet;
 
         public DataRow(DataSet dataSet, int row) {
             this.dataSet = dataSet;
@@ -82,7 +82,8 @@ public class DataView {
     }
 
     @NotNull
-    private static ContextMenu getContextMenu(TableView pane, DataSet dataSet, TabPane tabbedPane) {
+    private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet, TabPane tabbedPane) {
+
         // Create a context menu
         ContextMenu contextMenu = new ContextMenu();
 
