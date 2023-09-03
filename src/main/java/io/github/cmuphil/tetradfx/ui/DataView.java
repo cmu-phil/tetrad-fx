@@ -1,7 +1,11 @@
 package io.github.cmuphil.tetradfx.ui;
 
-import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.Boss;
+import edu.cmu.tetrad.algcomparison.algorithm.Algorithm;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.*;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Fci;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.GraspFci;
 import edu.cmu.tetrad.algcomparison.independence.*;
 import edu.cmu.tetrad.algcomparison.score.*;
 import edu.cmu.tetrad.data.DataSet;
@@ -12,6 +16,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
@@ -83,39 +91,42 @@ public class DataView {
 
     @NotNull
     private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet, TabPane tabs) {
-
-        // Create a context menu
         ContextMenu contextMenu = new ContextMenu();
+        Menu layout = new Menu("Do a Search");
 
-        Menu layout = new Menu("Run a search");
+        List<Algorithm> algorithms = new ArrayList();
+        ScoreWrapper score = getScore(dataSet);
 
-        // Create menu items
-        MenuItem item1 = new MenuItem("BOSS");
+        algorithms.add(new Boss(score));
+        IndependenceWrapper test = getTest(dataSet);
+        algorithms.add(new Grasp(test, score));
+        algorithms.add(new Pc(test));
+        algorithms.add(new Fges(score));
+        algorithms.add(new Cpc(test));
 
-        item1.setOnAction(e -> {
-            Boss boss = new Boss(getScore(dataSet));
-            Graph graph = boss.search(dataSet, new Parameters());
-            ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
-            Tab boss1 = new Tab("BOSS", graphScroll);
-            tabs.getTabs().add(boss1);
-            tabs.getSelectionModel().select(boss1);
-        });
+        algorithms.add(new Fci(test));
+        algorithms.add(new Gfci(test, score));
+        algorithms.add(new Bfci(test, score));
+        algorithms.add(new GraspFci(test, score));
 
-        MenuItem item2 = new MenuItem("BFCI");
-        item2.setOnAction(e -> {
-            Bfci fci = new Bfci(getTest(dataSet), getScore(dataSet));
-            Graph graph = fci.search(dataSet, new Parameters());
-            ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
-            Tab bfci = new Tab("BFCI", graphScroll);
-            tabs.getTabs().add(bfci);
-            tabs.getSelectionModel().select(bfci);
-        });
+        List<MenuItem> items = new ArrayList<>();
 
-        // Add menu items to the context menu
-        layout.getItems().addAll(item1, item2);
+        for (Algorithm algorithm : algorithms) {
+            MenuItem item = new MenuItem(algorithm.getDescription());
+            item.setOnAction(e -> {
+                Graph graph = algorithm.search(dataSet, new Parameters());
+                ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
+                Tab tab = new Tab(algorithm.getDescription(), graphScroll);
+                tabs.getTabs().add(tab);
+                tabs.getSelectionModel().select(tab);
+            });
+
+            items.add(item);
+        }
+
+        layout.getItems().addAll(items);
         contextMenu.getItems().addAll(layout);
 
-        // Show context menu on right-click on the pane
         pane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY ||
                     (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
