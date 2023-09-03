@@ -31,6 +31,14 @@ public class GraphView extends Pane {
     private final HashMap<Node, DisplayNode> displayNodes;
     private final HashMap<Edge, DisplayEdge> displayEdges;
     private double offsetX1, offsetY1;
+    private static final Color NODE_FILL_COLOR = Color.rgb(148, 198, 226);
+    private static final Color NODE_EDGE_COLOR = Color.rgb(146, 154, 166);
+    private static final Color NODE_SELECTED_FILL_COLOR = Color.rgb(244, 219, 110);
+    private static final Color NODE_SELECTED_EDGE_COLOR = Color.rgb(215, 193, 97);
+    private static final Color NODE_TEXT_COLOR = Color.rgb(0, 1, 53);
+    private static final Color LINE_COLOR = Color.rgb(26, 113, 169);
+    private static final Color SELECTED_LINE_COLOR = Color.rgb(244, 0, 20);
+    private static final Color HIGHLIGHTED_LINE_COLOR = Color.rgb(238, 180, 34);
 
     private GraphView(Graph graph) {
         Pane content = new Pane();
@@ -167,8 +175,10 @@ public class GraphView extends Pane {
         text.setFont(Font.font(20));
         Shape shape = getShape(node, text);
 
-        shape.setFill(Color.WHITE);
-        shape.setStroke(Color.BLACK);
+//        shape.setFill(Color.WHITE);
+        shape.setFill(NODE_FILL_COLOR);
+//        shape.setStroke(Color.BLACK);
+        shape.setStroke(NODE_EDGE_COLOR);
         shape.setStrokeWidth(2);
 
         text.setX(((CenteredShape) shape).getCenterX() - text.getLayoutBounds().getWidth() / 2 + 2);
@@ -294,8 +304,8 @@ public class GraphView extends Pane {
                 lineEndY + arrowSize * Math.sin(angle + Math.PI / 6.)
         );
 
-        edgemark.setFill(Color.BLACK);
-        edgemark.setStroke(Color.BLACK);
+        edgemark.setFill(LINE_COLOR);
+        edgemark.setStroke(LINE_COLOR);
         edgemark.setStrokeWidth(2);
     }
 
@@ -377,18 +387,22 @@ public class GraphView extends Pane {
 
         public DisplayEdge() {
             Line line = new Line();
-            line.setStroke(Color.BLACK);
+//            line.setStroke(Color.BLACK);
+            line.setStroke(LINE_COLOR);
             this.line = line;
 
             Polygon edgemark1 = new Polygon();
-            edgemark1.setStroke(Color.BLACK);
-            edgemark1.setFill(Color.BLACK);
+//            edgemark1.setStroke(Color.BLACK);
+//            edgemark1.setFill(Color.BLACK);
+
+            edgemark1.setStroke(LINE_COLOR);
+            edgemark1.setFill(LINE_COLOR);
 
             this.edgemark1 = edgemark1;
 
             Polygon edgemark2 = new Polygon();
-            edgemark2.setStroke(Color.BLACK);
-            edgemark2.setFill(Color.BLACK);
+            edgemark2.setStroke(LINE_COLOR);
+            edgemark2.setFill(LINE_COLOR);
 
             this.edgemark2 = edgemark2;
         }
