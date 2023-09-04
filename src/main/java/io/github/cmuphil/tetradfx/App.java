@@ -3,8 +3,11 @@ package io.github.cmuphil.tetradfx;
 import io.github.cmuphil.tetradfx.ui.TetradFx;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.Objects;
 
 /**
  * Tetrad-fx app, an application for Tetrad in JavaFX. Evolving, new.
@@ -22,9 +25,12 @@ public class App extends Application {
 //        primaryStage.setResizable(true);
         primaryStage.initStyle(StageStyle.UTILITY);
 
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.gif"))));
+
         Scene scene = new Scene(TetradFx.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
-        primaryStage.setTitle("ScrollPane with Pane");
+        primaryStage.setTitle("Tetrad-FX");
+
         primaryStage.show();
     }
 

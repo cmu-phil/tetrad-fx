@@ -6,6 +6,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -100,7 +101,19 @@ public class GraphView extends Pane {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
+        graphView.setOnZoom(e -> handleZoom(e, graphView));
+
         return scrollPane;
+    }
+
+    private static void handleZoom(ZoomEvent e, Pane graphView) {
+        double zoomFactor = e.getZoomFactor();
+
+        // Adjust the scale based on the zoom factor
+        graphView.setScaleX(graphView.getScaleX() * zoomFactor);
+        graphView.setScaleY(graphView.getScaleY() * zoomFactor);
+
+        e.consume();
     }
 
     @NotNull
