@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author josephramsey
  */
-public class DataView {
+public class DataViewTabPane {
 
     @NotNull
     public static TableView<DataRow> getTableView(DataSet dataSet, TabPane tabs) {

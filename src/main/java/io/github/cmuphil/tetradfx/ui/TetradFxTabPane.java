@@ -31,11 +31,11 @@ import static edu.cmu.tetrad.data.SimpleDataLoader.loadMixedData;
  *
  * @author josephramsey
  */
-public class TetradFx {
-    private static final TetradFx INSTANCE = new TetradFx();
+public class TetradFxTabPane {
+    private static final TetradFxTabPane INSTANCE = new TetradFxTabPane();
 
-    public static TetradFx getInstance() {
-        return TetradFx.INSTANCE;
+    public static TetradFxTabPane getInstance() {
+        return TetradFxTabPane.INSTANCE;
     }
 
     private static void loadDataAction(Stage primaryStage, TabPane tabs) {
@@ -155,7 +155,7 @@ public class TetradFx {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
+            Tab tab = new Tab(selectedFile.getName(), DataViewTabPane.getTableView(dataSet, tabs));
             tabs.getTabs().clear();
             tabs.getTabs().add(tab);
             tabs.getSelectionModel().select(tab);
@@ -169,7 +169,7 @@ public class TetradFx {
         try {
             DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
+            Tab tab = new Tab(selectedFile.getName(), DataViewTabPane.getTableView(dataSet, tabs));
             tabs.getTabs().clear();
             tabs.getTabs().add(tab);
             tabs.getSelectionModel().select(tab);
@@ -185,7 +185,7 @@ public class TetradFx {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            Tab tab = new Tab(selectedFile.getName(), DataView.getTableView(dataSet, tabs));
+            Tab tab = new Tab(selectedFile.getName(), DataViewTabPane.getTableView(dataSet, tabs));
             tabs.getTabs().clear();
             tabs.getTabs().add(tab);
             tabs.getSelectionModel().select(tab);
@@ -204,7 +204,7 @@ public class TetradFx {
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
 
-        TableView<DataView.DataRow> table = DataView.getTableView(dataSet, tabs);
+        TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, tabs);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(graph);
 
         Tab t1 = new Tab("Sample Graph", trueGraphScroll);
@@ -221,7 +221,7 @@ public class TetradFx {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
 
-        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), tabs);
+        TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(result.dataSet(), tabs);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
         Tab t1 = new Tab("Simulation Graph", trueGraphScroll);
