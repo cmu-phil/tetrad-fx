@@ -27,7 +27,7 @@ import java.io.IOException;
 import static edu.cmu.tetrad.data.SimpleDataLoader.loadMixedData;
 
 /**
- * <p>The main display for Tetrad-FX. Work in progress.</p>
+ * <p>The main display for Tetrad-FX. This one uses a split pane layout. Work in progress.</p>
  *
  * @author josephramsey
  */
