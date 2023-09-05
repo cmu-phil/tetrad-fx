@@ -36,7 +36,7 @@ import java.util.List;
 public class DataViewTabPane {
 
     @NotNull
-    public static TableView<DataRow> getTableView(DataSet dataSet, TabPane tabs) {
+    public static TableView<DataRow> getTableView(DataSet dataSet, TabPane graphTabs) {
         TableView<DataRow> table = new TableView<>();
 
         int numberOfColumns = dataSet.getNumColumns();
@@ -53,7 +53,7 @@ public class DataViewTabPane {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
-        ContextMenu contextMenu = getContextMenu(table, dataSet, tabs);
+        ContextMenu contextMenu = getContextMenu(table, dataSet, graphTabs);
 
         // Show context menu on right-click on the label
         table.setOnMousePressed(event -> {

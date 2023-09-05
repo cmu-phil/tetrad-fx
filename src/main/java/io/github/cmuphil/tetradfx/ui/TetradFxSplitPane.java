@@ -33,10 +33,37 @@ import static edu.cmu.tetrad.data.SimpleDataLoader.loadMixedData;
  */
 public class TetradFxSplitPane {
     private static final TetradFxSplitPane INSTANCE = new TetradFxSplitPane();
+    private final TabPane mainTabs = new TabPane();
     private final TabPane graphs = new TabPane();
+    private Tab dataTab;
+    private Tab graphTab;
 
     public static TetradFxSplitPane getInstance() {
         return TetradFxSplitPane.INSTANCE;
+    }
+
+    // Passing primaryStage in here so that I can quit the application from a menu item
+    // and pop up dialogs.
+    public Pane getRoot(Stage primaryStage) {
+        SplitPane split = new SplitPane();
+
+        BorderPane root = new BorderPane();
+        MenuBar menuBar = getMenuBar(primaryStage, split);
+        root.setTop(menuBar);
+
+        mainTabs.setPrefSize(1000, 800);
+
+        dataTab = new Tab("Data", new Pane());
+        graphTab = new Tab("Graphs", graphs);
+
+        mainTabs.getTabs().add(dataTab);
+        mainTabs.getTabs().add(graphTab);
+
+        root.setCenter(mainTabs);
+
+        sampleSimulation(split);
+
+        return root;
     }
 
     // This will eventually be replaced by some flexible UI for making simulations.
@@ -100,7 +127,7 @@ public class TetradFxSplitPane {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, applyButtonType);
 
         ((Button) dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e ->
-                loadTheData(selectedFile, continuousBtn, discreteBtn, textField, tabs));
+                loadTheData(selectedFile, continuousBtn, discreteBtn, textField));
 
         dialog.showAndWait();
     }
@@ -126,9 +153,9 @@ public class TetradFxSplitPane {
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
-        continuousSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.CONTINUOUS));
-        discreteSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.DISCRETE));
-        mixedSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.MIXED));
+        continuousSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.CONTINUOUS, graphs));
+        discreteSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.DISCRETE, graphs));
+        mixedSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.MIXED, graphs));
         exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
 
@@ -136,56 +163,62 @@ public class TetradFxSplitPane {
         return menuBar;
     }
 
-    private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, TextField textField, SplitPane tabs) {
+    private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, TextField textField) {
         if (selectedFile != null) {
 
             // You can add further processing based on the type of dataset chosen.
             if (continuousBtn.isSelected()) {
-                loadContinuous(selectedFile, tabs);
+                loadContinuous(selectedFile);
             } else if (discreteBtn.isSelected()) {
-                loadDiscrete(selectedFile, tabs);
+                loadDiscrete(selectedFile);
             } else {
-                loadMixed(selectedFile, textField, tabs);
+                loadMixed(selectedFile, textField);
             }
         } else {
             System.out.println("File selection cancelled.");
         }
     }
 
-    private void loadContinuous(File selectedFile, SplitPane tabs) {
+    private void loadContinuous(File selectedFile) {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            Node pane = DataViewSplitPane.getTableView(dataSet, tabs);
-            tabs.getItems().set(0, pane);
+            TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, graphs);
+            dataTab.setContent(table);
             graphs.getTabs().removeAll(graphs.getTabs());
+
+            mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
         }
     }
 
-    private void loadDiscrete(File selectedFile, SplitPane tabs) {
+    private void loadDiscrete(File selectedFile) {
         try {
             DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            Node node = DataViewSplitPane.getTableView(dataSet, tabs);
-            tabs.getItems().set(0, node);
+            TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, graphs);
+            dataTab.setContent(table);
             graphs.getTabs().removeAll(graphs.getTabs());
+
+            mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
             throw new RuntimeException(ex);
         }
     }
 
-    private void loadMixed(File selectedFile, TextField textField, SplitPane split) {
+    private void loadMixed(File selectedFile, TextField textField) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            Node node = DataViewSplitPane.getTableView(dataSet, split);
-            split.getItems().set(0, node);
+            TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, graphs);
+            dataTab.setContent(table);
             graphs.getTabs().removeAll(graphs.getTabs());
+
+            mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
@@ -201,44 +234,34 @@ public class TetradFxSplitPane {
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
 
-        TableView<DataViewSplitPane.DataRow> table = DataViewSplitPane.getTableView(dataSet, split);
+        TableView<DataViewSplitPane.DataRow> table = DataViewSplitPane.getTableView(dataSet, mainTabs, graphs);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(graph);
+
+        dataTab.setContent(table);
 
         Tab t2 = new Tab("True", trueGraphScroll);
         graphs.getTabs().add(t2);
-        split.getItems().addAll(table, graphs);
+
+        mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
     }
 
-    private void addSimulation(SplitPane split, SimulationType type) {
+    private void addSimulation(SplitPane split, SimulationType type, TabPane graphs) {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
 
-        TableView<DataViewSplitPane.DataRow> table = DataViewSplitPane.getTableView(result.dataSet(), split);
+        TableView<DataViewSplitPane.DataRow> table = DataViewSplitPane.getTableView(result.dataSet(), mainTabs, graphs);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
         Tab t2 = new Tab("True", trueGraphScroll);
 
-        split.getItems().set(0, table);
+        dataTab.setContent(table);
         graphs.getTabs().removeAll(graphs.getTabs());
         graphs.getTabs().add(t2);
+
+        mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
     }
 
-    // Passing primaryStage in here so that I can quit the application from a menu item
-    // and pop up dialogs.
-    public Pane getRoot(Stage primaryStage) {
-        SplitPane split = new SplitPane();
 
-        BorderPane root = new BorderPane();
-        MenuBar menuBar = getMenuBar(primaryStage, split);
-        root.setTop(menuBar);
-
-        split.setPrefSize(1000, 800);
-        root.setCenter(split);
-
-        sampleSimulation(split);
-
-        return root;
-    }
 
     public enum SimulationType {
         CONTINUOUS,
