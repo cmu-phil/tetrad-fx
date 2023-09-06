@@ -93,7 +93,7 @@ public class GraphView extends Pane {
      */
     @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
-        LayoutUtil.circleLayout(graph);
+        ChangedStuffINeed.circleLayout(graph);
         Pane graphView = new GraphView(graph);
         HBox hBox = new HBox(graphView);
 
@@ -153,8 +153,8 @@ public class GraphView extends Pane {
     // This will become a popup menu for the graph view.
     private void layout(Graph graph, int layoutType) {
         switch (layoutType) {
-            case 1 -> LayoutUtil.circleLayout(graph);
-            case 2 -> LayoutUtil.squareLayout(graph);
+            case 1 -> ChangedStuffINeed.circleLayout(graph);
+            case 2 -> ChangedStuffINeed.squareLayout(graph);
             case 3 -> LayoutUtil.fruchtermanReingoldLayout(graph);
             default -> throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
         }

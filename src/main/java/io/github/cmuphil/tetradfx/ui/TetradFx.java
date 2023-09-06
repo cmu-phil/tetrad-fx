@@ -4,7 +4,6 @@ import edu.cmu.tetrad.algcomparison.graph.RandomForward;
 import edu.cmu.tetrad.algcomparison.simulation.BayesNetSimulation;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
-import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
@@ -23,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-
-import static edu.cmu.tetrad.data.SimpleDataLoader.loadMixedData;
 
 /**
  * <p>The main display for Tetrad-FX. This one uses a split pane layout. Work in progress.</p>
@@ -246,7 +243,7 @@ public class TetradFx {
 
     private void loadContinuous(File selectedFile) {
         try {
-            DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
+            DataSet dataSet = ChangedStuffINeed.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
             TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
             dataTab.setContent(table);
@@ -261,7 +258,7 @@ public class TetradFx {
 
     private void loadDiscrete(File selectedFile) {
         try {
-            DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
+            DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
             TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
             dataTab.setContent(table);
@@ -277,7 +274,7 @@ public class TetradFx {
     private void loadMixed(File selectedFile, TextField textField) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
-            DataSet dataSet = loadMixedData(selectedFile, "//", '\"',
+            DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
             TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
             dataTab.setContent(table);
