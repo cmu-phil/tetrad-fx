@@ -11,7 +11,6 @@ import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -30,7 +29,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -41,8 +39,8 @@ import static edu.cmu.tetrad.data.SimpleDataLoader.loadMixedData;
  *
  * @author josephramsey
  */
-public class TetradFxSplitPane {
-    private static final TetradFxSplitPane INSTANCE = new TetradFxSplitPane();
+public class TetradFx {
+    private static final TetradFx INSTANCE = new TetradFx();
     private final TabPane mainTabs = new TabPane();
     private final TabPane graphs = new TabPane();
     private Tab dataTab;
@@ -51,8 +49,8 @@ public class TetradFxSplitPane {
     private Tab insightsTab;
     private Tab gamesTab;
 
-    public static TetradFxSplitPane getInstance() {
-        return TetradFxSplitPane.INSTANCE;
+    public static TetradFx getInstance() {
+        return TetradFx.INSTANCE;
     }
 
     // Passing primaryStage in here so that I can quit the application from a menu item
@@ -229,7 +227,7 @@ public class TetradFxSplitPane {
         try {
             DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, graphs);
+            TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
             dataTab.setContent(table);
             graphs.getTabs().removeAll(graphs.getTabs());
 
@@ -244,7 +242,7 @@ public class TetradFxSplitPane {
         try {
             DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, graphs);
+            TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
             dataTab.setContent(table);
             graphs.getTabs().removeAll(graphs.getTabs());
 
@@ -260,7 +258,7 @@ public class TetradFxSplitPane {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            TableView<DataViewTabPane.DataRow> table = DataViewTabPane.getTableView(dataSet, graphs);
+            TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
             dataTab.setContent(table);
             graphs.getTabs().removeAll(graphs.getTabs());
 
@@ -280,7 +278,7 @@ public class TetradFxSplitPane {
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
 
-        TableView<DataViewSplitPane.DataRow> table = DataViewSplitPane.getTableView(dataSet, mainTabs, graphs);
+        TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(graph);
 
         dataTab.setContent(table);
@@ -295,7 +293,7 @@ public class TetradFxSplitPane {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
 
-        TableView<DataViewSplitPane.DataRow> table = DataViewSplitPane.getTableView(result.dataSet(), mainTabs, graphs);
+        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), mainTabs, graphs);
         ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
 
         Tab t2 = new Tab("True", trueGraphScroll);

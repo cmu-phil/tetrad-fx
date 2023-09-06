@@ -1,6 +1,6 @@
 package io.github.cmuphil.tetradfx;
 
-import io.github.cmuphil.tetradfx.ui.TetradFxSplitPane;
+import io.github.cmuphil.tetradfx.ui.TetradFx;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -25,7 +25,7 @@ public class App extends Application {
 
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
 
-        Scene scene = new Scene(TetradFxSplitPane.getInstance().getRoot(primaryStage));
+        Scene scene = new Scene(TetradFx.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
 //        primaryStage.setFullScreen(true);
 //        primaryStage.setResizable(false);
