@@ -216,7 +216,6 @@ public class TetradFx {
         games.getItems().add(new MenuItem("Practice D-separation/M-separation"));
         games.getItems().add(new MenuItem("Practice Constraint-based Search"));
         games.getItems().add(new MenuItem("Practice Permutation Search"));
-        games.getItems().add(new MenuItem("Plot Linear Gaussian Conditional Distributions"));
 
         Menu help = new Menu("Help");
         help.getItems().add(new MenuItem("About"));
