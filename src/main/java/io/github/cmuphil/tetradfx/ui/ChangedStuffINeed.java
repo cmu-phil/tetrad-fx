@@ -24,6 +24,7 @@ public class ChangedStuffINeed {
     /**
      * Arranges the nodes in the graph in a circle.
      */
+    // From LayoutUtils
     public static void circleLayout(Graph graph) {
         if (graph == null) {
             return;
@@ -50,7 +51,7 @@ public class ChangedStuffINeed {
         }
     }
 
-
+    // From LayoutUtils
     public static void squareLayout(Graph graph) {
         List<Node> nodes = graph.getNodes();
         Collections.sort(nodes);
@@ -120,6 +121,7 @@ public class ChangedStuffINeed {
      * @return The loaded DataSet.
      * @throws IOException If an error occurred in reading the file.
      */
+    // From SimpleDataLoader
     @NotNull
     public static DataSet loadContinuousData(File file, String commentMarker, char quoteCharacter,
                                              String missingValueMarker, boolean hasHeader, Delimiter delimiter,
@@ -158,6 +160,7 @@ public class ChangedStuffINeed {
      * @return The loaded DataSet.
      * @throws IOException If an error occurred in reading the file.
      */
+    // From SimpleDataLoader
     @NotNull
     public static DataSet loadDiscreteData(File file, String commentMarker, char quoteCharacter,
                                            String missingValueMarker, boolean hasHeader, Delimiter delimiter,
@@ -198,6 +201,7 @@ public class ChangedStuffINeed {
      * @return The loaded DataSet.
      * @throws IOException If an error occurred in reading the file.
      */
+    // From SimpleDataLoader
     @NotNull
     public static DataSet loadMixedData(File file, String commentMarker, char quoteCharacter,
                                         String missingValueMarker, boolean hasHeader, int maxNumCategories,
