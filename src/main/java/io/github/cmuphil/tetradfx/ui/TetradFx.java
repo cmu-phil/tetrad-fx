@@ -52,16 +52,16 @@ public class TetradFx {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        TreeItem<String> rootItem = new TreeItem<>("Datasets");
+        TreeItem<String> tree = new TreeItem<>("Datasets");
 
         for (int i = 1; i <= 10; i++) {
             TreeItem<String> childItem1 = new TreeItem<>("data set " + i);
-            rootItem.getChildren().add(childItem1);
+            tree.getChildren().add(childItem1);
         }
 
-        rootItem.setExpanded(true);
+        tree.setExpanded(true);
 
-        TreeView<String> treeView = new TreeView<>(rootItem);
+        TreeView<String> treeView = new TreeView<>(tree);
 
         BorderPane activePane = new BorderPane();
         MenuBar menuBar = getMenuBar(primaryStage);
@@ -197,7 +197,8 @@ public class TetradFx {
         exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
 
-        menuBar.getMenus().addAll(fileMenu);
+        menuBar.getMenus().addAll(fileMenu, new Menu("Model"), new Menu("Insights"), new Menu("Games"),
+                new Menu("Help"));
         return menuBar;
     }
 
