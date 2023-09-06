@@ -12,14 +12,6 @@ import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -175,13 +167,16 @@ public class TetradFx {
         MenuBar menuBar = new MenuBar();
 
         Menu fileMenu = new Menu("File");
+        fileMenu.getItems().add(new MenuItem("Load Session"));
+        fileMenu.getItems().add(new MenuItem("Save Session"));
+        fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem loadData = new MenuItem("Load Data");
-
         Menu simulation = new Menu("Simulation");
         MenuItem continuousSimulation = new MenuItem("Continuous");
         MenuItem discreteSimulation = new MenuItem("Discrete");
         MenuItem mixedSimulation = new MenuItem("Mixed");
         simulation.getItems().addAll(continuousSimulation, discreteSimulation, mixedSimulation);
+        fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exitItem = new MenuItem("Exit");
 
         loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
@@ -197,8 +192,40 @@ public class TetradFx {
         exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
 
-        menuBar.getMenus().addAll(fileMenu, new Menu("Model"), new Menu("Insights"), new Menu("Games"),
-                new Menu("Help"));
+        Menu search = new Menu("Search");
+        search.getItems().add(new Menu("Do a Search"));
+
+        Menu model = new Menu("Model");
+        model.getItems().add(new Menu("Make a model based on the data"));
+
+        Menu insights = new Menu("Insights");
+        Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
+        insights.getItems().add(histogramsAndScatterplots);
+        histogramsAndScatterplots.getItems().add(new MenuItem("Plot Matrix"));
+        histogramsAndScatterplots.getItems().add(new MenuItem("By Edge/Node"));
+        insights.getItems().add(new MenuItem("Graph Metrics"));
+        insights.getItems().add(new MenuItem("Data Metrics"));
+        insights.getItems().add(new MenuItem("Causal Effects"));
+        insights.getItems().add(new MenuItem("Check Markov and Faithfulness Assumptions"));
+        insights.getItems().add(new MenuItem("Check for D-separation/M-separation"));
+
+        Menu layout = new Menu("Layout");
+        layout.getItems().add(new Menu("Do a layout"));
+
+        Menu games = new Menu("Games");
+        games.getItems().add(new MenuItem("Practice D-separation/M-separation"));
+        games.getItems().add(new MenuItem("Practice Constraint-based Search"));
+        games.getItems().add(new MenuItem("Practice Permutation Search"));
+        games.getItems().add(new MenuItem("Plot Linear Gaussian Conditional Distributions"));
+
+        Menu help = new Menu("Help");
+        help.getItems().add(new MenuItem("About"));
+        help.getItems().add(new MenuItem("Help"));
+        help.getItems().add(new MenuItem("Tetrad Website"));
+        help.getItems().add(new MenuItem("Tetrad Manual"));
+        help.getItems().add(new MenuItem("Tetrad Forum"));
+
+        menuBar.getMenus().addAll(fileMenu, search, model, insights, layout, games, help);
         return menuBar;
     }
 
