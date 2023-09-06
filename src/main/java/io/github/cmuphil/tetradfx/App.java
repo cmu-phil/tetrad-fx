@@ -23,7 +23,7 @@ public class App extends Application {
 //        primaryStage.setResizable(true);
 //        primaryStage.initStyle(StageStyle.UTILITY);
 
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.gif"))));
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
 
         Scene scene = new Scene(TetradFxSplitPane.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);

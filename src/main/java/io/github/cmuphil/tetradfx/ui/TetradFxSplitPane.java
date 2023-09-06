@@ -49,6 +49,7 @@ public class TetradFxSplitPane {
     private Tab graphTab;
     private Tab modelsTab;
     private Tab insightsTab;
+    private Tab gamesTab;
 
     public static TetradFxSplitPane getInstance() {
         return TetradFxSplitPane.INSTANCE;
@@ -57,11 +58,12 @@ public class TetradFxSplitPane {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        TreeItem<String> rootItem = new TreeItem<>("Root");
-        TreeItem<String> childItem1 = new TreeItem<>("Child 1");
-        TreeItem<String> childItem2 = new TreeItem<>("Child 2");
+        TreeItem<String> rootItem = new TreeItem<>("Datasets");
 
-        rootItem.getChildren().addAll(childItem1, childItem2);
+        for (int i = 1; i <= 10; i++) {
+            TreeItem<String> childItem1 = new TreeItem<>("data set " + i);
+            rootItem.getChildren().add(childItem1);
+        }
 
         rootItem.setExpanded(true);
 
@@ -80,15 +82,19 @@ public class TetradFxSplitPane {
         graphTab = new Tab("Graphs", graphs);
         modelsTab = new Tab("Models", new Pane());
         insightsTab = new Tab("Insights", new Pane());
+        gamesTab = new Tab("Games", new Pane());
 
         dataTab.setClosable(false);
         graphTab.setClosable(false);
+        modelsTab.setClosable(false);
         insightsTab.setClosable(false);
+        gamesTab.setClosable(false);
 
         mainTabs.getTabs().add(dataTab);
         mainTabs.getTabs().add(graphTab);
         mainTabs.getTabs().add(modelsTab);
         mainTabs.getTabs().add(insightsTab);
+        mainTabs.getTabs().add(gamesTab);
 
         activePane.setCenter(mainTabs);
 
