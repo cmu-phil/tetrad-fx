@@ -44,10 +44,6 @@ public class TetradFx {
     private final TabPane mainTabs = new TabPane();
     private final TabPane graphs = new TabPane();
     private Tab dataTab;
-    private Tab graphTab;
-    private Tab modelsTab;
-    private Tab insightsTab;
-    private Tab gamesTab;
 
     public static TetradFx getInstance() {
         return TetradFx.INSTANCE;
@@ -67,20 +63,18 @@ public class TetradFx {
 
         TreeView<String> treeView = new TreeView<>(rootItem);
 
-        SplitPane split = new SplitPane();
-
         BorderPane activePane = new BorderPane();
-        MenuBar menuBar = getMenuBar(primaryStage, split);
+        MenuBar menuBar = getMenuBar(primaryStage);
         activePane.setTop(menuBar);
 
         mainTabs.setPrefSize(1000, 800);
         mainTabs.setSide(Side.LEFT);
 
         dataTab = new Tab("Data", new Pane());
-        graphTab = new Tab("Graphs", graphs);
-        modelsTab = new Tab("Models", new Pane());
-        insightsTab = new Tab("Insights", new Pane());
-        gamesTab = new Tab("Games", new Pane());
+        Tab graphTab = new Tab("Graphs", graphs);
+        Tab modelsTab = new Tab("Models", new Pane());
+        Tab insightsTab = new Tab("Insights", new Pane());
+        Tab gamesTab = new Tab("Games", new Pane());
 
         dataTab.setClosable(false);
         graphTab.setClosable(false);
@@ -96,7 +90,7 @@ public class TetradFx {
 
         activePane.setCenter(mainTabs);
 
-        sampleSimulation(split);
+        sampleSimulation();
 
         SplitPane mainSplit = new SplitPane();
         mainSplit.setDividerPosition(0, 0.2);
@@ -136,7 +130,7 @@ public class TetradFx {
         }
     }
 
-    private void loadDataAction(Stage primaryStage, SplitPane tabs) {
+    private void loadDataAction(Stage primaryStage) {
         System.out.println("Loading data.");
 
         ButtonType applyButtonType = new ButtonType("Load");
@@ -177,7 +171,7 @@ public class TetradFx {
     }
 
     @NotNull
-    public MenuBar getMenuBar(Stage primaryStage, SplitPane tabs) {
+    public MenuBar getMenuBar(Stage primaryStage) {
         MenuBar menuBar = new MenuBar();
 
         Menu fileMenu = new Menu("File");
@@ -196,10 +190,10 @@ public class TetradFx {
         mixedSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
-        loadData.setOnAction(e -> loadDataAction(primaryStage, tabs));
-        continuousSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.CONTINUOUS, graphs));
-        discreteSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.DISCRETE, graphs));
-        mixedSimulation.setOnAction(e -> addSimulation(tabs, SimulationType.MIXED, graphs));
+        loadData.setOnAction(e -> loadDataAction(primaryStage));
+        continuousSimulation.setOnAction(e -> addSimulation(SimulationType.CONTINUOUS, graphs));
+        discreteSimulation.setOnAction(e -> addSimulation(SimulationType.DISCRETE, graphs));
+        mixedSimulation.setOnAction(e -> addSimulation(SimulationType.MIXED, graphs));
         exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
 
@@ -269,7 +263,7 @@ public class TetradFx {
         }
     }
 
-    private void sampleSimulation(SplitPane split) {
+    private void sampleSimulation() {
         Graph graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,
                 20, 500, 100, 1000, false);
 
@@ -289,7 +283,7 @@ public class TetradFx {
         mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
     }
 
-    private void addSimulation(SplitPane split, SimulationType type, TabPane graphs) {
+    private void addSimulation(SimulationType type, TabPane graphs) {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
 
