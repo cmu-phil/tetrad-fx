@@ -10,8 +10,17 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -21,6 +30,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,6 +47,8 @@ public class TetradFxSplitPane {
     private final TabPane graphs = new TabPane();
     private Tab dataTab;
     private Tab graphTab;
+    private Tab modelsTab;
+    private Tab insightsTab;
 
     public static TetradFxSplitPane getInstance() {
         return TetradFxSplitPane.INSTANCE;
@@ -45,23 +57,51 @@ public class TetradFxSplitPane {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
+        TreeItem<String> rootItem = new TreeItem<>("Root");
+        TreeItem<String> childItem1 = new TreeItem<>("Child 1");
+        TreeItem<String> childItem2 = new TreeItem<>("Child 2");
+
+        rootItem.getChildren().addAll(childItem1, childItem2);
+
+        rootItem.setExpanded(true);
+
+        TreeView<String> treeView = new TreeView<>(rootItem);
+
         SplitPane split = new SplitPane();
 
-        BorderPane root = new BorderPane();
+        BorderPane activePane = new BorderPane();
         MenuBar menuBar = getMenuBar(primaryStage, split);
-        root.setTop(menuBar);
+        activePane.setTop(menuBar);
 
         mainTabs.setPrefSize(1000, 800);
+        mainTabs.setSide(Side.LEFT);
 
         dataTab = new Tab("Data", new Pane());
         graphTab = new Tab("Graphs", graphs);
+        modelsTab = new Tab("Models", new Pane());
+        insightsTab = new Tab("Insights", new Pane());
+
+        dataTab.setClosable(false);
+        graphTab.setClosable(false);
+        insightsTab.setClosable(false);
 
         mainTabs.getTabs().add(dataTab);
         mainTabs.getTabs().add(graphTab);
+        mainTabs.getTabs().add(modelsTab);
+        mainTabs.getTabs().add(insightsTab);
 
-        root.setCenter(mainTabs);
+        activePane.setCenter(mainTabs);
 
         sampleSimulation(split);
+
+        SplitPane mainSplit = new SplitPane();
+        mainSplit.setDividerPosition(0, 0.2);
+
+        mainSplit.getItems().addAll(treeView, activePane);
+
+        BorderPane root = new BorderPane();
+        root.setCenter(mainSplit);
+        root.setTop(menuBar);
 
         return root;
     }
@@ -133,7 +173,7 @@ public class TetradFxSplitPane {
     }
 
     @NotNull
-    private MenuBar getMenuBar(Stage primaryStage, SplitPane tabs) {
+    public MenuBar getMenuBar(Stage primaryStage, SplitPane tabs) {
         MenuBar menuBar = new MenuBar();
 
         Menu fileMenu = new Menu("File");
