@@ -20,15 +20,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-//        primaryStage.setResizable(true);
-//        primaryStage.initStyle(StageStyle.UTILITY);
-
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
 
         Scene scene = new Scene(TetradFx.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
-//        primaryStage.setFullScreen(true);
-//        primaryStage.setResizable(false);
         primaryStage.setTitle("Tetrad-FX");
 
         primaryStage.show();

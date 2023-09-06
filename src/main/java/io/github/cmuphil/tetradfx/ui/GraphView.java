@@ -32,6 +32,8 @@ public class GraphView extends Pane {
     private final HashMap<Node, DisplayNode> displayNodes;
     private final HashMap<Edge, DisplayEdge> displayEdges;
     private double offsetX1, offsetY1;
+
+    // These are some colors from the Swing Tetrad app, just pulled them over.
     private static final Color NODE_FILL_COLOR = Color.rgb(148, 198, 226);
     private static final Color NODE_EDGE_COLOR = Color.rgb(146, 154, 166);
 //    private static final Color NODE_SELECTED_FILL_COLOR = Color.rgb(244, 219, 110);

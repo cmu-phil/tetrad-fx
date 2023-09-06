@@ -104,7 +104,7 @@ public class TetradFx {
         return root;
     }
 
-    // This will eventually be replaced by some flexible UI for making simulations.
+    // This will eventually be replaced by some flexible UI for making simulations (or eliminated).
     @NotNull
     private static Result getSimulation(Parameters parameters, SimulationType type) {
         if (type == SimulationType.CONTINUOUS) {
