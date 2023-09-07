@@ -7,4 +7,7 @@ One idea we had, which we're currently pursuing, is to shift the focus of Tetrad
 Summary of what we have so far:
 * A data viewer and a graph viewer.
 * A sketch of one possible interface idea. Not committed to this by any stretch of the imagination, nor is it even complete, just playing around with what FX and Java's object orientation can do. Some underlying Tetrad library code is being adjusted to suit. This is very early. But a lot of the menu items do something at least, even if they're not all implemented. But honestly, we may do it a different way entirely, who knows?
-* We had the idea of including some causal search "games" for people to play to familiarize themselves with the theory and demystify what's going on. We think this would be a contribution to the community. In the interface, we describe some such games we'd like to implement and include. If these go well, we may add more.
+* We had the idea of including some causal search "games" for people to play to familiarize themselves with the theory and demystify what's going on. We think this would be a contribution to the community. In the interface, we describe some such games we'd like to implement and include. If these go well, we may add more. The games we have in mind fro starters are:
+    1. A game to help the user practice making d-separation judgments.
+    2. A game to let the user explore the PC algorithm and constraint-based search.
+    3. A game to let the user explore permutation search.  
