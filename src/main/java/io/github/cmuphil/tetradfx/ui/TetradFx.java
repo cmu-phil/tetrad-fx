@@ -262,7 +262,7 @@ public class TetradFx {
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
-        DatasetToContents.getInstance().add(result.dataSet(), result.graph(), "Simulated Data", "Simulated True Graph");
+        DatasetToContents.getInstance().add(result.dataSet(), result.graph(), "simulated_data", "simulated_graph");
     }
 
     public enum SimulationType {

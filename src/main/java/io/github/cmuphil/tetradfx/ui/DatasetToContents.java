@@ -55,23 +55,49 @@ public class DatasetToContents {
         simulation.setCoefRange(0, 0.5);
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
-        DatasetToContents.getInstance().add(dataSet, graph, "Sample Data", "Sample Graph");
+        DatasetToContents.getInstance().add(dataSet, graph, "sample_data", "sample.graph");
         this.selectedDataSet = dataSet;
+
+        treeView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Check for a double click
+                TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    String selectedText = selectedItem.getValue();
+                    System.out.println("Double-clicked on: " + selectedText);
+                    selectedDataSet = datasetNamesToDataset.get(selectedText);
+                    activePane.setCenter(getSelectedMain());
+                }
+            }
+        });
+
     }
 
     public void add(DataSet dataSet, String dataName) {
         datasetToContents.put(dataSet, new Contents(dataSet, dataName));
-        datasetNamesToDataset.put(dataSet.getName(), dataSet);
+        datasetNamesToDataset.put(dataName, dataSet);
         this.selectedDataSet = dataSet;
         activePane.setCenter(getSelectedMain());
         TreeItem<String> childItem1 = new TreeItem<>(dataName);
         tree.getChildren().add(childItem1);
+
+        treeView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) { // Check for a double click
+                TreeItem<String> selectedItem = treeView.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    String selectedText = selectedItem.getValue();
+                    System.out.println("Double-clicked on: " + selectedText);
+                    selectedDataSet = datasetNamesToDataset.get(selectedText);
+                    activePane.setCenter(getSelectedMain());
+                }
+            }
+        });
+
     }
 
     public void add(DataSet dataSet, Graph graph, String dataName, String graphName) {
         datasetToContents.put(dataSet, dataSet == null ? new Contents(dataSet, dataSet.getName())
                 : new Contents(dataSet, graph, dataName, graphName));
-        datasetNamesToDataset.put(dataSet.getName(), dataSet);
+        datasetNamesToDataset.put(dataName, dataSet);
         this.selectedDataSet = dataSet;
         activePane.setCenter(getSelectedMain());
         TreeItem<String> childItem1 = new TreeItem<>(dataName);
