@@ -11,6 +11,11 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
+/**
+ * <p>Stores all of the tabbed panes for a given dataset.</p>
+ *
+ * @author josephramsey
+ */
 public class Contents {
     private final Tab dataTab;
     private final Tab graphTab;

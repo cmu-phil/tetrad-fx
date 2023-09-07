@@ -10,6 +10,11 @@ import javafx.scene.layout.BorderPane;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Maps datasets to their contents.
+ *
+ * @author josephramsey
+ */
 public class DatasetToContents {
     private final Map<DataSet, Contents> datasetToContents = new HashMap<>();
     private final Map<String, DataSet> datasetNamesToDataset = new HashMap<>();
