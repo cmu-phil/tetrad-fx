@@ -165,5 +165,9 @@ public class Contents {
     public void removeGame(String name) {
         this.games.getTabs().removeIf(tab -> tab.getText().equals(name));
     }
+
+    public void clearGames() {
+        this.games.getTabs().clear();
+    }
 }
 

@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
@@ -71,7 +70,44 @@ public class DataView {
     }
 
     @NotNull
-    private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
+    public static List<MenuItem> getMenuItems(DataSet dataSet, List<Algorithm> algorithms) {
+        List<MenuItem> items = new ArrayList<>();
+
+        for (Algorithm algorithm : algorithms) {
+            MenuItem item = new MenuItem(algorithm.getDescription());
+            item.setOnAction(e -> {
+                Graph graph = algorithm.search(dataSet, new Parameters());
+                DatasetToContents.getInstance().get(dataSet).addGraph(algorithm.getDescription(), graph);
+            });
+
+            items.add(item);
+        }
+        return items;
+    }
+
+    @NotNull
+    public static ScoreWrapper getScore(DataSet dataSet) {
+        if (dataSet.isContinuous()) {
+            return new SemBicScore();
+        } else if (dataSet.isDiscrete()) {
+            return new BdeuScore();
+        } else {
+            return new ConditionalGaussianBicScore();
+        }
+    }
+
+    public static IndependenceWrapper getTest(DataSet dataSet) {
+        if (dataSet.isContinuous()) {
+            return new FisherZ();
+        } else if (dataSet.isDiscrete()) {
+            return new ChiSquare();
+        } else {
+            return new ConditionalGaussianLRT();
+        }
+    }
+
+    @NotNull
+    static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         ContextMenu contextMenu = new ContextMenu();
         Menu layout = new Menu("Do a Search");
 
@@ -105,50 +141,23 @@ public class DataView {
         Menu transformData = new Menu("Transform Data");
         contextMenu.getItems().add(transformData);
 
+        Menu makeModel = new Menu("Make Model");
+        contextMenu.getItems().add(makeModel);
+
         Menu saveData = new Menu("Save Data");
         contextMenu.getItems().add(saveData);
 
-        Menu games = new Menu("Games");
+        MenuItem games = new MenuItem("Base Games on this Dataset!");
+
+        games.setOnAction(e -> {
+            Games.baseGamesOnDataset();
+        });
+
+
         contextMenu.getItems().add(games);
 
+
         return contextMenu;
-    }
-
-    @NotNull
-    private static List<MenuItem> getMenuItems(DataSet dataSet, List<Algorithm> algorithms) {
-        List<MenuItem> items = new ArrayList<>();
-
-        for (Algorithm algorithm : algorithms) {
-            MenuItem item = new MenuItem(algorithm.getDescription());
-            item.setOnAction(e -> {
-                Graph graph = algorithm.search(dataSet, new Parameters());
-                DatasetToContents.getInstance().get(dataSet).addGraph(algorithm.getDescription(), graph);
-            });
-
-            items.add(item);
-        }
-        return items;
-    }
-
-    @NotNull
-    private static ScoreWrapper getScore(DataSet dataSet) {
-        if (dataSet.isContinuous()) {
-            return new SemBicScore();
-        } else if (dataSet.isDiscrete()) {
-            return new BdeuScore();
-        } else {
-            return new ConditionalGaussianBicScore();
-        }
-    }
-
-    private static IndependenceWrapper getTest(DataSet dataSet) {
-        if (dataSet.isContinuous()) {
-            return new FisherZ();
-        } else if (dataSet.isDiscrete()) {
-            return new ChiSquare();
-        } else {
-            return new ConditionalGaussianLRT();
-        }
     }
 
     /**

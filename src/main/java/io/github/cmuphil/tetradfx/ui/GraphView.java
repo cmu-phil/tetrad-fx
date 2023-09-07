@@ -1,7 +1,10 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.graph.*;
-import javafx.scene.control.*;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
@@ -116,6 +119,17 @@ public class GraphView extends Pane {
         e.consume();
     }
 
+    public static void addGame(String s, String name) {
+        Text text = new Text(
+                s);
+        text.setWrappingWidth(600);
+        text.setFont(new Font("Arial", 16));
+        text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(text);
+        DatasetToContents.getInstance().getSelectedContents().addGame(name, borderPane);
+    }
+
     @NotNull
     private ContextMenu getContextMenu(Pane pane, Graph graph) {
         // Create a context menu
@@ -140,83 +154,12 @@ public class GraphView extends Pane {
         MenuItem saveGraph = new MenuItem("Save Graph");
         contextMenu.getItems().add(saveGraph);
 
-        Menu games = new Menu("Games");
+        MenuItem games = new MenuItem("Base Games on this Graph!");
 
-        MenuItem item4 = new MenuItem("Play the D-separation Game based on this graph!");
-        games.getItems().add(item4);
-
-        item4.setOnAction(e -> {
-            Text text = new Text(
-                    "This the D-separation Game. We will give you potential d-separation facts, and you need to say whether the d-separation facts hold in the graph you've selectd!\n" +
-                            "\n" +
-                            "You get to say how many d-separation facts you want to check. We will keep score for you.\n" +
-                            "\n" +
-                            "Can you get all of them right? Good luck! Don't forget to check descendants of colliders!");
-            text.setWrappingWidth(600);
-            text.setFont(new Font("Arial", 16));
-            text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
-            BorderPane borderPane = new BorderPane();
-            borderPane.setCenter(text);
-            DatasetToContents.getInstance().getSelectedContents().addGame("D-separation Game", borderPane);
+        games.setOnAction(e -> {
+            Games.baseGamesOnGraph();
         });
 
-        MenuItem item5 = new MenuItem("Play the PC Search Game based on this graph!");
-        games.getItems().add(item5);
-
-        item5.setOnAction(e -> {
-            Text text = new Text(
-                    "This the PC Search Game. We are assuming here that the graph is a DAG and that there are no latent variables. If you don't think this is true, maybe you shouldn't play this game!\n" +
-                            "                            \n" +
-                            "You are allowed to remove edges or orient colliders based on conditional independence facts that you ascertain from the variables. The graph will start with a complete graph, and you may test conditional independence facts like dsep(A, B | C) by clickin on the nodes A, B, and C in sequence. You will be told whether d-separation holds or does not. You may click \\\"Remove edge A--B\\\" or \\\"Orient collider A->B<-C\\\" where you click on the B.\n" +
-                            "\n" +
-                            "We will handle the implied orientation rules (Meek rules) for you at each step.\n" +
-                            "You're allowed to backtrack!\n" +
-                            "\n" +
-                            "We will tell you the SHD score of your graph at each step. The goal is to get to SHD = 0! Can you do it in the fewest number of steps? Good luck!");
-            text.setWrappingWidth(600);
-            text.setFont(new Font("Arial", 16));
-            text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
-            BorderPane borderPane = new BorderPane();
-            borderPane.setCenter(text);
-            DatasetToContents.getInstance().getSelectedContents().addGame("PC Search Game", borderPane);
-        });
-
-        MenuItem item6 = new MenuItem("Play the FCI Search Game based on this graph!");
-        games.getItems().add(item6);
-
-        item6.setOnAction(e -> {
-            Text text = new Text(
-                    "This the FCI Search Game. You will be able to test d-separation facts in the " +
-                            "graph you've selected. We will tell you the SHD score for your graph " +
-                            "compared this graph! You need to get an SHD of zero to win! There may be latents " +
-                            "in this graph!");
-            text.setWrappingWidth(600);
-            text.setFont(new Font("Arial", 16));
-            text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
-            BorderPane borderPane = new BorderPane();
-            borderPane.setCenter(text);
-            DatasetToContents.getInstance().getSelectedContents().addGame("FCI Search Game", borderPane);
-        });
-
-        MenuItem item7 = new MenuItem("Play the Permutation Search Game based on this graph!");
-        games.getItems().add(item7);
-
-        item7.setOnAction(e -> {
-            Text text = new Text(
-                    "This is the Permutation Search Game! We are assuming that the correct model is a DAG and that there are no latent variables. Is this a good assumption for your graph?\n" +
-                            "\n" +
-                            "Each permutation of the graph implies a DAG. We will give you a permutation, and you need to rearrange the nodes so that the implied DAG is correct! \n" +
-                            "\n" +
-                            "We will show you the implied DAG at each step and tell you the number of edges it the graph. Try to get a graph with the minimum number of edges int he fewest number of moves you can!\n" +
-                            "\n" +
-                            "Maybe you will come up with a new permutation algorithm!");
-            text.setWrappingWidth(600);
-            text.setFont(new Font("Arial", 16));
-            text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
-            BorderPane borderPane = new BorderPane();
-            borderPane.setCenter(text);
-            DatasetToContents.getInstance().getSelectedContents().addGame("Permutation Search Game", borderPane);
-        });
 
         contextMenu.getItems().add(games);
 

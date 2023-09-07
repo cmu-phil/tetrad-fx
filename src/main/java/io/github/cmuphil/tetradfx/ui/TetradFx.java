@@ -9,6 +9,7 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
+import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
@@ -19,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,28 +40,20 @@ public class TetradFx {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-//        TreeItem<String> tree = new TreeItem<>("Datasets");
-
-//        for (int i = 1; i <= 10; i++) {
-//            TreeItem<String> childItem1 = new TreeItem<>("data set " + i);
-//            tree.getChildren().add(childItem1);
-//        }
-
-//        tree.setExpanded(true);
-
-//        TreeView<String> treeView = new TreeView<>(tree);
-
         BorderPane activePane = DatasetToContents.getInstance().getActivePane();
         MenuBar menuBar = getMenuBar(primaryStage);
         activePane.setTop(menuBar);
         activePane.setPrefSize(1000, 800);
 
-//        sampleSimulation();
-
         SplitPane mainSplit = new SplitPane();
         mainSplit.setDividerPosition(0, 0.2);
 
-        mainSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(), activePane);
+        SplitPane leftSplit = new SplitPane();
+        leftSplit.setOrientation(Orientation.VERTICAL);
+        leftSplit.setDividerPosition(0, 0.8);
+        leftSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(), new TextArea("Parameters"));
+
+        mainSplit.getItems().addAll(leftSplit, activePane);
 
         BorderPane root = new BorderPane();
         root.setCenter(mainSplit);
@@ -184,6 +178,21 @@ public class TetradFx {
         Menu layout = new Menu("Layout");
         layout.getItems().add(new Menu("Do a layout"));
 
+        Menu games = new Menu("Games");
+
+        MenuItem basedOnData = new MenuItem("Make Games Based on a Random Dataset, Don't Tell me!!");
+        MenuItem basedOnGraph =  new MenuItem("Make Games Based on a Random Graph, Don't Tell me!!");
+
+        games.getItems().addAll(basedOnData, basedOnGraph);
+
+        basedOnData.setOnAction(e -> {
+        	Games.baseGamesOnDataset();
+        });
+
+        basedOnGraph.setOnAction(e -> {
+            Games.baseGamesOnGraph();
+        });
+
         Menu help = new Menu("Help");
         help.getItems().add(new MenuItem("About"));
         help.getItems().add(new MenuItem("Help"));
@@ -191,7 +200,7 @@ public class TetradFx {
         help.getItems().add(new MenuItem("Tetrad Manual"));
         help.getItems().add(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, search, model, insights, layout, help);
+        menuBar.getMenus().addAll(fileMenu, search, model, insights, layout, games, help);
         return menuBar;
     }
 
