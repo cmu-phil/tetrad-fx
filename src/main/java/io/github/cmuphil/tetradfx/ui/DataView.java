@@ -36,7 +36,7 @@ import java.util.List;
 public class DataView {
 
     @NotNull
-    public static TableView<DataRow> getTableView(DataSet dataSet, TabPane main, TabPane graphs) {
+    public static TableView<DataRow> getTableView(DataSet dataSet) {
         TableView<DataRow> table = new TableView<>();
 
         int numberOfColumns = dataSet.getNumColumns();
@@ -53,7 +53,7 @@ public class DataView {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
-        ContextMenu contextMenu = getContextMenu(table, dataSet, main, graphs);
+        ContextMenu contextMenu = getContextMenu(table, dataSet);
 
         // Show context menu on right-click on the label
         table.setOnMousePressed(event -> {
@@ -70,7 +70,7 @@ public class DataView {
     }
 
     @NotNull
-    private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet, TabPane main, TabPane graphs) {
+    private static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         ContextMenu contextMenu = new ContextMenu();
         Menu layout = new Menu("Do a Search");
 
@@ -89,7 +89,7 @@ public class DataView {
         algorithms.add(new Bfci(test, score));
         algorithms.add(new GraspFci(test, score));
 
-        List<MenuItem> items = getMenuItems(dataSet, algorithms, main, graphs);
+        List<MenuItem> items = getMenuItems(dataSet, algorithms);
 
         layout.getItems().addAll(items);
         contextMenu.getItems().addAll(layout);
@@ -105,18 +105,14 @@ public class DataView {
     }
 
     @NotNull
-    private static List<MenuItem> getMenuItems(DataSet dataSet, List<Algorithm> algorithms, TabPane main, TabPane graphs) {
+    private static List<MenuItem> getMenuItems(DataSet dataSet, List<Algorithm> algorithms) {
         List<MenuItem> items = new ArrayList<>();
 
         for (Algorithm algorithm : algorithms) {
             MenuItem item = new MenuItem(algorithm.getDescription());
             item.setOnAction(e -> {
                 Graph graph = algorithm.search(dataSet, new Parameters());
-                ScrollPane graphScroll = GraphView.getGraphDisplay(graph);
-
-                graphs.getTabs().add(new Tab(algorithm.getDescription(), graphScroll));
-                graphs.getSelectionModel().select(graphs.getTabs().size() - 1);
-                main.getSelectionModel().select(main.getTabs().get(1));
+                DatasetToContents.getInstance().get(dataSet).addGraph(algorithm.getDescription(), graph);
             });
 
             items.add(item);

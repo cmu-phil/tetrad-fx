@@ -30,9 +30,6 @@ import java.io.IOException;
  */
 public class TetradFx {
     private static final TetradFx INSTANCE = new TetradFx();
-    private final TabPane mainTabs = new TabPane();
-    private final TabPane graphs = new TabPane();
-    private Tab dataTab;
 
     public static TetradFx getInstance() {
         return TetradFx.INSTANCE;
@@ -52,32 +49,10 @@ public class TetradFx {
 
         TreeView<String> treeView = new TreeView<>(tree);
 
-        BorderPane activePane = new BorderPane();
+        BorderPane activePane = DatasetToContents.getInstance().getActivePane();
         MenuBar menuBar = getMenuBar(primaryStage);
         activePane.setTop(menuBar);
-
-        mainTabs.setPrefSize(1000, 800);
-        mainTabs.setSide(Side.LEFT);
-
-        dataTab = new Tab("Data", new Pane());
-        Tab graphTab = new Tab("Graphs", graphs);
-        Tab modelsTab = new Tab("Models", new Pane());
-        Tab insightsTab = new Tab("Insights", new Pane());
-        Tab gamesTab = new Tab("Games", new Pane());
-
-        dataTab.setClosable(false);
-        graphTab.setClosable(false);
-        modelsTab.setClosable(false);
-        insightsTab.setClosable(false);
-        gamesTab.setClosable(false);
-
-        mainTabs.getTabs().add(dataTab);
-        mainTabs.getTabs().add(graphTab);
-        mainTabs.getTabs().add(modelsTab);
-        mainTabs.getTabs().add(insightsTab);
-        mainTabs.getTabs().add(gamesTab);
-
-        activePane.setCenter(mainTabs);
+        activePane.setPrefSize(1000, 800);
 
         sampleSimulation();
 
@@ -183,9 +158,9 @@ public class TetradFx {
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction(primaryStage));
-        continuousSimulation.setOnAction(e -> addSimulation(SimulationType.CONTINUOUS, graphs));
-        discreteSimulation.setOnAction(e -> addSimulation(SimulationType.DISCRETE, graphs));
-        mixedSimulation.setOnAction(e -> addSimulation(SimulationType.MIXED, graphs));
+        continuousSimulation.setOnAction(e -> addSimulation(SimulationType.CONTINUOUS));
+        discreteSimulation.setOnAction(e -> addSimulation(SimulationType.DISCRETE));
+        mixedSimulation.setOnAction(e -> addSimulation(SimulationType.MIXED));
         exitItem.setOnAction(e -> primaryStage.close());
         fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
 
@@ -209,11 +184,6 @@ public class TetradFx {
         Menu layout = new Menu("Layout");
         layout.getItems().add(new Menu("Do a layout"));
 
-        Menu games = new Menu("Games");
-        games.getItems().add(new MenuItem("Practice D-separation/M-separation"));
-        games.getItems().add(new MenuItem("Practice Constraint-based Search"));
-        games.getItems().add(new MenuItem("Practice Permutation Search"));
-
         Menu help = new Menu("Help");
         help.getItems().add(new MenuItem("About"));
         help.getItems().add(new MenuItem("Help"));
@@ -221,11 +191,12 @@ public class TetradFx {
         help.getItems().add(new MenuItem("Tetrad Manual"));
         help.getItems().add(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, search, model, insights, layout, games, help);
+        menuBar.getMenus().addAll(fileMenu, search, model, insights, layout, help);
         return menuBar;
     }
 
-    private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn, TextField textField) {
+    private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn,
+                             TextField textField) {
         if (selectedFile != null) {
 
             // You can add further processing based on the type of dataset chosen.
@@ -245,11 +216,7 @@ public class TetradFx {
         try {
             DataSet dataSet = ChangedStuffINeed.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
-            TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
-            dataTab.setContent(table);
-            graphs.getTabs().removeAll(graphs.getTabs());
-
-            mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
+            DatasetToContents.getInstance().add(dataSet, dataSet.getName());
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
@@ -260,11 +227,7 @@ public class TetradFx {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
-            dataTab.setContent(table);
-            graphs.getTabs().removeAll(graphs.getTabs());
-
-            mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
+            DatasetToContents.getInstance().add(dataSet, dataSet.getName());
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
             throw new RuntimeException(ex);
@@ -276,11 +239,7 @@ public class TetradFx {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
-            dataTab.setContent(table);
-            graphs.getTabs().removeAll(graphs.getTabs());
-
-            mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
+            DatasetToContents.getInstance().add(dataSet, dataSet.getName());
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
@@ -295,35 +254,14 @@ public class TetradFx {
         simulation.setCoefRange(0, 0.5);
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
-
-        TableView<DataView.DataRow> table = DataView.getTableView(dataSet, mainTabs, graphs);
-        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(graph);
-
-        dataTab.setContent(table);
-
-        Tab t2 = new Tab("True", trueGraphScroll);
-        graphs.getTabs().add(t2);
-
-        mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
+        DatasetToContents.getInstance().add(dataSet, graph, "Sample Data", "Sample True Graph");
     }
 
-    private void addSimulation(SimulationType type, TabPane graphs) {
+    private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
-
-        TableView<DataView.DataRow> table = DataView.getTableView(result.dataSet(), mainTabs, graphs);
-        ScrollPane trueGraphScroll = GraphView.getGraphDisplay(result.graph());
-
-        Tab t2 = new Tab("True", trueGraphScroll);
-
-        dataTab.setContent(table);
-        graphs.getTabs().removeAll(graphs.getTabs());
-        graphs.getTabs().add(t2);
-
-        mainTabs.getSelectionModel().select(mainTabs.getTabs().get(0));
+        DatasetToContents.getInstance().add(result.dataSet(), result.graph(), "Simulated Data", "Simulated True Graph");
     }
-
-
 
     public enum SimulationType {
         CONTINUOUS,
