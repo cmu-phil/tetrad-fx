@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
@@ -100,6 +101,15 @@ public class DataView {
                 contextMenu.show(pane, event.getScreenX(), event.getScreenY());
             }
         });
+
+        Menu transformData = new Menu("Transform Data");
+        contextMenu.getItems().add(transformData);
+
+        Menu saveData = new Menu("Save Data");
+        contextMenu.getItems().add(saveData);
+
+        Menu games = new Menu("Games");
+        contextMenu.getItems().add(games);
 
         return contextMenu;
     }

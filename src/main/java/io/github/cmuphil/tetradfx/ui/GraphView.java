@@ -137,6 +137,9 @@ public class GraphView extends Pane {
         layout.getItems().addAll(item1, item2, item3);
         contextMenu.getItems().addAll(layout);
 
+        MenuItem saveGraph = new MenuItem("Save Graph");
+        contextMenu.getItems().add(saveGraph);
+
         Menu games = new Menu("Games");
 
         MenuItem item4 = new MenuItem("Play the D-separation Game based on this graph!");
