@@ -50,7 +50,7 @@ public class TetradFx {
 
         SplitPane leftSplit = new SplitPane();
         leftSplit.setOrientation(Orientation.VERTICAL);
-        leftSplit.setDividerPosition(0, 0.8);
+        leftSplit.setDividerPosition(0, 0.5);
         leftSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(), new TextArea("Parameters"));
 
         mainSplit.getItems().addAll(leftSplit, activePane);
