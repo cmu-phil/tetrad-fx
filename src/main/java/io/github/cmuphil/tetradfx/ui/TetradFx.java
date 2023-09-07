@@ -38,28 +38,28 @@ public class TetradFx {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        TreeItem<String> tree = new TreeItem<>("Datasets");
+//        TreeItem<String> tree = new TreeItem<>("Datasets");
 
-        for (int i = 1; i <= 10; i++) {
-            TreeItem<String> childItem1 = new TreeItem<>("data set " + i);
-            tree.getChildren().add(childItem1);
-        }
+//        for (int i = 1; i <= 10; i++) {
+//            TreeItem<String> childItem1 = new TreeItem<>("data set " + i);
+//            tree.getChildren().add(childItem1);
+//        }
 
-        tree.setExpanded(true);
+//        tree.setExpanded(true);
 
-        TreeView<String> treeView = new TreeView<>(tree);
+//        TreeView<String> treeView = new TreeView<>(tree);
 
         BorderPane activePane = DatasetToContents.getInstance().getActivePane();
         MenuBar menuBar = getMenuBar(primaryStage);
         activePane.setTop(menuBar);
         activePane.setPrefSize(1000, 800);
 
-        sampleSimulation();
+//        sampleSimulation();
 
         SplitPane mainSplit = new SplitPane();
         mainSplit.setDividerPosition(0, 0.2);
 
-        mainSplit.getItems().addAll(treeView, activePane);
+        mainSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(), activePane);
 
         BorderPane root = new BorderPane();
         root.setCenter(mainSplit);
@@ -216,6 +216,8 @@ public class TetradFx {
         try {
             DataSet dataSet = ChangedStuffINeed.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
+            String name = selectedFile.getName();
+            dataSet.setName(name);
             DatasetToContents.getInstance().add(dataSet, dataSet.getName());
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");

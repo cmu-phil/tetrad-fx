@@ -142,6 +142,7 @@ public class ChangedStuffINeed {
 
         Data data = dataReader.read(dataColumns, hasHeader);
         DataModel dataModel = DataConvertUtils.toDataModel(data);
+        dataModel.setName(file.getName());
 
         return (DataSet) dataModel;
     }
@@ -181,6 +182,7 @@ public class ChangedStuffINeed {
 
         Data data = dataReader.read(dataColumns, hasHeader);
         DataModel dataModel = DataConvertUtils.toDataModel(data);
+        dataModel.setName(file.getName());
 
         return (DataSet) dataModel;
     }
@@ -223,6 +225,7 @@ public class ChangedStuffINeed {
 
         Data data = dataReader.read(dataColumns, hasHeader);
         DataModel dataModel = DataConvertUtils.toDataModel(data);
+        dataModel.setName(file.getName());
 
         return (DataSet) dataModel;
     }

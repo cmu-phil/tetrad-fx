@@ -5,6 +5,8 @@ import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import javafx.scene.Node;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
 import java.util.HashMap;
@@ -22,9 +24,19 @@ public class DatasetToContents {
 
     private static DatasetToContents instance;
     private BorderPane activePane = new BorderPane();
+    private TreeView<String> treeView;
+    TreeItem<String> tree = new TreeItem<>("Datasets");
 
     private DatasetToContents() {
+        tree = new TreeItem<>("Datasets");
 
+//        for (int i = 1; i <= 10; i++) {
+//            TreeItem<String> childItem1 = new TreeItem<>("data set " + i);
+//            tree.getChildren().add(childItem1);
+//        }
+
+        treeView = new TreeView<>(tree);
+        tree.setExpanded(true);
     }
 
     public static DatasetToContents getInstance() {
@@ -52,6 +64,8 @@ public class DatasetToContents {
         datasetNamesToDataset.put(dataSet.getName(), dataSet);
         this.selectedDataSet = dataSet;
         activePane.setCenter(getSelectedMain());
+        TreeItem<String> childItem1 = new TreeItem<>(dataName);
+        tree.getChildren().add(childItem1);
     }
 
     public void add(DataSet dataSet, Graph graph, String dataName, String graphName) {
@@ -60,6 +74,8 @@ public class DatasetToContents {
         datasetNamesToDataset.put(dataSet.getName(), dataSet);
         this.selectedDataSet = dataSet;
         activePane.setCenter(getSelectedMain());
+        TreeItem<String> childItem1 = new TreeItem<>(dataName);
+        tree.getChildren().add(childItem1);
     }
 
     public Contents get(DataSet dataSet) {
@@ -91,5 +107,9 @@ public class DatasetToContents {
 
     public Contents getSelectedContents() {
         return datasetToContents.get(selectedDataSet);
+    }
+
+    public TreeView<String> getTreeView() {
+        return treeView;
     }
 }
