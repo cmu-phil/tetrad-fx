@@ -109,7 +109,7 @@ public class DataView {
     @NotNull
     static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         ContextMenu contextMenu = new ContextMenu();
-        Menu layout = new Menu("Do a Search");
+        Menu layout = new Menu("Run a search algorithm on this dataset");
 
         List<Algorithm> algorithms = new ArrayList<>();
         ScoreWrapper score = getScore(dataSet);
