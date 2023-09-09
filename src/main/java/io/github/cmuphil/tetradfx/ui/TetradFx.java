@@ -13,10 +13,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -51,13 +48,17 @@ public class TetradFx {
         SplitPane leftSplit = new SplitPane();
         leftSplit.setOrientation(Orientation.VERTICAL);
         leftSplit.setDividerPosition(0, 0.5);
-        leftSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(), new TextArea("Parameters"));
+        leftSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(),
+                new TextArea("Parameters:\n" + new Parameters()));
 
         mainSplit.getItems().addAll(leftSplit, activePane);
 
-        BorderPane root = new BorderPane();
-        root.setCenter(mainSplit);
-        root.setTop(menuBar);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(mainSplit);
+        borderPane.setTop(menuBar);
+
+        StackPane root = new StackPane();
+        root.getChildren().add(borderPane);
 
         return root;
     }
@@ -161,9 +162,6 @@ public class TetradFx {
         Menu search = new Menu("Search");
         search.getItems().add(new Menu("Do a Search"));
 
-        Menu model = new Menu("Model");
-        model.getItems().add(new Menu("Make a model based on the data"));
-
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
         insights.getItems().add(histogramsAndScatterplots);
@@ -200,7 +198,7 @@ public class TetradFx {
         help.getItems().add(new MenuItem("Tetrad Manual"));
         help.getItems().add(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, search, model, insights, layout, games, help);
+        menuBar.getMenus().addAll(fileMenu, search, insights, layout, games, help);
         return menuBar;
     }
 

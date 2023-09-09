@@ -151,6 +151,10 @@ public class GraphView extends Pane {
         layout.getItems().addAll(item1, item2, item3);
         contextMenu.getItems().addAll(layout);
 
+        Menu model = new Menu("Model");
+        model.getItems().add(new MenuItem("Make a model based on the data"));
+        contextMenu.getItems().add(model);
+
         MenuItem saveGraph = new MenuItem("Save Graph");
         contextMenu.getItems().add(saveGraph);
 
