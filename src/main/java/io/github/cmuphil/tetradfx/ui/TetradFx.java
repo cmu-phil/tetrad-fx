@@ -94,9 +94,6 @@ public class TetradFx {
 
         ButtonType applyButtonType = new ButtonType("Load");
 
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-
         RadioButton continuousBtn = new RadioButton("Optimize for Continuous");
         RadioButton discreteBtn = new RadioButton("Optimize for Discrete");
         RadioButton mixedBtn = new RadioButton("General");
@@ -122,6 +119,9 @@ public class TetradFx {
         Dialog<VBox> dialog = new Dialog<>();
         dialog.getDialogPane().setContent(layout);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, applyButtonType);
+
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(layout.getScene().getWindow());
 
         ((Button) dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e ->
                 loadTheData(selectedFile, continuousBtn, discreteBtn, textField));
