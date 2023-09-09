@@ -21,7 +21,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/tyler32.png"))));
 
         Scene scene = new Scene(TetradFx.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
