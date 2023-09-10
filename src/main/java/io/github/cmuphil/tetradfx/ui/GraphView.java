@@ -127,7 +127,7 @@ public class GraphView extends Pane {
         text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(text);
-        DatasetToContents.getInstance().getSelectedContents().addGame(name, borderPane);
+        NamesToContents.getInstance().getSelectedContents().addGame(name, borderPane);
     }
 
     @NotNull

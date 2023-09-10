@@ -4,7 +4,7 @@ import static io.github.cmuphil.tetradfx.ui.GraphView.addGame;
 
 public class Games {
     public static void baseGamesOnDataset() {
-        DatasetToContents.getInstance().getSelectedContents().clearGames();
+        NamesToContents.getInstance().getSelectedContents().clearGames();
 
         addGame("This the PC Search Game. We are assuming here that the underlying model is a DAG and that there are no latent variables. If you don't think this is true of your data, maybe you shouldn't play this game!\n" +
                 "                            \n" +
@@ -25,7 +25,7 @@ public class Games {
     }
 
     static void baseGamesOnGraph() {
-        DatasetToContents.getInstance().getSelectedContents().clearGames();
+        NamesToContents.getInstance().getSelectedContents().clearGames();
 
         addGame("This the D-separation Game. We will give you potential d-separation facts, and you need to say whether the d-separation facts hold in the graph you've selectd!\n" +
                         "\n" +

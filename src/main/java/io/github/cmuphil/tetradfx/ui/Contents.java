@@ -34,10 +34,6 @@ public class Contents {
     private final TabPane insights = new TabPane();
     private final TabPane games = new TabPane();
 
-    public Contents(DataSet dataSet, String name) {
-        this(dataSet, null, name, null);
-    }
-
     public Contents(DataSet dataSet, Graph graph, String dataName, String graphName) {
         this.dataSet = dataSet;
         this.main = new TabPane();
@@ -51,8 +47,21 @@ public class Contents {
         insightsTab = new Tab("Insights", insights);
         gamesTab = new Tab("Games", games);
 
-        this.main.getTabs().add(dataTab);
-        this.main.getTabs().add(graphTab);
+        if (dataSet != null && graph == null) {
+            this.main.getTabs().add(dataTab);
+            this.main.getTabs().add(graphTab);
+            addDataSet(dataName, dataSet, false);
+        } else if (dataSet == null && graph != null) {
+            this.main.getTabs().add(graphTab);
+            this.main.getTabs().add(dataTab);
+            addGraph(graphName, graph, false);
+        } else {
+            this.main.getTabs().add(graphTab);
+            this.main.getTabs().add(dataTab);
+            addDataSet(dataName, dataSet, false);
+            addGraph(graphName, graph, false);
+        }
+
         this.main.getTabs().add(knowledgeTab);
         this.main.getTabs().add(modelTab);
         this.main.getTabs().add(insightsTab);
@@ -71,16 +80,6 @@ public class Contents {
         this.models.setSide(Side.TOP);
         this.insights.setSide(Side.TOP);
         this.games.setSide(Side.TOP);
-
-        this.data.getTabs().add(new Tab(dataName, DataView.getTableView(dataSet)));
-
-        if (graph != null) {
-            this.graphs.getTabs().add(new Tab(graphName, GraphView.getGraphDisplay(graph)));
-        }
-    }
-
-    public DataSet getDataSet() {
-        return dataSet;
     }
 
     public TabPane getMain() {
@@ -111,13 +110,16 @@ public class Contents {
         return games;
     }
 
-    public void addDataSet(String name, DataSet dataSet) {
+    public void addDataSet(String name, DataSet dataSet, boolean closable) {
         this.dataSet = dataSet;
-        this.data.getTabs().add(new Tab(name, DataView.getTableView(dataSet)));
+        Tab tab = new Tab(name, DataView.getTableView(dataSet));
+        tab.setClosable(closable);
+        this.data.getTabs().add(tab);
     }
 
-    public void addGraph(String name, Graph graph) {
+    public void addGraph(String name, Graph graph, boolean closable) {
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
+        tab.setClosable(closable);
         this.graphs.getTabs().add(tab);
         this.main.getSelectionModel().select(graphTab);
         this.graphs.getSelectionModel().select(tab);

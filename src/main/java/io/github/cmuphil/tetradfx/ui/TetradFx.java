@@ -5,19 +5,18 @@ import edu.cmu.tetrad.algcomparison.simulation.BayesNetSimulation;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import javafx.geometry.Orientation;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class TetradFx {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        BorderPane activePane = DatasetToContents.getInstance().getActivePane();
+        BorderPane activePane = NamesToContents.getInstance().getActivePane();
         MenuBar menuBar = getMenuBar(primaryStage);
         activePane.setTop(menuBar);
         activePane.setPrefSize(1000, 800);
@@ -48,7 +47,7 @@ public class TetradFx {
         SplitPane leftSplit = new SplitPane();
         leftSplit.setOrientation(Orientation.VERTICAL);
         leftSplit.setDividerPosition(0, 0.5);
-        leftSplit.getItems().addAll(DatasetToContents.getInstance().getTreeView(),
+        leftSplit.getItems().addAll(NamesToContents.getInstance().getDataTreeView(),
                 new TextArea("Parameters:\n" + new Parameters()));
 
         mainSplit.getItems().addAll(leftSplit, activePane);
@@ -90,10 +89,7 @@ public class TetradFx {
     }
 
     private void loadDataAction(Stage primaryStage) {
-        System.out.println("Loading data.");
-
         ButtonType applyButtonType = new ButtonType("Load");
-
         RadioButton continuousBtn = new RadioButton("Optimize for Continuous");
         RadioButton discreteBtn = new RadioButton("Optimize for Discrete");
         RadioButton mixedBtn = new RadioButton("General");
@@ -102,7 +98,6 @@ public class TetradFx {
         discreteBtn.setToggleGroup(toggleGroup);
         mixedBtn.setToggleGroup(toggleGroup);
         mixedBtn.setSelected(true);
-
         TextField textField = new TextField("3");
         textField.setPrefColumnCount(2);
 
@@ -129,6 +124,13 @@ public class TetradFx {
         dialog.showAndWait();
     }
 
+    private void loadGraphAction(Stage primaryStage) {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        Graph graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
+        NamesToContents.getInstance().add(null, graph, selectedFile.getName(), null, "Graph");
+    }
+
     @NotNull
     public MenuBar getMenuBar(Stage primaryStage) {
         MenuBar menuBar = new MenuBar();
@@ -138,6 +140,7 @@ public class TetradFx {
         fileMenu.getItems().add(new MenuItem("Save Session"));
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem loadData = new MenuItem("Load Data");
+        MenuItem loadGraph = new MenuItem("Load Graph");
         Menu simulation = new Menu("Simulation");
         MenuItem continuousSimulation = new MenuItem("Continuous");
         MenuItem discreteSimulation = new MenuItem("Discrete");
@@ -147,17 +150,19 @@ public class TetradFx {
         MenuItem exitItem = new MenuItem("Exit");
 
         loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+        loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));
         continuousSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
         discreteSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         mixedSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction(primaryStage));
+        loadGraph.setOnAction(e -> loadGraphAction(primaryStage));
         continuousSimulation.setOnAction(e -> addSimulation(SimulationType.CONTINUOUS));
         discreteSimulation.setOnAction(e -> addSimulation(SimulationType.DISCRETE));
         mixedSimulation.setOnAction(e -> addSimulation(SimulationType.MIXED));
         exitItem.setOnAction(e -> primaryStage.close());
-        fileMenu.getItems().addAll(loadData, simulation, new SeparatorMenuItem(), exitItem);
+        fileMenu.getItems().addAll(loadData, loadGraph, simulation, new SeparatorMenuItem(), exitItem);
 
         Menu search = new Menu("Search");
         search.getItems().add(new Menu("Do a Search"));
@@ -225,7 +230,7 @@ public class TetradFx {
                     "*", true, Delimiter.TAB, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
-            DatasetToContents.getInstance().add(dataSet, dataSet.getName());
+            NamesToContents.getInstance().add(dataSet, null, selectedFile.getName(), "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
@@ -236,7 +241,7 @@ public class TetradFx {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            DatasetToContents.getInstance().add(dataSet, dataSet.getName());
+            NamesToContents.getInstance().add(dataSet, null, selectedFile.getName(), "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
             throw new RuntimeException(ex);
@@ -248,28 +253,17 @@ public class TetradFx {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            DatasetToContents.getInstance().add(dataSet, dataSet.getName());
+            NamesToContents.getInstance().add(dataSet, null, selectedFile.getName(), "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
         }
     }
 
-    private void sampleSimulation() {
-        Graph graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,
-                20, 500, 100, 1000, false);
-
-        LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
-        simulation.setCoefRange(0, 0.5);
-        simulation.setSelfLoopCoef(0.1);
-        DataSet dataSet = simulation.simulateDataReducedForm(1000);
-        DatasetToContents.getInstance().add(dataSet, graph, "Sample Data", "Sample True Graph");
-    }
-
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
         System.out.println("Simulation done");
-        DatasetToContents.getInstance().add(result.dataSet(), result.graph(), "simulated_data", "simulated_graph");
+        NamesToContents.getInstance().add(result.dataSet(), result.graph(), "Sample Simulation", "simulated_data", "simulated_graph");
     }
 
     public enum SimulationType {
