@@ -112,7 +112,7 @@ public class DataView {
     @NotNull
     static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         ContextMenu contextMenu = new ContextMenu();
-        Menu layout = new Menu("Run a search algorithm on this dataset");
+        Menu layout = new Menu("Search based on this Data");
 
         List<Algorithm> algorithms = new ArrayList<>();
         ScoreWrapper score = getScore(dataSet);
@@ -196,14 +196,14 @@ public class DataView {
         MenuItem discretizeToBinary = new MenuItem("Discretize to Binary");
         discretizeToBinary.setOnAction(e -> {
             DataSet filtered = DataTransforms.discretize(dataSet, 2, true);
-            NamesToContents.getInstance().getSelected().addDataSet("Numerical Discrete to Binary", filtered, true);
+            NamesToContents.getInstance().getSelected().addDataSet("Discretize to Binary", filtered, true);
         });
         transformData.getItems().add(discretizeToBinary);
 
         MenuItem discretize = new MenuItem("Discretize to Trinary");
         discretize.setOnAction(e -> {
             DataSet filtered = DataTransforms.discretize(dataSet, 3, true);
-            NamesToContents.getInstance().getSelected().addDataSet("Numerical Discrete to Binary", filtered, true);
+            NamesToContents.getInstance().getSelected().addDataSet("Discretize to Trinary", filtered, true);
         });
         transformData.getItems().add(discretize);
 

@@ -168,7 +168,8 @@ public class TetradFx {
         fileMenu.getItems().addAll(loadData, loadGraph, simulation, new SeparatorMenuItem(), exitItem);
 
         Menu search = new Menu("Search");
-        search.getItems().add(new Menu("Do a Search"));
+        search.getItems().add(new Menu("Do a search on the selected dataset"));
+        search.getItems().add(new Menu("Do an oracle search on the selected graph"));
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");

@@ -98,7 +98,7 @@ public class GraphView extends Pane {
     public static ScrollPane getGraphDisplay(Graph graph) {
         ChangedStuffINeed.circleLayout(graph);
         Pane graphView = new GraphView(graph);
-        HBox hBox = new HBox(graphView);
+        BorderPane hBox = new BorderPane(new HBox(graphView));
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(hBox);
@@ -155,7 +155,6 @@ public class GraphView extends Pane {
 
         Menu transform = new Menu("Transform");
 
-
         MenuItem dagToCPDAG = new MenuItem("DAG to CPDAG");
 
         dagToCPDAG.setOnAction(e -> {
@@ -188,8 +187,12 @@ public class GraphView extends Pane {
         contextMenu.getItems().add(transform);
 
         Menu model = new Menu("Model");
-        model.getItems().add(new MenuItem("Make a model based on the data"));
+        model.getItems().add(new MenuItem("Make a model based on this graph and the selected data"));
         contextMenu.getItems().add(model);
+
+        Menu search = new Menu("Oracle Search");
+        search.getItems().add(new MenuItem("Do an oracle search based on this graph"));
+        contextMenu.getItems().add(search);
 
         MenuItem saveGraph = new MenuItem("Save Graph");
         contextMenu.getItems().add(saveGraph);

@@ -115,6 +115,8 @@ public class Contents {
         Tab tab = new Tab(name, DataView.getTableView(dataSet));
         tab.setClosable(closable);
         this.data.getTabs().add(tab);
+        this.main.getSelectionModel().select(dataTab);
+        this.data.getSelectionModel().select(tab);
     }
 
     public void addGraph(String name, Graph graph, boolean closable) {
