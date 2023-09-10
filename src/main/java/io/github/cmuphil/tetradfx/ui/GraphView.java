@@ -151,6 +151,40 @@ public class GraphView extends Pane {
         layout.getItems().addAll(item1, item2, item3);
         contextMenu.getItems().addAll(layout);
 
+        Menu transform = new Menu("Transform");
+
+
+        MenuItem dagToCPDAG = new MenuItem("DAG to CPDAG");
+
+        dagToCPDAG.setOnAction(e -> {
+            Graph dag = GraphTransforms.cpdagForDag(graph);
+            NamesToContents.getInstance().getSelectedContents().addGraph("DAG to CPPAG", dag, true);
+        });
+
+        MenuItem dagToPag = new MenuItem("DAG to PAG");
+
+        dagToPag.setOnAction(e -> {
+            Graph dag = GraphTransforms.dagToPag(graph);
+            NamesToContents.getInstance().getSelectedContents().addGraph("DAG to PAG", dag, true);
+        });
+
+        MenuItem dagFromCPDAG = new MenuItem("DAG from CPDAG");
+
+        dagFromCPDAG.setOnAction(e -> {
+            Graph dag = GraphTransforms.dagFromCPDAG(graph);
+            NamesToContents.getInstance().getSelectedContents().addGraph("DAG from CPDAG", dag, true);
+        });
+
+        MenuItem magFromPag = new MenuItem("MAG from PAG");
+
+        magFromPag.setOnAction(e -> {
+            Graph mag = GraphTransforms.pagToMag(graph);
+            NamesToContents.getInstance().getSelectedContents().addGraph("MAG from PAG", mag, true);
+        });
+
+        transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);
+        contextMenu.getItems().add(transform);
+
         Menu model = new Menu("Model");
         model.getItems().add(new MenuItem("Make a model based on the data"));
         contextMenu.getItems().add(model);
