@@ -50,19 +50,30 @@ public class NamesToContents {
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
         this.selectedName = "Sample Simulation";
-        NamesToContents.getInstance().add(dataSet, graph, this.selectedName, "Sample Graph", "Sample Dataset");
+        NamesToContents.getInstance().add(dataSet, graph, this.selectedName,"Sample Graph", "Sample Dataset");
 
         dataTreeView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 TreeItem<String> selectedItem = dataTreeView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
                     String selectedText = selectedItem.getValue();
-                    System.out.println("Double-clicked on: " + selectedText);
                     selectedName = selectedText;
                     activePane.setCenter(getSelectedMain());
                 }
             }
         });
+    }
+
+    public String nextName(String projectName) {
+        for (int i = 1; i < 1000; i++) {
+            String name = projectName + " " + i;
+
+            if (!namesToContents.containsKey(name)) {
+                return name;
+            }
+        }
+
+        throw new IllegalArgumentException("Too many projects");
     }
 
     public void add(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName) {
@@ -81,11 +92,6 @@ public class NamesToContents {
         projects.getChildren().add(childItem1);
     }
 
-    public void remove(String name) {
-        namesToContents.remove(name);
-        selectedName = namesToContents.keySet().iterator().next();
-    }
-
     public Node getSelectedMain() {
         Contents selected = getSelected();
         return selected.getMain();
@@ -96,8 +102,7 @@ public class NamesToContents {
     }
 
     public Contents getSelected() {
-        Contents contents = namesToContents.get(selectedName);
-        return contents;
+        return namesToContents.get(selectedName);
     }
 
     public BorderPane getActivePane() {

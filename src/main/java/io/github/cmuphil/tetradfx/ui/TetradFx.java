@@ -129,7 +129,9 @@ public class TetradFx {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         Graph graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
-        NamesToContents.getInstance().add(null, graph, selectedFile.getName(), null, "Graph");
+        NamesToContents.getInstance().add(null, graph,
+                NamesToContents.getInstance().nextName(selectedFile.getName()),
+                null, "Graph");
     }
 
     @NotNull
@@ -231,7 +233,8 @@ public class TetradFx {
                     "*", true, Delimiter.TAB, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
-            NamesToContents.getInstance().add(dataSet, null, selectedFile.getName(), "Data", null);
+            NamesToContents.getInstance().add(dataSet, null, NamesToContents.getInstance().nextName(selectedFile.getName()),
+                    "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
             throw new RuntimeException(ex);
@@ -242,7 +245,8 @@ public class TetradFx {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            NamesToContents.getInstance().add(dataSet, null, selectedFile.getName(), "Data", null);
+            NamesToContents.getInstance().add(dataSet, null, NamesToContents.getInstance().nextName(selectedFile.getName()),
+                    "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
             throw new RuntimeException(ex);
@@ -254,7 +258,8 @@ public class TetradFx {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            NamesToContents.getInstance().add(dataSet, null, selectedFile.getName(), "Data", null);
+            NamesToContents.getInstance().add(dataSet, null, NamesToContents.getInstance().nextName(selectedFile.getName()),
+                    "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
             throw new RuntimeException(ex);
@@ -263,8 +268,8 @@ public class TetradFx {
 
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
-        System.out.println("Simulation done");
-        NamesToContents.getInstance().add(result.dataSet(), result.graph(), "Sample Simulation", "simulated_data", "simulated_graph");
+        NamesToContents.getInstance().add(result.dataSet(), result.graph(), NamesToContents.getInstance().nextName("Simulation"),
+                "simulated_data", "simulated_graph");
     }
 
     public enum SimulationType {

@@ -18,6 +18,7 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
+import io.github.cmuphil.tetradfx.stufffor751lib.DataTransforms;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -140,6 +141,83 @@ public class DataView {
 
         Menu transformData = new Menu("Transform Data");
         contextMenu.getItems().add(transformData);
+
+        MenuItem removeConstantColumns = new MenuItem("Remove Constant Columns");
+        removeConstantColumns.setOnAction(e -> {
+            DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Remove Constant Columns", filtered, true);
+        });
+        transformData.getItems().add(removeConstantColumns);
+
+        MenuItem removeDuplicateColumns = new MenuItem("Remove Duplicate Columns");
+        removeDuplicateColumns.setOnAction(e -> {
+            DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Remove Constant Columns", filtered, true);
+        });
+        transformData.getItems().add(removeDuplicateColumns);
+
+        MenuItem center = new MenuItem("Center");
+        center.setOnAction(e -> {
+            DataSet filtered = DataTransforms.center(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Center", filtered, true);
+        });
+        transformData.getItems().add(center);
+
+        MenuItem standardize = new MenuItem("Standardize");
+        standardize.setOnAction(e -> {
+            DataSet filtered = DataTransforms.standardizeData(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Standardize", filtered, true);
+        });
+        transformData.getItems().add(standardize);
+
+        MenuItem nonparanormalTransform = new MenuItem("Nonparanormal Transform");
+        nonparanormalTransform.setOnAction(e -> {
+            DataSet filtered = DataTransforms.getNonparanormalTransformed(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Nonparanormal Transform", filtered, true);
+        });
+        transformData.getItems().add(nonparanormalTransform);
+
+        MenuItem logTransform = new MenuItem("Log Transform");
+        logTransform.setOnAction(e -> {
+            DataSet filtered = DataTransforms.logData(dataSet, 10, false, 2);
+            NamesToContents.getInstance().getSelected().addDataSet("Log Transform", filtered, true);
+        });
+        transformData.getItems().add(logTransform);
+
+        MenuItem numericalDiscreteToContinuous = new MenuItem("Numerical Discrete to Continuous");
+        numericalDiscreteToContinuous.setOnAction(e -> {
+            DataSet filtered = DataTransforms.convertNumericalDiscreteToContinuous(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Numerical Discrete to Continuous", filtered, true);
+        });
+        transformData.getItems().add(numericalDiscreteToContinuous);
+
+        MenuItem discretizeToBinary = new MenuItem("Discretize to Binary");
+        discretizeToBinary.setOnAction(e -> {
+            DataSet filtered = DataTransforms.discretize(dataSet, 2, true);
+            NamesToContents.getInstance().getSelected().addDataSet("Numerical Discrete to Binary", filtered, true);
+        });
+        transformData.getItems().add(discretizeToBinary);
+
+        MenuItem discretize = new MenuItem("Discretize to Trinary");
+        discretize.setOnAction(e -> {
+            DataSet filtered = DataTransforms.discretize(dataSet, 3, true);
+            NamesToContents.getInstance().getSelected().addDataSet("Numerical Discrete to Binary", filtered, true);
+        });
+        transformData.getItems().add(discretize);
+
+        MenuItem restrictToMeasured = new MenuItem("Restrict to Measured");
+        restrictToMeasured.setOnAction(e -> {
+            DataSet filtered = DataTransforms.restrictToMeasured(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Restrict to Measured", filtered, true);
+        });
+        transformData.getItems().add(restrictToMeasured);
+
+        MenuItem shuffleColumns = new MenuItem("Shuffle Columns");
+        shuffleColumns.setOnAction(e -> {
+            DataSet filtered = DataTransforms.shuffleColumns(dataSet);
+            NamesToContents.getInstance().getSelected().addDataSet("Shuffle Columns", filtered, true);
+        });
+        transformData.getItems().add(shuffleColumns);
 
         Menu makeModel = new Menu("Make Model");
         contextMenu.getItems().add(makeModel);
