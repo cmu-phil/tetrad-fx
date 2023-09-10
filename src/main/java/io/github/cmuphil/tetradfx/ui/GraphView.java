@@ -1,8 +1,8 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.graph.*;
-import io.github.cmuphil.tetradfx.stufffor751.ChangedStuffINeed;
-import io.github.cmuphil.tetradfx.stufffor751.GraphTransforms;
+import io.github.cmuphil.tetradfx.stufffor751lib.ChangedStuffINeed;
+import io.github.cmuphil.tetradfx.stufffor751lib.GraphTransforms;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;

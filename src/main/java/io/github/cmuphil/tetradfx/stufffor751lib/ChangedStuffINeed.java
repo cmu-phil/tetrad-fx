@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetradfx.stufffor751;
+package io.github.cmuphil.tetradfx.stufffor751lib;
 
 import edu.cmu.tetrad.data.DataModel;
 import edu.cmu.tetrad.data.DataSet;
