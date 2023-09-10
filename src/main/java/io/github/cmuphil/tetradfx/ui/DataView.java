@@ -78,11 +78,13 @@ public class DataView {
             MenuItem item = new MenuItem(algorithm.getDescription());
             item.setOnAction(e -> {
                 Graph graph = algorithm.search(dataSet, new Parameters());
-                NamesToContents.getInstance().getSelected().addGraph(algorithm.getClass().getSimpleName(), graph, true);
+                NamesToContents.getInstance().getSelected().addGraph(algorithm.getClass().getSimpleName(),
+                        graph, true);
             });
 
             items.add(item);
         }
+
         return items;
     }
 
