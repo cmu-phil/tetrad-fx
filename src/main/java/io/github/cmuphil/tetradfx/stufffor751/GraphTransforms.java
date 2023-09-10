@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetradfx.ui;
+package io.github.cmuphil.tetradfx.stufffor751;
 
 // From the tetrad lib, changed class new after 7.5.0.
 import edu.cmu.tetrad.data.Knowledge;
