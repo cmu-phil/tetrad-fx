@@ -172,6 +172,7 @@ public class Games {
                 ClipboardContent cc = new ClipboardContent();
                 cc.putString(label.getText());
                 db.setContent(cc);
+                db.setDragView(label.snapshot(null, null));
                 event.consume();
             });
 
