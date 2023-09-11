@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 // This is an example of how to create a "dialog" without using the JavaFX Dialog class.
 // The Dialog class is buggy in full screen mode, so we need to create our own dialog.
-public class Example extends Application {
+public class Example1 extends Application {
 
     @Override
     public void start(Stage primaryStage) {
