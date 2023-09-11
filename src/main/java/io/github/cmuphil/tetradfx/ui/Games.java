@@ -84,14 +84,16 @@ public class Games {
                 "PC Search Game", null);
 
         addGame("""
-                This is the Permutation Search Game! We are assuming that the correct model is a DAG and that there are no latent variables. Is this a good assumption for your graph?
+                This is the Permutation Search Game! We will make a random DAG for you to get started and put the nodes in a random order.
                 
-                Each permutation of the graph implies a DAG. We will give you a random permutation, and you need to rearrange the nodes so that the implied DAG is correct!
+                Each ordering of the nodes in the graph implies an estimated DAG, possibly with extra adjacencies. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class! 
                 
-                We will show you the implied DAG at each step and tell you the number of edges in the graph. Try to get a graph with the minimum number of edges int he fewest number of moves you can!
+                If you guess wrong you may get extra edges in the graph! So, try to get a graph with the minimum number of edges in the fewest number of moves!
+                
+                When the answer is correct, all nodes in the order will flash green.
                 
                 Maybe you will come up with a new permutation algorithm!""",
-                "Permutation Search Game", getPermutationGamePane(5, 5));
+                "Permutation Search Game", getPermutationGamePane(6, 6));
     }
 
     @NotNull

@@ -3,6 +3,7 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.graph.*;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.for751lib.GraphTransforms;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -121,13 +122,19 @@ public class GraphView extends Pane {
 
     public static void addGame(String s, String name, Pane pane) {
         Text text = new Text(s);
-        text.setWrappingWidth(600);
+        text.setWrappingWidth(pane != null ? 400 : 600);
         text.setFont(new Font("Arial", 16));
         text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(pane != null ? pane : text);
 
-        HBox hBox = new HBox(borderPane);
+        HBox hBox;
+
+        if (pane != null) {
+            pane.setPadding(new Insets(30, 30, 30, 30));
+            hBox = new HBox(text, pane);
+        } else {
+            hBox = new HBox(text);
+        }
+
         hBox.setAlignment(Pos.CENTER);
         VBox vBox = new VBox(hBox);
         vBox.setAlignment(Pos.CENTER);
