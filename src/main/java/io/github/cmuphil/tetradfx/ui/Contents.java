@@ -16,8 +16,8 @@ public class Contents {
     private final Tab dataTab;
     private final Tab graphTab;
     private final Tab knowledgeTab;
-    private final Tab modelTab;
-    private final Tab insightsTab;
+//    private final Tab modelTab;
+//    private final Tab insightsTab;
     private final Tab gamesTab;
 
     private final TabPane main;
@@ -25,8 +25,8 @@ public class Contents {
     private final TabPane data = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane knowledge = new TabPane();
-    private final TabPane models = new TabPane();
-    private final TabPane insights = new TabPane();
+//    private final TabPane models = new TabPane();
+//    private final TabPane insights = new TabPane();
     private final TabPane games = new TabPane();
 
     public Contents(DataSet dataSet, Graph graph, String dataName, String graphName) {
@@ -37,8 +37,8 @@ public class Contents {
         dataTab = new Tab("Data", data);
         graphTab = new Tab("Graphs", graphs);
         knowledgeTab = new Tab("Knowledge", knowledge);
-        modelTab = new Tab("Models", models);
-        insightsTab = new Tab("Insights", insights);
+//        modelTab = new Tab("Models", models);
+//        insightsTab = new Tab("Insights", insights);
         gamesTab = new Tab("Games", games);
 
         if (dataSet != null && graph == null) {
@@ -57,22 +57,22 @@ public class Contents {
         }
 
         this.main.getTabs().add(knowledgeTab);
-        this.main.getTabs().add(modelTab);
-        this.main.getTabs().add(insightsTab);
+//        this.main.getTabs().add(modelTab);
+//        this.main.getTabs().add(insightsTab);
         this.main.getTabs().add(gamesTab);
 
         dataTab.setClosable(false);
         graphTab.setClosable(false);
         knowledgeTab.setClosable(false);
-        modelTab.setClosable(false);
-        insightsTab.setClosable(false);
+//        modelTab.setClosable(false);
+//        insightsTab.setClosable(false);
         gamesTab.setClosable(false);
 
         this.data.setSide(Side.TOP);
         this.graphs.setSide(Side.TOP);
         this.knowledge.setSide(Side.TOP);
-        this.models.setSide(Side.TOP);
-        this.insights.setSide(Side.TOP);
+//        this.models.setSide(Side.TOP);
+//        this.insights.setSide(Side.TOP);
         this.games.setSide(Side.TOP);
     }
 
@@ -104,13 +104,13 @@ public class Contents {
         this.knowledge.getTabs().add(new Tab(name, pane));
     }
 
-    public void addModel(String name, Pane pane) {
-        this.models.getTabs().add(new Tab(name, pane));
-    }
-
-    public void addInsight(String name, Pane pane) {
-        this.insights.getTabs().add(new Tab(name, pane));
-    }
+//    public void addModel(String name, Pane pane) {
+//        this.models.getTabs().add(new Tab(name, pane));
+//    }
+//
+//    public void addInsight(String name, Pane pane) {
+//        this.insights.getTabs().add(new Tab(name, pane));
+//    }
 
     public void addGame(String name, Pane pane) {
         Tab tab = new Tab(name, pane);
@@ -131,13 +131,13 @@ public class Contents {
         this.knowledge.getTabs().removeIf(tab -> tab.getText().equals(name));
     }
 
-    public void removeModel(String name) {
-        this.models.getTabs().removeIf(tab -> tab.getText().equals(name));
-    }
-
-    public void removeInsight(String name) {
-        this.insights.getTabs().removeIf(tab -> tab.getText().equals(name));
-    }
+//    public void removeModel(String name) {
+//        this.models.getTabs().removeIf(tab -> tab.getText().equals(name));
+//    }
+//
+//    public void removeInsight(String name) {
+//        this.insights.getTabs().removeIf(tab -> tab.getText().equals(name));
+//    }
 
     public void removeGame(String name) {
         this.games.getTabs().removeIf(tab -> tab.getText().equals(name));

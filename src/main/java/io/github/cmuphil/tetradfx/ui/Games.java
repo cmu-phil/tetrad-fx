@@ -29,9 +29,10 @@ import java.util.List;
 import static io.github.cmuphil.tetradfx.ui.GraphView.addGame;
 
 public class Games {
-    private static final String DRAGGED_STYLE = "-fx-border-color: black; -fx-padding: 10px; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-color: yellow;";
-    private static final String DEFAULT_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 12px; -fx-font-weight: bold; -fx-background-color: lightblue;";
-    private static final String PLACED_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightgreen;";
+    private static final String DRAGGED_STYLE = "-fx-border-color: darkblue; -fx-padding: 10px; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: yellow;";
+    private static final String DEFAULT_STYLE = "-fx-border-color: darkblue; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightblue;";
+    private static final String PLACED_STYLE = "-fx-border-color: darkblue; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightgreen;";
+    private static final String PLACED_STYLE_BRIGHT = "-fx-border-color: darkblue; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: green;";
 
 
 //    public static void baseGamesOnDataset() {
@@ -84,13 +85,13 @@ public class Games {
         addGame("""
                 Welcome to the Permutation Search Game. A true DAG has been selected for you, and the nodes have been put in a random order.
                 
-                Each ordering of the nodes in the graph implies an estimated DAG, possibly with extra adjacencies. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class. 
+                Each ordering of the nodes in the graph implies a unique DAG, possibly with adjacencies that aren't in the true DAG and perhaps some misorientations. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class. 
                 
-                If you guess wrong you will get extra edges in the graph. So, try to get a graph with the minimum number of edges in the fewest number of moves.
+                If you guess wrong you will get extra adjacencies in the graph. So, try to get a graph with the minimum number of edges in the fewest number of moves.
                 
                 When you find a correct answer, all nodes in the order will flash green.
                 
-                There is a method to the madness--see if you can figure it out. Maybe you will come up with a new permutation algorithm!""",
+                There is a method to the madness--see if you can figure it out. Good luck!""",
                 "Permutation Search Game", getPermutationGamePane(graph));
     }
 
@@ -117,7 +118,7 @@ public class Games {
         BorderPane main = new BorderPane();
 
         TilePane tilePane = new TilePane();
-        tilePane.setHgap(10);
+        tilePane.setHgap(7);
         tilePane.setVgap(10);
         tilePane.setPrefColumns(graph.getNumNodes());
         tilePane.setStyle("-fx-padding: 5px;");
@@ -146,7 +147,7 @@ public class Games {
 
         for (int i = 1; i <= nodes.size(); i++) {
             Label label = labelList.get(i - 1);
-            label.setPrefSize(35, 20);
+            label.setPrefSize(40, 20);
             label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             label.setStyle(DEFAULT_STYLE);
             label.setAlignment(Pos.CENTER);
@@ -200,15 +201,15 @@ public class Games {
 
                     Timeline flashTimeline = new Timeline(
                             new KeyFrame(Duration.millis(0), e -> draggedNode.setStyle(DEFAULT_STYLE)),
-                            new KeyFrame(Duration.millis(200), e -> draggedNode.setStyle(PLACED_STYLE)),
+                            new KeyFrame(Duration.millis(200), e -> draggedNode.setStyle(PLACED_STYLE_BRIGHT)),
                             new KeyFrame(Duration.millis(400), e -> draggedNode.setStyle(DEFAULT_STYLE)),
-                            new KeyFrame(Duration.millis(600), e -> draggedNode.setStyle(PLACED_STYLE)),
+                            new KeyFrame(Duration.millis(600), e -> draggedNode.setStyle(PLACED_STYLE_BRIGHT)),
                             new KeyFrame(Duration.millis(800), e -> draggedNode.setStyle(DEFAULT_STYLE)),
                             new KeyFrame(Duration.millis(1000), e -> draggedNode.setStyle(PLACED_STYLE))
                     );
                     flashTimeline.play();
 
-                    java.awt.Toolkit.getDefaultToolkit().beep();
+//                    java.awt.Toolkit.getDefaultToolkit().beep();
 
                     List<Node> newOrder = new ArrayList<>();
 
@@ -255,9 +256,9 @@ public class Games {
         if (_graph1.getNumEdges() == _graph.getNumEdges()) {
             Timeline flashTimeline2 = new Timeline(
                     new KeyFrame(Duration.millis(0), e -> setAll(_graph1, _graph, labelList, DEFAULT_STYLE)),
-                    new KeyFrame(Duration.millis(200), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE)),
+                    new KeyFrame(Duration.millis(200), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE_BRIGHT)),
                     new KeyFrame(Duration.millis(400), e -> setAll(_graph1, _graph, labelList, DEFAULT_STYLE)),
-                    new KeyFrame(Duration.millis(600), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE)),
+                    new KeyFrame(Duration.millis(600), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE_BRIGHT)),
                     new KeyFrame(Duration.millis(800), e -> setAll(_graph1, _graph, labelList, DEFAULT_STYLE)),
                     new KeyFrame(Duration.millis(1000), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE))
             );

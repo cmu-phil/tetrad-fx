@@ -50,7 +50,7 @@ public class NamesToContents {
         simulation.setSelfLoopCoef(0.1);
         DataSet dataSet = simulation.simulateDataReducedForm(1000);
         this.selectedName = "Sample Simulation";
-        NamesToContents.getInstance().add(dataSet, graph, this.selectedName,"Sample Graph", "Sample Dataset");
+        NamesToContents.getInstance().add(dataSet, graph, this.selectedName,"Sample Data", "Sample Graph");
 
         dataTreeView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
