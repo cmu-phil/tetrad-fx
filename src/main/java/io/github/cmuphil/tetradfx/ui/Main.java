@@ -184,12 +184,21 @@ public class Main {
 
         Menu games = new Menu("Games");
 
-        MenuItem basedOnData = new MenuItem("Make Games Based on a Random Dataset, Don't Tell me!!");
-        MenuItem basedOnGraph =  new MenuItem("Make Games Based on a Random Graph, Don't Tell me!!");
+        MenuItem basedOnGraph_4_4 =  new MenuItem("Make a random game with 4 nodes and 4 edges");
+        MenuItem basedOnGraph_5_5 =  new MenuItem("Make a random game with 5 nodes and 5 edges");
+        MenuItem basedOnGraph_6_6 =  new MenuItem("Make a random game with 6 nodes and 6 edges");
+        MenuItem basedOnGraph_7_7 =  new MenuItem("Make a random game with 7 nodes and 7 edges");
+        MenuItem basedOnGraph_10_10 =  new MenuItem("Make a random game with 10 nodes and 10 edges");
+        MenuItem basedOnGraph_10_15 =  new MenuItem("Make a random game with 10 nodes and 15 edges");
 
-        games.getItems().addAll(basedOnData, basedOnGraph);
-        basedOnData.setOnAction(e -> Games.baseGamesOnDataset());
-        basedOnGraph.setOnAction(e -> Games.baseGamesOnGraph());
+        basedOnGraph_4_4.setOnAction(e -> Games.baseGamesOnGraph(randomDag(4, 4)));
+        basedOnGraph_5_5.setOnAction(e -> Games.baseGamesOnGraph(randomDag(5, 5)));
+        basedOnGraph_6_6.setOnAction(e -> Games.baseGamesOnGraph(randomDag(6, 6)));
+        basedOnGraph_7_7.setOnAction(e -> Games.baseGamesOnGraph(randomDag(7, 7)));
+        basedOnGraph_10_10.setOnAction(e -> Games.baseGamesOnGraph(randomDag(10, 10)));
+        basedOnGraph_10_15.setOnAction(e -> Games.baseGamesOnGraph(randomDag(10, 15)));
+
+        games.getItems().addAll(basedOnGraph_4_4, basedOnGraph_5_5, basedOnGraph_6_6, basedOnGraph_7_7, basedOnGraph_10_10, basedOnGraph_10_15);
 
         Menu help = new Menu("Help");
         help.getItems().add(new MenuItem("About"));
@@ -200,6 +209,12 @@ public class Main {
 
         menuBar.getMenus().addAll(fileMenu, search, insights, layout, games, help);
         return menuBar;
+    }
+
+    @NotNull
+    private static Graph randomDag(int numNodes, int numEdges) {
+        return RandomGraph.randomGraph(numNodes, 0, numEdges, 100, 100,
+                100, false);
     }
 
     private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn,

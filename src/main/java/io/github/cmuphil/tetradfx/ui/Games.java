@@ -3,7 +3,6 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.graph.EdgeListGraph;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.Node;
-import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.search.score.GraphScore;
 import edu.cmu.tetrad.search.test.MsepTest;
 import edu.cmu.tetrad.search.utils.TeyssierScorer;
@@ -30,76 +29,73 @@ import java.util.List;
 import static io.github.cmuphil.tetradfx.ui.GraphView.addGame;
 
 public class Games {
-    private static final String DRAGGED_STYLE = "-fx-border-color: black; -fx-padding: 10px; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: yellow;";
-    private static final String DEFAULT_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightblue;";
-    private static final String PLACED_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: lightgreen;";
-    private static final String FRUGAL_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: lightred;";
+    private static final String DRAGGED_STYLE = "-fx-border-color: black; -fx-padding: 10px; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-color: yellow;";
+    private static final String DEFAULT_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 12px; -fx-font-weight: bold; -fx-background-color: lightblue;";
+    private static final String PLACED_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightgreen;";
 
 
-    public static void baseGamesOnDataset() {
+//    public static void baseGamesOnDataset() {
+//        NamesToContents.getInstance().getSelectedContents().clearGames();
+//
+//        addGame("""
+//                This the PC Search Game. We are assuming here that the underlying model is a DAG and that there are no latent variables. If you don't think this is true of your data, maybe you shouldn't play this game!
+//
+//                You are allowed to remove edges or orient colliders based on conditional independence facts that you ascertain from the variables. The graph will start with a complete graph, and you may test conditional independence facts like dsep(A, B | C) by clicking on the nodes A, B, and C in sequence. You will be told whether the independence holds or does not. You may click "Remove edge A--B" or "Orient collider A->B<-C" where you click on the B.
+//
+//                We will handle the implied orientation rules (Meek rules) for you at each step.
+//
+//                You're allowed to backtrack, though this will count against your number of steps!
+//
+//                We will tell you the number of edges in your graph at each step. If a true graph is available, the goal is to get to SHD = 0! Otherwise you're on your own Can you do it in the fewest number of steps? Good luck!""",
+//                "PC Search Game", null);
+//
+//        addGame("""
+//                This is the Permutation Search Game! We are assuming that the underlying model is a DAG and that there are no latent variables. Is this a good assumption for your data?
+//
+//                Each permutation of the graph implies a DAG. We will give you a random permutation, and you need to rearrange the nodes so that the implied DAG is correct!
+//
+//                We will show you the implied DAG at each step and tell you the number of edges in the graph. Try to get a graph with the minimum number of edges in the fewest number of moves you can!
+//
+//                Maybe you will come up with a new permutation algorithm!""",
+//                "Permutation Search Game", null);
+//    }
+
+    static void baseGamesOnGraph(Graph graph) {
         NamesToContents.getInstance().getSelectedContents().clearGames();
 
-        addGame("""
-                This the PC Search Game. We are assuming here that the underlying model is a DAG and that there are no latent variables. If you don't think this is true of your data, maybe you shouldn't play this game!
-                
-                You are allowed to remove edges or orient colliders based on conditional independence facts that you ascertain from the variables. The graph will start with a complete graph, and you may test conditional independence facts like dsep(A, B | C) by clicking on the nodes A, B, and C in sequence. You will be told whether the independence holds or does not. You may click "Remove edge A--B" or "Orient collider A->B<-C" where you click on the B.
-                
-                We will handle the implied orientation rules (Meek rules) for you at each step.
-                
-                You're allowed to backtrack, though this will count against your number of steps!
-                
-                We will tell you the number of edges in your graph at each step. If a true graph is available, the goal is to get to SHD = 0! Otherwise you're on your own Can you do it in the fewest number of steps? Good luck!""",
-                "PC Search Game", null);
+//        addGame("""
+//                This the D-separation Game. We will give you potential d-separation facts, and you need to say whether the d-separation facts hold in the graph you've selected!
+//
+//                You get to say how many d-separation facts you want to check. We will keep score for you.
+//
+//                Can you get all of them right? Good luck! Don't forget to check descendants of colliders!""",
+//                "D-separation Game", null);
+
+//        addGame("""
+//                This the PC Search Game. We are assuming here that the graph is a DAG and that there are no latent variables. If you don't think this is true, maybe you shouldn't play this game!
+//
+//                You are allowed to remove edges or orient colliders based on conditional independence facts that you ascertain from the variables. The graph will start with a complete graph, and you may test conditional independence facts like dsep(A, B | C) by clicking on the nodes A, B, and C in sequence. You will be told whether d-separation holds or does not. You may click \\"Remove edge A--B\\" or \\"Orient collider A->B<-C\\" where you click on the B.
+//
+//                We will handle the implied orientation rules (Meek rules) for you at each step.
+//                You're allowed to backtrack!
+//                We will tell you the SHD score of your graph at each step. The goal is to get to SHD = 0! Can you do it in the fewest number of steps? Good luck!""",
+//                "PC Search Game", null);
 
         addGame("""
-                This is the Permutation Search Game! We are assuming that the underlying model is a DAG and that there are no latent variables. Is this a good assumption for your data?
-                
-                Each permutation of the graph implies a DAG. We will give you a random permutation, and you need to rearrange the nodes so that the implied DAG is correct!
-                
-                We will show you the implied DAG at each step and tell you the number of edges in the graph. Try to get a graph with the minimum number of edges in the fewest number of moves you can!
-                
-                Maybe you will come up with a new permutation algorithm!""",
-                "Permutation Search Game", null);
-    }
-
-    static void baseGamesOnGraph() {
-        NamesToContents.getInstance().getSelectedContents().clearGames();
-
-        addGame("""
-                This the D-separation Game. We will give you potential d-separation facts, and you need to say whether the d-separation facts hold in the graph you've selected!
-                
-                You get to say how many d-separation facts you want to check. We will keep score for you.
-                
-                Can you get all of them right? Good luck! Don't forget to check descendants of colliders!""",
-                "D-separation Game", null);
-
-        addGame("""
-                This the PC Search Game. We are assuming here that the graph is a DAG and that there are no latent variables. If you don't think this is true, maybe you shouldn't play this game!
-                
-                You are allowed to remove edges or orient colliders based on conditional independence facts that you ascertain from the variables. The graph will start with a complete graph, and you may test conditional independence facts like dsep(A, B | C) by clicking on the nodes A, B, and C in sequence. You will be told whether d-separation holds or does not. You may click \\"Remove edge A--B\\" or \\"Orient collider A->B<-C\\" where you click on the B.
-                
-                We will handle the implied orientation rules (Meek rules) for you at each step.
-                You're allowed to backtrack!
-                We will tell you the SHD score of your graph at each step. The goal is to get to SHD = 0! Can you do it in the fewest number of steps? Good luck!""",
-                "PC Search Game", null);
-
-        addGame("""
-                This is the Permutation Search Game! We will make a random DAG for you to get started and put the nodes in a random order.
+                This is the Permutation Search Game! A true DAG has been selected for you, and the nodes have been put in a random order.
                 
                 Each ordering of the nodes in the graph implies an estimated DAG, possibly with extra adjacencies. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class! 
                 
                 If you guess wrong you may get extra edges in the graph! So, try to get a graph with the minimum number of edges in the fewest number of moves!
                 
-                When the answer is correct, all nodes in the order will flash green.
+                When you find a correct answer, all nodes in the order will flash green.
                 
                 Maybe you will come up with a new permutation algorithm!""",
-                "Permutation Search Game", getPermutationGamePane(6, 6));
+                "Permutation Search Game", getPermutationGamePane(graph));
     }
 
     @NotNull
-    private static BorderPane getPermutationGamePane(int numNodes, int numEdges) {
-        Graph _graph = RandomGraph.randomGraphRandomForwardEdges(numNodes, 0,
-                numEdges, 100, 100, 100, false);
+    private static BorderPane getPermutationGamePane(Graph _graph) {
         List<Node> nodes = _graph.getNodes();
 
         Collections.shuffle(nodes);
@@ -150,9 +146,10 @@ public class Games {
 
         for (int i = 1; i <= nodes.size(); i++) {
             Label label = labelList.get(i - 1);
-            label.setPrefSize(30, 20);
+            label.setPrefSize(35, 20);
             label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             label.setStyle(DEFAULT_STYLE);
+            label.setAlignment(Pos.CENTER);
 
             InnerShadow innerShadow = new InnerShadow();
             innerShadow.setOffsetX(2);

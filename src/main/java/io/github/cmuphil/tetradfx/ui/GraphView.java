@@ -211,7 +211,7 @@ public class GraphView extends Pane {
         contextMenu.getItems().add(saveGraph);
 
         MenuItem games = new MenuItem("Base Games on this Graph!");
-        games.setOnAction(e -> Games.baseGamesOnGraph());
+        games.setOnAction(e -> Games.baseGamesOnGraph(graph));
         contextMenu.getItems().add(games);
 
         // Show context menu on right-click on the pane

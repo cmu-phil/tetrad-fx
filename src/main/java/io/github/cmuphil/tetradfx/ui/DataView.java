@@ -229,8 +229,8 @@ public class DataView {
 
         MenuItem games = new MenuItem("Base Games on this Dataset!");
 
-        games.setOnAction(e -> Games.baseGamesOnDataset());
-        contextMenu.getItems().add(games);
+//        games.setOnAction(e -> Games.baseGamesOnDataset());
+//        contextMenu.getItems().add(games);
 
         return contextMenu;
     }
