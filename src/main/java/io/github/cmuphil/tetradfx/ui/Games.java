@@ -90,7 +90,7 @@ public class Games {
                 
                 When you find a correct answer, all nodes in the order will flash green.
                 
-                Maybe you will come up with a new permutation algorithm!""",
+                There is a method to the madness--see if you can figure it out. Maybe you will come up with a new permutation algorithm!""",
                 "Permutation Search Game", getPermutationGamePane(graph));
     }
 
