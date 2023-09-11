@@ -1,8 +1,41 @@
 package io.github.cmuphil.tetradfx.ui;
 
+import edu.cmu.tetrad.graph.EdgeListGraph;
+import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.graph.Node;
+import edu.cmu.tetrad.graph.RandomGraph;
+import edu.cmu.tetrad.search.score.GraphScore;
+import edu.cmu.tetrad.search.test.MsepTest;
+import edu.cmu.tetrad.search.utils.TeyssierScorer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.util.Duration;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static io.github.cmuphil.tetradfx.ui.GraphView.addGame;
 
 public class Games {
+    private static final String DRAGGED_STYLE = "-fx-border-color: black; -fx-padding: 10px; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: yellow;";
+    private static final String DEFAULT_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightblue;";
+    private static final String PLACED_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: lightgreen;";
+    private static final String FRUGAL_STYLE = "-fx-border-color: black; -fx-padding: 10px;-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: lightred;";
+
+
     public static void baseGamesOnDataset() {
         NamesToContents.getInstance().getSelectedContents().clearGames();
 
@@ -16,7 +49,7 @@ public class Games {
                 You're allowed to backtrack, though this will count against your number of steps!
                 
                 We will tell you the number of edges in your graph at each step. If a true graph is available, the goal is to get to SHD = 0! Otherwise you're on your own Can you do it in the fewest number of steps? Good luck!""",
-                "PC Search Game");
+                "PC Search Game", null);
 
         addGame("""
                 This is the Permutation Search Game! We are assuming that the underlying model is a DAG and that there are no latent variables. Is this a good assumption for your data?
@@ -26,7 +59,7 @@ public class Games {
                 We will show you the implied DAG at each step and tell you the number of edges in the graph. Try to get a graph with the minimum number of edges in the fewest number of moves you can!
                 
                 Maybe you will come up with a new permutation algorithm!""",
-                "Permutation Search Game");
+                "Permutation Search Game", null);
     }
 
     static void baseGamesOnGraph() {
@@ -38,7 +71,7 @@ public class Games {
                 You get to say how many d-separation facts you want to check. We will keep score for you.
                 
                 Can you get all of them right? Good luck! Don't forget to check descendants of colliders!""",
-                "D-separation Game");
+                "D-separation Game", null);
 
         addGame("""
                 This the PC Search Game. We are assuming here that the graph is a DAG and that there are no latent variables. If you don't think this is true, maybe you shouldn't play this game!
@@ -48,7 +81,7 @@ public class Games {
                 We will handle the implied orientation rules (Meek rules) for you at each step.
                 You're allowed to backtrack!
                 We will tell you the SHD score of your graph at each step. The goal is to get to SHD = 0! Can you do it in the fewest number of steps? Good luck!""",
-                "PC Search Game");
+                "PC Search Game", null);
 
         addGame("""
                 This is the Permutation Search Game! We are assuming that the correct model is a DAG and that there are no latent variables. Is this a good assumption for your graph?
@@ -58,6 +91,189 @@ public class Games {
                 We will show you the implied DAG at each step and tell you the number of edges in the graph. Try to get a graph with the minimum number of edges int he fewest number of moves you can!
                 
                 Maybe you will come up with a new permutation algorithm!""",
-                "Permutation Search Game");
+                "Permutation Search Game", getPermutationGamePane(5, 5));
+    }
+
+    @NotNull
+    private static BorderPane getPermutationGamePane(int numNodes, int numEdges) {
+        Graph _graph = RandomGraph.randomGraphRandomForwardEdges(numNodes, 0,
+                numEdges, 100, 100, 100, false);
+        List<Node> nodes = _graph.getNodes();
+
+        Collections.shuffle(nodes);
+
+        for (int i = 0; i < nodes.size(); i++) {
+            Node node = nodes.get(i);
+            node.setName("" + (i + 1));
+        }
+
+        final Graph graph = new EdgeListGraph(_graph);
+
+        TeyssierScorer scorer = new TeyssierScorer(new MsepTest(graph), new GraphScore(graph));
+        scorer.setUseScore(false);
+
+        scorer.score(nodes);
+
+        Graph __graph = scorer.getGraph(false);
+
+        BorderPane main = new BorderPane();
+
+        TilePane tilePane = new TilePane();
+        tilePane.setHgap(10);
+        tilePane.setVgap(10);
+        tilePane.setPrefColumns(graph.getNumNodes());
+        tilePane.setStyle("-fx-padding: 5px;");
+
+        ScrollPane graphDisplay = GraphView.getGraphDisplay(__graph);
+        graphDisplay.setPadding(new Insets(0, 40, 40, 0));
+        main.setCenter(graphDisplay);
+
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().add(tilePane);
+
+        main.setBottom(hbox);
+
+        tilePane.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
+        List<Label> labelList = new ArrayList<>();
+
+        for (int i = 1; i <= nodes.size(); i++) {
+            Label label = new Label(nodes.get(i - 1).getName());
+            label.setStyle(DEFAULT_STYLE);
+            labelList.add(label);
+        }
+
+        setAll(__graph, graph, labelList, DEFAULT_STYLE);
+        success(__graph, _graph, labelList);
+
+        for (int i = 1; i <= nodes.size(); i++) {
+            Label label = labelList.get(i - 1);
+            label.setPrefSize(30, 20);
+            label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            label.setStyle(DEFAULT_STYLE);
+
+            InnerShadow innerShadow = new InnerShadow();
+            innerShadow.setOffsetX(2);
+            innerShadow.setOffsetY(2);
+            label.setEffect(innerShadow);
+
+            tilePane.getChildren().add(label);
+
+            // Drag detection
+            label.setOnDragDetected(event -> {
+                for (Label label1 : labelList) {
+                    if (label1 != label) {
+                        label1.setStyle(DEFAULT_STYLE);
+                    }
+                }
+
+                label.setStyle(DRAGGED_STYLE);
+                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent cc = new ClipboardContent();
+                cc.putString(label.getText());
+                db.setContent(cc);
+                event.consume();
+            });
+
+            // Drag over
+            label.setOnDragOver(event -> {
+                if (event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+                event.consume();
+            });
+
+            // Drag dropped
+            label.setOnDragDropped(event -> {
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+
+                if (db.hasString()) {
+                    String draggedText = db.getString();
+                    int draggedIdx = tilePane.getChildren().indexOf(tilePane.getChildren().stream().filter(node -> node instanceof Label && ((Label) node).getText().equals(draggedText)).findFirst().orElse(null));
+                    int thisIdx = tilePane.getChildren().indexOf(label);
+                    Label draggedNode = (Label) tilePane.getChildren().remove(draggedIdx);
+                    tilePane.getChildren().add(thisIdx, draggedNode);
+
+
+                    // Set the style of the node after it has been placed
+//                    draggedNode.setStyle(PLACED_STYLE);
+
+                    Timeline flashTimeline = new Timeline(
+                            new KeyFrame(Duration.millis(0), e -> draggedNode.setStyle(DEFAULT_STYLE)),
+                            new KeyFrame(Duration.millis(200), e -> draggedNode.setStyle(PLACED_STYLE)),
+                            new KeyFrame(Duration.millis(400), e -> draggedNode.setStyle(DEFAULT_STYLE)),
+                            new KeyFrame(Duration.millis(600), e -> draggedNode.setStyle(PLACED_STYLE)),
+                            new KeyFrame(Duration.millis(800), e -> draggedNode.setStyle(DEFAULT_STYLE)),
+                            new KeyFrame(Duration.millis(1000), e -> draggedNode.setStyle(PLACED_STYLE))
+                    );
+                    flashTimeline.play();
+
+                    java.awt.Toolkit.getDefaultToolkit().beep();
+
+                    List<Node> newOrder = new ArrayList<>();
+
+                    for (Label label1 : getLabelsInOrder(tilePane)) {
+                        String name = label1.getText();
+                        Node node = graph.getNode(name);
+                        newOrder.add(node);
+                    }
+
+                    scorer.score(newOrder);
+                    Graph _graph1 = scorer.getGraph(false);
+                    ScrollPane graphDisplay1 = GraphView.getGraphDisplay(_graph1);
+                    graphDisplay1.setPadding(new Insets(0, 40, 40, 0));
+                    main.setCenter(graphDisplay1);
+                    success = true;
+
+                    success(_graph1, _graph, labelList);
+                }
+
+                event.setDropCompleted(success);
+                event.consume();
+            });
+
+            // Drag done
+            label.setOnDragDone(event -> {
+                // Reset the style of the dragged node if not placed
+                if (event.getTransferMode() != TransferMode.MOVE) {
+                    label.setStyle(DEFAULT_STYLE);
+                }
+            });
+        }
+        return main;
+    }
+
+    private static void setAll(Graph _graph1, Graph _graph, List<Label> labelList, String style) {
+        if (_graph1.getNumEdges() == _graph.getNumEdges()) {
+            for (Label label1 : labelList) {
+                label1.setStyle(style);
+            }
+        }
+    }
+
+    private static void success(Graph _graph1, Graph _graph, List<Label> labelList) {
+        if (_graph1.getNumEdges() == _graph.getNumEdges()) {
+            Timeline flashTimeline2 = new Timeline(
+                    new KeyFrame(Duration.millis(0), e -> setAll(_graph1, _graph, labelList, DEFAULT_STYLE)),
+                    new KeyFrame(Duration.millis(200), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE)),
+                    new KeyFrame(Duration.millis(400), e -> setAll(_graph1, _graph, labelList, DEFAULT_STYLE)),
+                    new KeyFrame(Duration.millis(600), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE)),
+                    new KeyFrame(Duration.millis(800), e -> setAll(_graph1, _graph, labelList, DEFAULT_STYLE)),
+                    new KeyFrame(Duration.millis(1000), e -> setAll(_graph1, _graph, labelList, PLACED_STYLE))
+            );
+
+            flashTimeline2.play();
+        }
+    }
+
+    private static List<Label> getLabelsInOrder(TilePane tilePane) {
+        List<Label> labels = new ArrayList<>();
+        for (javafx.scene.Node node : tilePane.getChildren()) {
+            if (node instanceof Label) {
+                labels.add((Label) node);
+            }
+        }
+        return labels;
     }
 }

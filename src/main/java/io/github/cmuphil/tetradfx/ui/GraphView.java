@@ -3,6 +3,7 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.graph.*;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.for751lib.GraphTransforms;
+import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -10,7 +11,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -74,9 +77,6 @@ public class GraphView extends Pane {
 
         getChildren().add(content);
 
-        setPrefHeight(content.getPrefHeight());
-        setPrefWidth(content.getPrefWidth());
-
         ContextMenu contextMenu = getContextMenu(content, graph);
 
         // Show context menu on right-click on the label
@@ -119,15 +119,20 @@ public class GraphView extends Pane {
         e.consume();
     }
 
-    public static void addGame(String s, String name) {
-        Text text = new Text(
-                s);
+    public static void addGame(String s, String name, Pane pane) {
+        Text text = new Text(s);
         text.setWrappingWidth(600);
         text.setFont(new Font("Arial", 16));
         text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(text);
-        NamesToContents.getInstance().getSelectedContents().addGame(name, borderPane);
+        borderPane.setCenter(pane != null ? pane : text);
+
+        HBox hBox = new HBox(borderPane);
+        hBox.setAlignment(Pos.CENTER);
+        VBox vBox = new VBox(hBox);
+        vBox.setAlignment(Pos.CENTER);
+
+        NamesToContents.getInstance().getSelectedContents().addGame(name, vBox);
     }
 
     @NotNull
