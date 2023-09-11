@@ -82,11 +82,11 @@ public class Games {
 //                "PC Search Game", null);
 
         addGame("""
-                Welcome to the Permutation Search Game! A true DAG has been selected for you, and the nodes have been put in a random order.
+                Welcome to the Permutation Search Game. A true DAG has been selected for you, and the nodes have been put in a random order.
                 
-                Each ordering of the nodes in the graph implies an estimated DAG, possibly with extra adjacencies. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class! 
+                Each ordering of the nodes in the graph implies an estimated DAG, possibly with extra adjacencies. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class. 
                 
-                If you guess wrong you will get extra edges in the graph! So, try to get a graph with the minimum number of edges in the fewest number of moves!
+                If you guess wrong you will get extra edges in the graph. So, try to get a graph with the minimum number of edges in the fewest number of moves.
                 
                 When you find a correct answer, all nodes in the order will flash green.
                 
