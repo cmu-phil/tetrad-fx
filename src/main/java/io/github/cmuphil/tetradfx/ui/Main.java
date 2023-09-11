@@ -89,7 +89,7 @@ public class Main {
         }
     }
 
-    private void loadDataAction(Stage primaryStage) {
+    private void loadDataAction() {
         ButtonType applyButtonType = new ButtonType("Load");
         RadioButton continuousBtn = new RadioButton("Optimize for Continuous");
         RadioButton discreteBtn = new RadioButton("Optimize for Discrete");
@@ -154,12 +154,9 @@ public class Main {
 
         loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));
-//        continuousSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
-//        discreteSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
-//        mixedSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
-        loadData.setOnAction(e -> loadDataAction(primaryStage));
+        loadData.setOnAction(e -> loadDataAction());
         loadGraph.setOnAction(e -> loadGraphAction(primaryStage));
         continuousSimulation.setOnAction(e -> addSimulation(SimulationType.CONTINUOUS));
         discreteSimulation.setOnAction(e -> addSimulation(SimulationType.DISCRETE));
@@ -191,14 +188,8 @@ public class Main {
         MenuItem basedOnGraph =  new MenuItem("Make Games Based on a Random Graph, Don't Tell me!!");
 
         games.getItems().addAll(basedOnData, basedOnGraph);
-
-        basedOnData.setOnAction(e -> {
-        	Games.baseGamesOnDataset();
-        });
-
-        basedOnGraph.setOnAction(e -> {
-            Games.baseGamesOnGraph();
-        });
+        basedOnData.setOnAction(e -> Games.baseGamesOnDataset());
+        basedOnGraph.setOnAction(e -> Games.baseGamesOnGraph());
 
         Menu help = new Menu("Help");
         help.getItems().add(new MenuItem("About"));

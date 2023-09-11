@@ -1,15 +1,11 @@
 package io.github.cmuphil.tetradfx.ui;
 
-import edu.cmu.tetrad.data.BoxDataSet;
 import edu.cmu.tetrad.data.DataSet;
-import edu.cmu.tetrad.data.DoubleDataBox;
 import edu.cmu.tetrad.graph.Graph;
 import javafx.geometry.Side;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
-
-import java.util.ArrayList;
 
 /**
  * <p>Stores all of the tabbed panes for a given dataset.</p>
@@ -24,8 +20,7 @@ public class Contents {
     private final Tab insightsTab;
     private final Tab gamesTab;
 
-    private DataSet dataSet = new BoxDataSet(new DoubleDataBox(0, 0), new ArrayList<>());
-    private TabPane main;
+    private final TabPane main;
 
     private final TabPane data = new TabPane();
     private final TabPane graphs = new TabPane();
@@ -35,7 +30,6 @@ public class Contents {
     private final TabPane games = new TabPane();
 
     public Contents(DataSet dataSet, Graph graph, String dataName, String graphName) {
-        this.dataSet = dataSet;
         this.main = new TabPane();
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
@@ -90,28 +84,7 @@ public class Contents {
         return data;
     }
 
-    public TabPane getGraphs() {
-        return graphs;
-    }
-
-    public TabPane getKnowledge() {
-        return knowledge;
-    }
-
-    public TabPane getModels() {
-        return models;
-    }
-
-    public TabPane getInsights() {
-        return insights;
-    }
-
-    public TabPane getGames() {
-        return games;
-    }
-
     public void addDataSet(String name, DataSet dataSet, boolean closable) {
-        this.dataSet = dataSet;
         Tab tab = new Tab(name, DataView.getTableView(dataSet));
         tab.setClosable(closable);
         this.data.getTabs().add(tab);
@@ -146,7 +119,7 @@ public class Contents {
         this.games.getSelectionModel().select(tab);
     }
 
-    public void rmoveDataSet(String name) {
+    public void removeDataSet(String name) {
         this.data.getTabs().removeIf(tab -> tab.getText().equals(name));
     }
 
