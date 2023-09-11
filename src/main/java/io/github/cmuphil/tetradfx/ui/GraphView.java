@@ -3,6 +3,8 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.graph.*;
 import io.github.cmuphil.tetradfx.stufffor751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.stufffor751lib.GraphTransforms;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -98,10 +100,9 @@ public class GraphView extends Pane {
     public static ScrollPane getGraphDisplay(Graph graph) {
         ChangedStuffINeed.circleLayout(graph);
         Pane graphView = new GraphView(graph);
-        BorderPane hBox = new BorderPane(new HBox(graphView));
 
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(hBox);
+        scrollPane.setContent(graphView);
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -149,8 +150,11 @@ public class GraphView extends Pane {
         MenuItem item3 = new MenuItem("Force");
         item3.setOnAction(e -> layout(graph, 3));
 
+        MenuItem item4 = new MenuItem("Causal Order");
+        item4.setOnAction(e -> layout(graph, 4));
+
         // Add menu items to the context menu
-        layout.getItems().addAll(item1, item2, item3);
+        layout.getItems().addAll(item1, item2, item3, item4);
         contextMenu.getItems().addAll(layout);
 
         Menu transform = new Menu("Transform");
@@ -223,6 +227,7 @@ public class GraphView extends Pane {
             case 1 -> ChangedStuffINeed.circleLayout(graph);
             case 2 -> ChangedStuffINeed.squareLayout(graph);
             case 3 -> LayoutUtil.fruchtermanReingoldLayout(graph);
+            case 4 -> ChangedStuffINeed.layoutByCausalOrder(graph);
             default -> throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
         }
 

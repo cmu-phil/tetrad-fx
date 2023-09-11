@@ -152,11 +152,11 @@ public class TetradFx {
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exitItem = new MenuItem("Exit");
 
-        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));
-        continuousSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
-        discreteSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
-        mixedSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
+//        continuousSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+C"));
+//        discreteSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
+//        mixedSimulation.setAccelerator(KeyCombination.keyCombination("Ctrl+M"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction(primaryStage));

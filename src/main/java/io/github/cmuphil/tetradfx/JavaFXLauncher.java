@@ -8,6 +8,6 @@ package io.github.cmuphil.tetradfx;
  */
 public class JavaFXLauncher {
     public static void main(String[] args) {
-        Example2.main(args);
+        App.main(args);
     }
 }

@@ -17,8 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ChangedStuffINeed {
     /**
@@ -105,6 +104,79 @@ public class ChangedStuffINeed {
             node.setCenterX(bufferx);
             node.setCenterY(buffery + spacey * (side  - i));
         }
+    }
+
+    public static void layoutByCausalOrder(Graph graph) {
+        List<List<Node>> tiers = getTiers(graph);
+
+        int y = 0;
+
+        for (List<Node> tier : tiers) {
+            y += 60;
+
+            if (tier.isEmpty()) continue;
+
+            Node node = tier.get(0);
+
+            int width = 80;
+
+            int x = width / 2 + 10;
+
+            node.setCenterX(x);
+            node.setCenterY(y);
+
+            int lastHalf = width / 2;
+
+            for (int i = 1; i < tier.size(); i++) {
+                node = tier.get(i);
+                int thisHalf = width / 2;
+                x += lastHalf + thisHalf + 5;
+                node.setCenterX(x);
+                node.setCenterY(y);
+                lastHalf = thisHalf;
+            }
+        }
+    }
+
+    /**
+     * Finds the set of nodes which have no children, followed by the set of their parents, then the set of the parents'
+     * parents, and so on.  The result is returned as a List of Lists.
+     *
+     * @return the tiers of this digraph.
+     */
+    private static List<List<Node>> getTiers(Graph graph) {
+        Set<Node> found = new HashSet<>();
+        List<List<Node>> tiers = new LinkedList<>();
+
+        // first copy all the nodes into 'notFound'.
+        Set<Node> notFound = new HashSet<>(graph.getNodes());
+
+        // repeatedly run through the nodes left in 'notFound'.  If any node
+        // has all of its parents already in 'found', then add it to the
+        // getModel tier.
+        while (!notFound.isEmpty()) {
+            List<Node> thisTier = new LinkedList<>();
+
+            for (Node node : notFound) {
+                if (found.containsAll(graph.getParents(node))) {
+                    thisTier.add(node);
+                }
+            }
+
+            if (thisTier.isEmpty()) {
+                tiers.add(new ArrayList<>(notFound));
+                break;
+            }
+
+            // shift all the nodes in this tier from 'notFound' to 'found'.
+            thisTier.forEach(notFound::remove);
+            found.addAll(thisTier);
+
+            // add the getModel tier to the list of tiers.
+            tiers.add(thisTier);
+        }
+
+        return tiers;
     }
 
 
