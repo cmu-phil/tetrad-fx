@@ -23,7 +23,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>io.github.cmuphil.tetradfx.TetradFx</mainClass>
+          <mainClass>io.github.cmuphil.tetradfx.App</mainClass>
         </configuration>
       </plugin>
       <plugin>

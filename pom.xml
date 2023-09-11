@@ -16,12 +16,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21-ea+17</version>
+            <version>20.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21-ea+17</version>
+            <version>20.0.2</version>
         </dependency>
         <dependency>
             <groupId>io.github.cmu-phil</groupId>
@@ -44,7 +44,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>io.github.cmuphil.tetradfx.TetradFx</mainClass>
+                    <mainClass>io.github.cmuphil.tetradfx.App</mainClass>
                 </configuration>
                 <executions>
                     <execution>
