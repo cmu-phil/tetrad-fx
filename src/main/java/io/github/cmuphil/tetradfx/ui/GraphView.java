@@ -21,6 +21,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import jdk.jshell.execution.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -138,6 +139,8 @@ public class GraphView extends Pane {
         hBox.setAlignment(Pos.CENTER);
         VBox vBox = new VBox(hBox);
         vBox.setAlignment(Pos.CENTER);
+
+        String _name = Utils.nextName(name, NamesToContents.getInstance().getSelectedContents().getGameNames());
 
         NamesToContents.getInstance().getSelectedContents().addGame(name, vBox);
     }

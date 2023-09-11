@@ -7,6 +7,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * <p>Stores all of the tabbed panes for a given dataset.</p>
  *
@@ -37,7 +41,7 @@ public class Contents {
         this.main.setSide(Side.LEFT);
 
         dataTab = new Tab("Data", data);
-        graphTab = new Tab("Graphs", graphs);
+        graphTab = new Tab("Graph", graphs);
         knowledgeTab = new Tab("Knowledge", knowledge);
         searchTab = new Tab("Search", search);
 //        modelTab = new Tab("Models", models);
@@ -127,7 +131,9 @@ public class Contents {
 //    }
 
     public void addGame(String name, Pane pane) {
-        Tab tab = new Tab(name, pane);
+        String _name = Utils.nextName(name, this.getGameNames());
+
+        Tab tab = new Tab(_name, pane);
         this.games.getTabs().add(tab);
         this.main.getSelectionModel().select(gamesTab);
         this.games.getSelectionModel().select(tab);
@@ -159,6 +165,16 @@ public class Contents {
 
     public void clearGames() {
         this.games.getTabs().clear();
+    }
+
+    public Collection<String> getGameNames() {
+        List<String> names = new ArrayList<>();
+
+        for (Tab tab : this.games.getTabs()) {
+            names.add(tab.getText());
+        }
+
+        return names;
     }
 }
 

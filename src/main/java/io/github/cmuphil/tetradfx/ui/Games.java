@@ -62,7 +62,7 @@ public class Games {
 //    }
 
     static void baseGamesOnGraph(Graph graph) {
-        NamesToContents.getInstance().getSelectedContents().clearGames();
+//        NamesToContents.getInstance().getSelectedContents().clearGames();
 
 //        addGame("""
 //                This the D-separation Game. We will give you potential d-separation facts, and you need to say whether the d-separation facts hold in the graph you've selected!
