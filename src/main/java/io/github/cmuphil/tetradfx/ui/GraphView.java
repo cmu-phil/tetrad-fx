@@ -191,20 +191,15 @@ public class GraphView extends Pane {
         model.getItems().add(new MenuItem("Make a model based on this graph and the selected data"));
         contextMenu.getItems().add(model);
 
-        Menu search = new Menu("Oracle Search");
-        search.getItems().add(new MenuItem("Do an oracle search based on this graph"));
+        Menu search = new Menu("Do an search using this graph as an oracle");
+        search.getItems().add(new MenuItem("Do an search using this graph as an oracle"));
         contextMenu.getItems().add(search);
 
         MenuItem saveGraph = new MenuItem("Save Graph");
         contextMenu.getItems().add(saveGraph);
 
         MenuItem games = new MenuItem("Base Games on this Graph!");
-
-        games.setOnAction(e -> {
-            Games.baseGamesOnGraph();
-        });
-
-
+        games.setOnAction(e -> Games.baseGamesOnGraph());
         contextMenu.getItems().add(games);
 
         // Show context menu on right-click on the pane

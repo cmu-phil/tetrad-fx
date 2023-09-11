@@ -165,8 +165,8 @@ public class Main {
         fileMenu.getItems().addAll(loadData, loadGraph, simulation, new SeparatorMenuItem(), exitItem);
 
         Menu search = new Menu("Search");
-        search.getItems().add(new Menu("Do a search on the selected dataset"));
-        search.getItems().add(new Menu("Do an oracle search on the selected graph"));
+        search.getItems().add(new Menu("Do a search using the selected dataset"));
+        search.getItems().add(new Menu("Do an search using the selected graph as an oracle"));
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
