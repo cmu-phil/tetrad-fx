@@ -27,11 +27,11 @@ import java.io.IOException;
  *
  * @author josephramsey
  */
-public class TetradFx {
-    private static final TetradFx INSTANCE = new TetradFx();
+public class Main {
+    private static final Main INSTANCE = new Main();
 
-    public static TetradFx getInstance() {
-        return TetradFx.INSTANCE;
+    public static Main getInstance() {
+        return Main.INSTANCE;
     }
 
     // Passing primaryStage in here so that I can quit the application from a menu item

@@ -44,7 +44,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>io.github.cmuphil.tetradfx.App</mainClass>
+                    <mainClass>io.github.cmuphil.tetradfx.TetradFx</mainClass>
                 </configuration>
                 <executions>
                     <execution>
