@@ -18,7 +18,7 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
-import io.github.cmuphil.tetradfx.stufffor751lib.DataTransforms;
+import io.github.cmuphil.tetradfx.for751lib.DataTransforms;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
