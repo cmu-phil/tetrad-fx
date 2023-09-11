@@ -16,6 +16,7 @@ public class Contents {
     private final Tab dataTab;
     private final Tab graphTab;
     private final Tab knowledgeTab;
+    private final Tab searchTab;
 //    private final Tab modelTab;
 //    private final Tab insightsTab;
     private final Tab gamesTab;
@@ -25,6 +26,7 @@ public class Contents {
     private final TabPane data = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane knowledge = new TabPane();
+    private final TabPane search = new TabPane();
 //    private final TabPane models = new TabPane();
 //    private final TabPane insights = new TabPane();
     private final TabPane games = new TabPane();
@@ -37,6 +39,7 @@ public class Contents {
         dataTab = new Tab("Data", data);
         graphTab = new Tab("Graphs", graphs);
         knowledgeTab = new Tab("Knowledge", knowledge);
+        searchTab = new Tab("Search", search);
 //        modelTab = new Tab("Models", models);
 //        insightsTab = new Tab("Insights", insights);
         gamesTab = new Tab("Games", games);
@@ -57,6 +60,7 @@ public class Contents {
         }
 
         this.main.getTabs().add(knowledgeTab);
+        this.main.getTabs().add(searchTab);
 //        this.main.getTabs().add(modelTab);
 //        this.main.getTabs().add(insightsTab);
         this.main.getTabs().add(gamesTab);
@@ -64,6 +68,7 @@ public class Contents {
         dataTab.setClosable(false);
         graphTab.setClosable(false);
         knowledgeTab.setClosable(false);
+        searchTab.setClosable(false);
 //        modelTab.setClosable(false);
 //        insightsTab.setClosable(false);
         gamesTab.setClosable(false);
@@ -71,6 +76,7 @@ public class Contents {
         this.data.setSide(Side.TOP);
         this.graphs.setSide(Side.TOP);
         this.knowledge.setSide(Side.TOP);
+        this.search.setSide(Side.TOP);
 //        this.models.setSide(Side.TOP);
 //        this.insights.setSide(Side.TOP);
         this.games.setSide(Side.TOP);
@@ -97,6 +103,14 @@ public class Contents {
         tab.setClosable(closable);
         this.graphs.getTabs().add(tab);
         this.main.getSelectionModel().select(graphTab);
+        this.graphs.getSelectionModel().select(tab);
+    }
+
+    public void addSearchResults(String name, Graph graph, boolean closable) {
+        Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
+        tab.setClosable(closable);
+        this.search.getTabs().add(tab);
+        this.main.getSelectionModel().select(searchTab);
         this.graphs.getSelectionModel().select(tab);
     }
 

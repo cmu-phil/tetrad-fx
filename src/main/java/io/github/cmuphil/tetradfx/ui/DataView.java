@@ -78,7 +78,7 @@ public class DataView {
             MenuItem item = new MenuItem(algorithm.getDescription());
             item.setOnAction(e -> {
                 Graph graph = algorithm.search(dataSet, new Parameters());
-                NamesToContents.getInstance().getSelected().addGraph(algorithm.getClass().getSimpleName(),
+                NamesToContents.getInstance().getSelected().addSearchResults(algorithm.getClass().getSimpleName(),
                         graph, true);
             });
 

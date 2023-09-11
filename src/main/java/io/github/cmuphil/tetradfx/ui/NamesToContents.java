@@ -9,7 +9,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -64,18 +66,6 @@ public class NamesToContents {
         });
     }
 
-    public String nextName(String projectName) {
-        for (int i = 1; i < 1000; i++) {
-            String name = projectName + " " + i;
-
-            if (!namesToContents.containsKey(name)) {
-                return name;
-            }
-        }
-
-        throw new IllegalArgumentException("Too many projects");
-    }
-
     public void add(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName) {
         if (dataSet != null && graph == null) {
             namesToContents.put(contentsName, new Contents(dataSet, null, dataName, null));
@@ -115,5 +105,9 @@ public class NamesToContents {
 
     public TreeView<String> getDataTreeView() {
         return dataTreeView;
+    }
+
+    public Collection<String> getProjectNames() {
+        return new HashSet<>(namesToContents.keySet());
     }
 }

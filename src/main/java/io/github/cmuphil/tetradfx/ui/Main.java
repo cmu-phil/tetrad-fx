@@ -131,7 +131,7 @@ public class Main {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         Graph graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
         NamesToContents.getInstance().add(null, graph,
-                NamesToContents.getInstance().nextName(selectedFile.getName()),
+                Utils.nextName(selectedFile.getName(), NamesToContents.getInstance().getProjectNames()),
                 null, "Graph");
     }
 
@@ -245,7 +245,8 @@ public class Main {
                     "*", true, Delimiter.TAB, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
-            NamesToContents.getInstance().add(dataSet, null, NamesToContents.getInstance().nextName(selectedFile.getName()),
+            NamesToContents.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
+                            NamesToContents.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
@@ -257,7 +258,8 @@ public class Main {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            NamesToContents.getInstance().add(dataSet, null, NamesToContents.getInstance().nextName(selectedFile.getName()),
+            NamesToContents.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
+                            NamesToContents.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
@@ -270,7 +272,8 @@ public class Main {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            NamesToContents.getInstance().add(dataSet, null, NamesToContents.getInstance().nextName(selectedFile.getName()),
+            NamesToContents.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
+                            NamesToContents.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
@@ -280,7 +283,8 @@ public class Main {
 
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
-        NamesToContents.getInstance().add(result.dataSet(), result.graph(), NamesToContents.getInstance().nextName("Simulation"),
+        NamesToContents.getInstance().add(result.dataSet(), result.graph(), Utils.nextName("Simulation",
+                        NamesToContents.getInstance().getProjectNames()),
                 "simulated_data", "simulated_graph");
     }
 
