@@ -1,13 +1,16 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import javafx.geometry.Side;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,11 +36,19 @@ public class Contents {
     private final TabPane games = new TabPane();
     private final TreeItem<String> treeItem;
 
-    public Contents(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName) {
+    private final File dir;
+    private final File dataDir;
+    private final File graphDir;
+    private final File knowledgeDir;
+    private final File searchDir;
+    private final File gamesDir;
+
+    public Contents(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName, File dir) {
         this.main = new TabPane();
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(contentsName);
+        this.dir = dir;
 
         this.treeItem.getChildren().add(new TreeItem<>("Data"));
         this.treeItem.getChildren().add(new TreeItem<>("Graph"));
@@ -52,6 +63,52 @@ public class Contents {
         searchTab = new Tab("Search", search);
         gamesTab = new Tab("Games", games);
 
+        dataDir = new File(dir, "data");
+        graphDir = new File(dir, "graph");
+        knowledgeDir = new File(dir, "knowledge");
+        searchDir = new File(dir, "search");
+        gamesDir = new File(dir, "games");
+
+        if (!dataDir.exists()) {
+            boolean made = dataDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + dataDir.getPath());
+            }
+        }
+
+        if (!graphDir.exists()) {
+            boolean made = graphDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + graphDir.getPath());
+            }
+        }
+
+        if (!knowledgeDir.exists()) {
+            boolean made = knowledgeDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + knowledgeDir.getPath());
+            }
+        }
+
+        if (!searchDir.exists()) {
+            boolean made = searchDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + searchDir.getPath());
+            }
+        }
+
+        if (!gamesDir.exists()) {
+            boolean made = gamesDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + gamesDir.getPath());
+            }
+        }
+
         if (dataSet == null && graph == null) {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
@@ -62,7 +119,7 @@ public class Contents {
         } else if (dataSet == null) {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
-             addGraph(graphName, graph, false);
+            addGraph(graphName, graph, false);
         } else {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
@@ -92,27 +149,52 @@ public class Contents {
     }
 
     public void addDataSet(String name, DataSet dataSet, boolean closable) {
+        name = Utils.nextName(name, this.getDataNames());
+
         Tab tab = new Tab(name, DataView.getTableView(dataSet));
         tab.setClosable(closable);
         this.data.getTabs().add(tab);
         this.main.getSelectionModel().select(dataTab);
         this.data.getSelectionModel().select(tab);
+
+        try {
+            File file = new File(dataDir,  name.replace(' ', '_') + ".txt");
+            Writer writer = new PrintWriter(file);
+            DataWriter.writeRectangularData(dataSet, writer, '\t');
+        } catch (IOException e) {
+            System.out.println("Could not write data set to file");
+        }
     }
 
     public void addGraph(String name, Graph graph, boolean closable) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
+
+        name = Utils.nextName(name, this.getDataNames());
+
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
         this.graphs.getTabs().add(tab);
         this.main.getSelectionModel().select(graphTab);
         this.graphs.getSelectionModel().select(tab);
+
+        String _name = name.replace(' ', '_') + ".txt";
+        GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
     }
 
     public void addSearchResults(String name, Graph graph, boolean closable) {
+        name = Utils.nextName(name, this.getDataNames());
+
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
         this.search.getTabs().add(tab);
         this.main.getSelectionModel().select(searchTab);
-        this.graphs.getSelectionModel().select(tab);
+        this.search.getSelectionModel().select(tab);
+
+        String _name = name.replace(' ', '_') + ".txt";
+        GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
+
     }
 
     public void addGame(String name, Pane pane) {
@@ -122,6 +204,26 @@ public class Contents {
         this.games.getTabs().add(tab);
         this.main.getSelectionModel().select(gamesTab);
         this.games.getSelectionModel().select(tab);
+    }
+
+    public Collection<String> getDataNames() {
+        List<String> names = new ArrayList<>();
+
+        for (Tab tab : this.data.getTabs()) {
+            names.add(tab.getText());
+        }
+
+        return names;
+    }
+
+    public Collection<String> getSearchNames() {
+        List<String> names = new ArrayList<>();
+
+        for (Tab tab : this.search.getTabs()) {
+            names.add(tab.getText());
+        }
+
+        return names;
     }
 
     public Collection<String> getGameNames() {

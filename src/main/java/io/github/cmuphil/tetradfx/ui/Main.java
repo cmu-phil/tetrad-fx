@@ -58,7 +58,7 @@ public class Main {
 
         TabPane tabPane = new TabPane();
         Tab notes = new Tab("Notes", notesArea);
-        Tab paraneters = new Tab("Paraneters", new TextArea("Parameters go here."));
+        Tab paraneters = new Tab("Parameters", new TextArea("Parameters go here."));
         notes.setClosable(false);
         paraneters.setClosable(false);
         tabPane.getTabs().addAll(notes, paraneters);
