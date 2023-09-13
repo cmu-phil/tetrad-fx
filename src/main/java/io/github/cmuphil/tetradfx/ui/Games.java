@@ -98,8 +98,15 @@ public class Games {
     @NotNull
     private static BorderPane getPermutationGamePane(Graph _graph) {
         List<Node> nodes = _graph.getNodes();
+        Graph graph1 = new EdgeListGraph(_graph);
+        int numEdges;
 
-        Collections.shuffle(nodes);
+        do {
+            TeyssierScorer scorer = new TeyssierScorer(new MsepTest(graph1), new GraphScore(graph1));
+            Collections.shuffle(nodes);
+            scorer.score(nodes);
+            numEdges = scorer.getNumEdges();
+        }  while (numEdges == graph1.getNumEdges());
 
         for (int i = 0; i < nodes.size(); i++) {
             Node node = nodes.get(i);
