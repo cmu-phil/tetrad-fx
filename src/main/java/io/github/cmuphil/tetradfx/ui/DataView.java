@@ -78,7 +78,8 @@ public class DataView {
             MenuItem item = new MenuItem(algorithm.getDescription());
             item.setOnAction(e -> {
                 Graph graph = algorithm.search(dataSet, new Parameters());
-                NamesToContents.getInstance().getSelected().addSearchResults(algorithm.getClass().getSimpleName(),
+                Contents selected = NamesToContents.getInstance().getSelected();
+                selected.addSearchResults(algorithm.getClass().getSimpleName(),
                         graph, true);
             });
 
@@ -226,11 +227,6 @@ public class DataView {
 
         Menu saveData = new Menu("Save Data");
         contextMenu.getItems().add(saveData);
-
-        MenuItem games = new MenuItem("Base Games on this Dataset!");
-
-//        games.setOnAction(e -> Games.baseGamesOnDataset());
-//        contextMenu.getItems().add(games);
 
         return contextMenu;
     }

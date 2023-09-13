@@ -51,14 +51,14 @@ public class Games {
 //                "PC Search Game", null);
 //
 //        addGame("""
-//                This is the Permutation Search Game! We are assuming that the underlying model is a DAG and that there are no latent variables. Is this a good assumption for your data?
+//                This is the Permutation Game! We are assuming that the underlying model is a DAG and that there are no latent variables. Is this a good assumption for your data?
 //
 //                Each permutation of the graph implies a DAG. We will give you a random permutation, and you need to rearrange the nodes so that the implied DAG is correct!
 //
 //                We will show you the implied DAG at each step and tell you the number of edges in the graph. Try to get a graph with the minimum number of edges in the fewest number of moves you can!
 //
 //                Maybe you will come up with a new permutation algorithm!""",
-//                "Permutation Search Game", null);
+//                "Permutation Game", null);
 //    }
 
     static void baseGamesOnGraph(Graph graph) {
@@ -83,16 +83,16 @@ public class Games {
 //                "PC Search Game", null);
 
         addGame("""
-                Welcome to the Permutation Search Game. A true DAG has been selected for you, and the nodes have been put in a random order.
+                Welcome to the Permutation Game. A true DAG has been selected for you, and the nodes have been put in a random order.
                 
-                Each ordering of the nodes in the graph implies a unique DAG, possibly with adjacencies that aren't in the true DAG and perhaps some misorientations. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class. 
+                Each ordering of the nodes in the graph implies a unique DAG, possibly with adjacencies that aren't in the true DAG and perhaps some misorientations. Your task is to rearrange the nodes so that the implied DAG is in the correct Markov equivalence class.
                 
                 If you guess wrong you will get extra adjacencies in the graph. So, try to get a graph with the minimum number of edges in the fewest number of moves.
                 
                 When you find a correct answer, all nodes in the order will flash green.
                 
                 There is a method to the madness--see if you can figure it out. Good luck!""",
-                "Permutation Search Game", getPermutationGamePane(graph));
+                "Permutation Game", getPermutationGamePane(graph));
     }
 
     @NotNull
@@ -122,9 +122,10 @@ public class Games {
         tilePane.setVgap(10);
         tilePane.setPrefColumns(graph.getNumNodes());
         tilePane.setStyle("-fx-padding: 5px;");
+        tilePane.setPadding(new Insets(10, 0, 0, 0));
 
         ScrollPane graphDisplay = GraphView.getGraphDisplay(__graph);
-        graphDisplay.setPadding(new Insets(0, 40, 40, 0));
+        graphDisplay.setPadding(new Insets(1, 40, 40, 1));
         main.setCenter(graphDisplay);
 
         HBox hbox = new HBox();

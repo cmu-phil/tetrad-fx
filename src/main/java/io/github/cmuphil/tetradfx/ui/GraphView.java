@@ -5,10 +5,7 @@ import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.for751lib.GraphTransforms;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
@@ -21,7 +18,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import jdk.jshell.execution.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -97,6 +93,16 @@ public class GraphView extends Pane {
      */
     @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
+        TextArea markdownArea = new TextArea();
+        markdownArea.setPromptText("Notes:");
+
+        // Setting the font for the TextArea
+        markdownArea.setFont(new Font("Arial", 14));
+
+        BorderPane notesArea = new BorderPane(markdownArea);
+
+        SplitPane pane = new SplitPane();
+
         ChangedStuffINeed.circleLayout(graph);
         Pane graphView = new GraphView(graph);
 
@@ -107,6 +113,8 @@ public class GraphView extends Pane {
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         graphView.setOnZoom(e -> handleZoom(e, graphView));
+
+        pane.getItems().addAll(graphView, notesArea);
 
         return scrollPane;
     }
@@ -142,7 +150,7 @@ public class GraphView extends Pane {
 
         String _name = Utils.nextName(name, NamesToContents.getInstance().getSelectedContents().getGameNames());
 
-        NamesToContents.getInstance().getSelectedContents().addGame(name, vBox);
+        NamesToContents.getInstance().getSelectedContents().addGame(_name, vBox);
     }
 
     @NotNull

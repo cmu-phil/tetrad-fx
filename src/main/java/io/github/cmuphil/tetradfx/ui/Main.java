@@ -16,6 +16,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -44,15 +45,30 @@ public class Main {
         activePane.setPrefSize(1000, 800);
 
         SplitPane mainSplit = new SplitPane();
-        mainSplit.setDividerPosition(0, 0.2);
 
         SplitPane leftSplit = new SplitPane();
         leftSplit.setOrientation(Orientation.VERTICAL);
         leftSplit.setDividerPosition(0, 0.5);
-        leftSplit.getItems().addAll(NamesToContents.getInstance().getDataTreeView(),
-                new TextArea("Parameters:\n" + new Parameters()));
+
+        TextArea text = new TextArea();
+        text.setWrapText(true);
+        text.setFont(new Font("Arial", 14));
+        BorderPane notesArea = new BorderPane(text);
+        notesArea.setTop(new Label("Notes:"));
+
+        TabPane tabPane = new TabPane();
+        Tab notes = new Tab("Notes", notesArea);
+        Tab paraneters = new Tab("Paraneters", new TextArea("Parameters go here."));
+        notes.setClosable(false);
+        paraneters.setClosable(false);
+        tabPane.getTabs().addAll(notes, paraneters);
+
+        leftSplit.getItems().addAll(NamesToContents.getInstance().getSessionTreeView(),
+               tabPane);
 
         mainSplit.getItems().addAll(leftSplit, activePane);
+        mainSplit.setDividerPosition(0, 0.2);
+        mainSplit.setDividerPosition(1, 0.8);
 
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(mainSplit);
@@ -129,7 +145,17 @@ public class Main {
     private void loadGraphAction(Stage primaryStage) {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        Graph graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
+
+        Graph graph;
+
+        if (selectedFile.getName().endsWith(".txt")) {
+             graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
+        } else if (selectedFile.getName().endsWith(".json")) {
+             graph = GraphSaveLoadUtils.loadGraphJson(selectedFile);
+        } else {
+            throw new RuntimeException("Unknown file type: " + selectedFile.getName());
+        }
+
         NamesToContents.getInstance().add(null, graph,
                 Utils.nextName(selectedFile.getName(), NamesToContents.getInstance().getProjectNames()),
                 null, "Graph");
