@@ -16,7 +16,11 @@ import java.util.Objects;
  *
  * @author josephramsey
  */
-public class    App extends Application {
+public class App extends Application {
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -27,9 +31,5 @@ public class    App extends Application {
         primaryStage.setTitle("Tetrad-FX");
 
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }
