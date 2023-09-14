@@ -150,7 +150,7 @@ public class GraphView extends Pane {
 
         String _name = Utils.nextName(name, NamesToContents.getInstance().getSelectedContents().getGameNames());
 
-        NamesToContents.getInstance().getSelectedContents().addGame(_name, vBox);
+        NamesToContents.getInstance().getSelectedContents().addGame(_name, vBox, true);
     }
 
     @NotNull
@@ -183,28 +183,28 @@ public class GraphView extends Pane {
 
         dagToCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.cpdagForDag(graph);
-            NamesToContents.getInstance().getSelectedContents().addGraph("DAG to CPPAG", dag, true);
+            NamesToContents.getInstance().getSelectedContents().addGraph("DAG to CPPAG", dag, true, true);
         });
 
         MenuItem dagToPag = new MenuItem("DAG to PAG");
 
         dagToPag.setOnAction(e -> {
             Graph dag = GraphTransforms.dagToPag(graph);
-            NamesToContents.getInstance().getSelectedContents().addGraph("DAG to PAG", dag, true);
+            NamesToContents.getInstance().getSelectedContents().addGraph("DAG to PAG", dag, true, true);
         });
 
         MenuItem dagFromCPDAG = new MenuItem("DAG from CPDAG");
 
         dagFromCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.dagFromCPDAG(graph);
-            NamesToContents.getInstance().getSelectedContents().addGraph("DAG from CPDAG", dag, true);
+            NamesToContents.getInstance().getSelectedContents().addGraph("DAG from CPDAG", dag, true, true);
         });
 
         MenuItem magFromPag = new MenuItem("MAG from PAG");
 
         magFromPag.setOnAction(e -> {
             Graph mag = GraphTransforms.pagToMag(graph);
-            NamesToContents.getInstance().getSelectedContents().addGraph("MAG from PAG", mag, true);
+            NamesToContents.getInstance().getSelectedContents().addGraph("MAG from PAG", mag, true, true);
         });
 
         transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);

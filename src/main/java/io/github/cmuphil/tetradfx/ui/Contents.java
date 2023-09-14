@@ -10,7 +10,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -109,24 +112,110 @@ public class Contents {
             }
         }
 
+
         if (dataSet == null && graph == null) {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
         } else if (dataSet != null && graph == null) {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
-            addDataSet(dataName, dataSet, false);
+            addDataSet(dataName, dataSet, false, true);
         } else if (dataSet == null) {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
-            addGraph(graphName, graph, false);
+            addGraph(graphName, graph, false, true);
         } else {
             this.main.getTabs().add(dataTab);
             this.main.getTabs().add(graphTab);
-            addDataSet(dataName, dataSet, false);
-            addGraph(graphName, graph, false);
+            addDataSet(dataName, dataSet, false, true);
+            addGraph(graphName, graph, false, true);
         }
 
+        this.main.getTabs().add(knowledgeTab);
+        this.main.getTabs().add(searchTab);
+        this.main.getTabs().add(gamesTab);
+
+        dataTab.setClosable(false);
+        graphTab.setClosable(false);
+        knowledgeTab.setClosable(false);
+        searchTab.setClosable(false);
+        gamesTab.setClosable(false);
+
+        this.data.setSide(Side.TOP);
+        this.graphs.setSide(Side.TOP);
+        this.knowledge.setSide(Side.TOP);
+        this.search.setSide(Side.TOP);
+        this.games.setSide(Side.TOP);
+    }
+
+    public Contents(String contentsName, File dir) {
+        this.main = new TabPane();
+        this.main.setPrefSize(1000, 800);
+        this.main.setSide(Side.LEFT);
+        this.treeItem = new TreeItem<>(contentsName);
+        this.dir = dir;
+
+        this.treeItem.getChildren().add(new TreeItem<>("Data"));
+        this.treeItem.getChildren().add(new TreeItem<>("Graph"));
+        this.treeItem.getChildren().add(new TreeItem<>("Knowledge"));
+        this.treeItem.getChildren().add(new TreeItem<>("Search"));
+        this.treeItem.getChildren().add(new TreeItem<>("Insights"));
+        this.treeItem.getChildren().add(new TreeItem<>("Games"));
+
+        dataTab = new Tab("Data", data);
+        graphTab = new Tab("Graph", graphs);
+        knowledgeTab = new Tab("Knowledge", knowledge);
+        searchTab = new Tab("Search", search);
+        gamesTab = new Tab("Games", games);
+
+        dataDir = new File(dir, "data");
+        graphDir = new File(dir, "graph");
+        knowledgeDir = new File(dir, "knowledge");
+        searchDir = new File(dir, "search");
+        gamesDir = new File(dir, "games");
+
+        if (!dataDir.exists()) {
+            boolean made = dataDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + dataDir.getPath());
+            }
+        }
+
+        if (!graphDir.exists()) {
+            boolean made = graphDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + graphDir.getPath());
+            }
+        }
+
+        if (!knowledgeDir.exists()) {
+            boolean made = knowledgeDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + knowledgeDir.getPath());
+            }
+        }
+
+        if (!searchDir.exists()) {
+            boolean made = searchDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + searchDir.getPath());
+            }
+        }
+
+        if (!gamesDir.exists()) {
+            boolean made = gamesDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + gamesDir.getPath());
+            }
+        }
+
+        this.main.getTabs().add(dataTab);
+        this.main.getTabs().add(graphTab);
         this.main.getTabs().add(knowledgeTab);
         this.main.getTabs().add(searchTab);
         this.main.getTabs().add(gamesTab);
@@ -148,8 +237,14 @@ public class Contents {
         return main;
     }
 
-    public void addDataSet(String name, DataSet dataSet, boolean closable) {
-        name = Utils.nextName(name, this.getDataNames());
+    public void addDataSet(String name, DataSet dataSet, boolean closable, boolean nextName) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
+
+        if (nextName) {
+            name = Utils.nextName(name, this.getDataNames());
+        }
 
         Tab tab = new Tab(name, DataView.getTableView(dataSet));
         tab.setClosable(closable);
@@ -166,12 +261,14 @@ public class Contents {
         }
     }
 
-    public void addGraph(String name, Graph graph, boolean closable) {
+    public void addGraph(String name, Graph graph, boolean closable, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
 
-        name = Utils.nextName(name, this.getDataNames());
+        if (nextName) {
+            name = Utils.nextName(name, this.getDataNames());
+        }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
@@ -183,8 +280,14 @@ public class Contents {
         GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
     }
 
-    public void addSearchResults(String name, Graph graph, boolean closable) {
-        name = Utils.nextName(name, this.getDataNames());
+    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
+
+        if (nextName) {
+            name = Utils.nextName(name, this.getDataNames());
+        }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
@@ -197,10 +300,16 @@ public class Contents {
 
     }
 
-    public void addGame(String name, Pane pane) {
-        String _name = Utils.nextName(name, this.getGameNames());
+    public void addGame(String name, Pane pane, boolean nextName) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
 
-        Tab tab = new Tab(_name, pane);
+        if (nextName) {
+            name = Utils.nextName(name, this.getDataNames());
+        }
+
+        Tab tab = new Tab(name, pane);
         this.games.getTabs().add(tab);
         this.main.getSelectionModel().select(gamesTab);
         this.games.getSelectionModel().select(tab);
