@@ -25,14 +25,13 @@ import java.util.Map;
  * @author josephramsey
  */
 public class NamesToContents {
-    private final Map<String, Contents> namesToContents = new HashMap<>();
-    private String selectedName;
-
     private static NamesToContents instance;
+    private final Map<String, Contents> namesToContents = new HashMap<>();
     private final BorderPane activePane = new BorderPane();
     private final TreeView<String> sessionTreeView;
     private final TreeItem<String> projects;
     private final File dir;
+    private String selectedName;
 
     private NamesToContents() {
         TreeItem<String> root = new TreeItem<>("Session");
@@ -80,18 +79,35 @@ public class NamesToContents {
 
             sessionName = _sessionName;
 
-            namesToContents.put(_sessionName, new Contents(sessionName, sessionDir));
+//            namesToContents.put(_sessionName, new Contents(sessionName, sessionDir));
             selectedName = sessionName;
-            activePane.setCenter(getSelectedMain());
-            TreeItem<String> childItem1 = getSelectedContents().getTreeItem();
+//            activePane.setCenter(getSelectedMain());
+//            TreeItem<String> childItem1 = getSelectedContents().getTreeItem();
             projects = new TreeItem<>(sessionName);
-            projects.getChildren().add(childItem1);
+//            projects.getChildren().add(childItem1);
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
 
             for (File dir : sessionDirs) {
                 if (dir.isDirectory()) {
                     sessionName = dir.getName().replace('_', ' ');
+
+                    if (!namesToContents.containsKey(sessionName)) {
+                        Contents _contents = new Contents(sessionName, sessionDir);
+                        namesToContents.put(sessionName, _contents);
+                        selectedName = sessionName;
+
+//                        if (_sessionName.equals(sessionName)) {
+                        activePane.setCenter(getSelectedMain());
+//                        }
+
+                        TreeItem<String> childItem1 = _contents.getTreeItem();
+//                        projects = new TreeItem<>(sessionName);
+                        projects.getChildren().add(childItem1);
+//                        sessionTreeView = new TreeView<>(projects);
+//                        projects.setExpanded(true);
+
+                    }
 
                     File dataDir = new File(dir, "data");
                     File graphDir = new File(dir, "graph");
@@ -110,7 +126,7 @@ public class NamesToContents {
                                     int maxNumCategories = 5;
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
                                             "*", true, maxNumCategories, Delimiter.TAB, false);
-                                     getSelectedContents().addDataSet(selectedName, _dataSet, true, false);
+                                    getSelectedContents().addDataSet(sessionName, _dataSet, true, false);
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -124,7 +140,7 @@ public class NamesToContents {
                         for (File file : graphFiles) {
                             if (file.getName().endsWith("txt")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                    getSelectedContents().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
+                                getSelectedContents().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
                             } else if (file.getName().endsWith("json")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
                                 getSelectedContents().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false);
@@ -190,12 +206,8 @@ public class NamesToContents {
     }
 
     public Node getSelectedMain() {
-        Contents selected = getSelected();
+        Contents selected = getSelectedContents();
         return selected.getMain();
-    }
-
-    public Contents getSelected() {
-        return namesToContents.get(selectedName);
     }
 
     public BorderPane getActivePane() {
@@ -203,7 +215,13 @@ public class NamesToContents {
     }
 
     public Contents getSelectedContents() {
-        return getSelected();
+        Contents contents = namesToContents.get(selectedName);
+
+        if (contents == null) {
+            throw new NullPointerException("contents is null");
+        }
+
+        return contents;
     }
 
     public TreeView<String> getSessionTreeView() {
