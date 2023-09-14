@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class NamesToContents {
     private final Map<String, Contents> namesToContents = new HashMap<>();
-    private String selectedName = "";
+    private String selectedName;
 
     private static NamesToContents instance;
     private final BorderPane activePane = new BorderPane();
@@ -58,7 +58,6 @@ public class NamesToContents {
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
             var dataSet = simulation.simulateDataReducedForm(1000);
-            sessionName = Utils.nextName("Session", namesToContents.keySet());
             this.selectedName = Utils.nextName("Sample Simulation", namesToContents.keySet());
             add(dataSet, graph, this.selectedName, "Sample Data", "Sample Graph");
         } else {
@@ -66,6 +65,10 @@ public class NamesToContents {
 
             String _sessionName = "Sample Session";
             File sessionDir = dir;
+
+            if (sessionDirs == null) {
+                throw new NullPointerException("sessionDirs1 is null");
+            }
 
             for (File dir : sessionDirs) {
                 if (dir.isDirectory()) {
@@ -89,7 +92,6 @@ public class NamesToContents {
             for (File dir : sessionDirs) {
                 if (dir.isDirectory()) {
                     sessionName = dir.getName().replace('_', ' ');
-                    this.selectedName = sessionName;
 
                     File dataDir = new File(dir, "data");
                     File graphDir = new File(dir, "graph");

@@ -13,7 +13,6 @@ import javafx.scene.layout.Pane;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +38,6 @@ public class Contents {
     private final TabPane games = new TabPane();
     private final TreeItem<String> treeItem;
 
-    private final File dir;
     private final File dataDir;
     private final File graphDir;
     private final File knowledgeDir;
@@ -51,7 +49,6 @@ public class Contents {
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(contentsName);
-        this.dir = dir;
 
         this.treeItem.getChildren().add(new TreeItem<>("Data"));
         this.treeItem.getChildren().add(new TreeItem<>("Graph"));
@@ -153,7 +150,6 @@ public class Contents {
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(contentsName);
-        this.dir = dir;
 
         this.treeItem.getChildren().add(new TreeItem<>("Data"));
         this.treeItem.getChildren().add(new TreeItem<>("Graph"));
@@ -254,8 +250,11 @@ public class Contents {
 
         try {
             File file = new File(dataDir,  name.replace(' ', '_') + ".txt");
-            Writer writer = new PrintWriter(file);
-            DataWriter.writeRectangularData(dataSet, writer, '\t');
+
+            try (PrintWriter writer = new PrintWriter(file)) {
+                DataWriter.writeRectangularData(dataSet, writer, '\t');
+            }
+
         } catch (IOException e) {
             System.out.println("Could not write data set to file");
         }
@@ -267,7 +266,7 @@ public class Contents {
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getDataNames());
+            name = Utils.nextName(name, this.getGraphNames());
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -286,7 +285,7 @@ public class Contents {
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getDataNames());
+            name = Utils.nextName(name, this.getSearchNames());
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -297,7 +296,6 @@ public class Contents {
 
         String _name = name.replace(' ', '_') + ".txt";
         GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
-
     }
 
     public void addGame(String name, Pane pane, boolean nextName) {
@@ -306,7 +304,7 @@ public class Contents {
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getDataNames());
+            name = Utils.nextName(name, this.getGameNames());
         }
 
         Tab tab = new Tab(name, pane);
@@ -319,6 +317,16 @@ public class Contents {
         List<String> names = new ArrayList<>();
 
         for (Tab tab : this.data.getTabs()) {
+            names.add(tab.getText());
+        }
+
+        return names;
+    }
+
+    public Collection<String> getGraphNames() {
+        List<String> names = new ArrayList<>();
+
+        for (Tab tab : this.graphs.getTabs()) {
             names.add(tab.getText());
         }
 
