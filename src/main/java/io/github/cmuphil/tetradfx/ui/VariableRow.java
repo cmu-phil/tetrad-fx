@@ -2,13 +2,13 @@ package io.github.cmuphil.tetradfx.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class Row {
+public class VariableRow {
     private final SimpleStringProperty variableName;
     private final SimpleStringProperty variableType;
     private final SimpleStringProperty stats;
     private final SimpleStringProperty notes;
 
-    public Row(String variableName, String variableType, String description) {
+    public VariableRow(String variableName, String variableType, String description) {
         this.variableName = new SimpleStringProperty(variableName);
         this.variableType = new SimpleStringProperty(variableType);
         this.stats = new SimpleStringProperty(description);

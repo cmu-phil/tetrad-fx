@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VariableView {
-    private TableView<Row> tableView;
+    private TableView<VariableRow> tableView;
 
     public VariableView(DataSet dataSet) {
         tableView = new TableView<>();
@@ -28,39 +28,39 @@ public class VariableView {
             return;
         }
 
-        TableView<Row> table = new TableView<>();
+        TableView<VariableRow> table = new TableView<>();
 
-        TableColumn<Row, String> variableName = new TableColumn<>("Variable Name");
+        TableColumn<VariableRow, String> variableName = new TableColumn<>("Variable Name");
         variableName.setCellValueFactory(new PropertyValueFactory<>("variableName"));
 
-        TableColumn<Row, String> variableType = new TableColumn<>("Variable Type");
+        TableColumn<VariableRow, String> variableType = new TableColumn<>("Variable Type");
         variableType.setCellValueFactory(new PropertyValueFactory<>("variableType"));
 
-        TableColumn<Row, String> statsCol = new TableColumn<>("Stats");
+        TableColumn<VariableRow, String> statsCol = new TableColumn<>("Stats");
         statsCol.setCellFactory(param -> new TextAreaCell());
         statsCol.setCellValueFactory(new PropertyValueFactory<>("stats"));
 
-        TableColumn<Row, String> notesCol = new TableColumn<>("Notes");
+        TableColumn<VariableRow, String> notesCol = new TableColumn<>("Notes");
         notesCol.setCellFactory(param -> new TextAreaCell());
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
 
         table.getColumns().addAll(variableName, variableType, statsCol, notesCol);
 
-        List<Row> rows = new ArrayList<>();
+        List<VariableRow> rows = new ArrayList<>();
 
         for (int i = 0; i < dataSet.getNumColumns(); i++) {
             Node variable = dataSet.getVariable(i);
-            rows.add(new Row(variable.getName(), variable instanceof DiscreteVariable ? "Discrete" : "Continuous",
+            rows.add(new VariableRow(variable.getName(), variable instanceof DiscreteVariable ? "Discrete" : "Continuous",
                     getVariablestats(dataSet, variable)));
 
-            ObservableList<Row> data = FXCollections.observableArrayList(rows);
+            ObservableList<VariableRow> data = FXCollections.observableArrayList(rows);
 
             table.setItems(data);
             this.tableView = table;
         }
     }
 
-    public TableView<Row> getTableView() {
+    public TableView<VariableRow> getTableView() {
         return tableView;
     }
 
@@ -120,7 +120,7 @@ public class VariableView {
         return sb.toString();
     }
 
-    public static class TextAreaCell extends TableCell<Row, String> {
+    public static class TextAreaCell extends TableCell<VariableRow, String> {
         private final TextArea textArea;
 
         public TextAreaCell() {
