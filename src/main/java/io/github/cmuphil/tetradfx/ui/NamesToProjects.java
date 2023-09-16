@@ -9,8 +9,6 @@ import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import javafx.scene.Node;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
@@ -20,13 +18,13 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Maps datasets to their contents.
+ * Maps datasets to their projects.
  *
  * @author josephramsey
  */
-public class NamesToContents {
-    private static NamesToContents instance;
-    private final Map<String, Contents> namesToContents = new HashMap<>();
+public class NamesToProjects {
+    private static NamesToProjects instance;
+    private final Map<String, Project> namesToProjects = new HashMap<>();
     private final BorderPane activePane = new BorderPane();
     private final TreeView<String> sessionTreeView;
     private final TreeItem<String> projects;
@@ -34,7 +32,7 @@ public class NamesToContents {
     private final BorderPane parametersPane;
     private String selectedName;
 
-    private NamesToContents(BorderPane parametersPane) {
+    private NamesToProjects(BorderPane parametersPane) {
         this.parametersPane = parametersPane;
 
         TreeItem<String> root = new TreeItem<>("Session");
@@ -60,7 +58,7 @@ public class NamesToContents {
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
             var dataSet = simulation.simulateDataReducedForm(1000);
-            this.selectedName = Utils.nextName("Sample Simulation", namesToContents.keySet());
+            this.selectedName = Utils.nextName("Sample Simulation", namesToProjects.keySet());
             add(dataSet, graph, this.selectedName, "Sample Data", "Sample Graph");
         } else {
             File[] sessionDirs = dir.listFiles();
@@ -91,12 +89,12 @@ public class NamesToContents {
                 if (dir.isDirectory()) {
                     sessionName = dir.getName().replace('_', ' ');
 
-                    if (!namesToContents.containsKey(sessionName)) {
-                        Contents _contents = new Contents(null, null, sessionName, null, null, sessionDir);
-                        namesToContents.put(sessionName, _contents);
+                    if (!namesToProjects.containsKey(sessionName)) {
+                        Project _project = new Project(null, null, sessionName, null, null, sessionDir);
+                        namesToProjects.put(sessionName, _project);
                         selectedName = sessionName;
                         activePane.setCenter(getSelectedMain());
-                        TreeItem<String> childItem1 = _contents.getTreeItem();
+                        TreeItem<String> childItem1 = _project.getTreeItem();
                         projects.getChildren().add(childItem1);
                     }
 
@@ -121,7 +119,7 @@ public class NamesToContents {
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
 
                                     String replace = name.replace('_', ' ');
-                                    getSelectedContents().addDataSet(replace, _dataSet, true, false);
+                                    getSelectedProject().addDataSet(replace, _dataSet, true, false);
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -135,10 +133,10 @@ public class NamesToContents {
                         for (File file : graphFiles) {
                             if (file.getName().endsWith("txt")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedContents().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
                             } else if (file.getName().endsWith("json")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedContents().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false);
                             }
                         }
                     }
@@ -149,10 +147,10 @@ public class NamesToContents {
                         for (File file : searchFiles) {
                             if (file.getName().endsWith("txt")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedContents().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
+                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedContents().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
+                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             }
                         }
                     }
@@ -170,23 +168,23 @@ public class NamesToContents {
                     selectedName = selectedItem.getValue();
                     activePane.setCenter(getSelectedMain());
 
-                    Node parametersArea = NamesToContents.getInstance().getSelectedContents().getParametersArea();
+                    Node parametersArea = NamesToProjects.getInstance().getSelectedProject().getParametersArea();
                     parametersPane.setCenter(parametersArea);
                 }
             }
         });
     }
 
-    public static NamesToContents getInstance() {
+    public static NamesToProjects getInstance() {
         if (instance == null) {
-            instance = new NamesToContents(new BorderPane());
+            instance = new NamesToProjects(new BorderPane());
         }
 
         return instance;
     }
 
-    public void add(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName) {
-        File sessionDir = new File(dir, contentsName.replace(" ", "_"));
+    public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
+        File sessionDir = new File(dir, projectName.replace(" ", "_"));
 
         if (!sessionDir.exists()) {
             boolean made = sessionDir.mkdir();
@@ -196,15 +194,15 @@ public class NamesToContents {
             }
         }
 
-        namesToContents.put(contentsName, new Contents(dataSet, graph, contentsName, dataName, graphName, sessionDir));
-        selectedName = contentsName;
+        namesToProjects.put(projectName, new Project(dataSet, graph, projectName, dataName, graphName, sessionDir));
+        selectedName = projectName;
         activePane.setCenter(getSelectedMain());
-        TreeItem<String> childItem1 = getSelectedContents().getTreeItem();
+        TreeItem<String> childItem1 = getSelectedProject().getTreeItem();
         projects.getChildren().add(childItem1);
     }
 
     public Node getSelectedMain() {
-        Contents selected = getSelectedContents();
+        Project selected = getSelectedProject();
         return selected.getMain();
     }
 
@@ -212,14 +210,14 @@ public class NamesToContents {
         return activePane;
     }
 
-    public Contents getSelectedContents() {
-        Contents contents = namesToContents.get(selectedName);
+    public Project getSelectedProject() {
+        Project project = namesToProjects.get(selectedName);
 
-        if (contents == null) {
-            throw new NullPointerException("contents is null");
+        if (project == null) {
+            throw new NullPointerException("Project is null");
         }
 
-        return contents;
+        return project;
     }
 
     public TreeView<String> getSessionTreeView() {
@@ -227,7 +225,7 @@ public class NamesToContents {
     }
 
     public Collection<String> getProjectNames() {
-        return new HashSet<>(namesToContents.keySet());
+        return new HashSet<>(namesToProjects.keySet());
     }
 
     public BorderPane getParametersPane() {

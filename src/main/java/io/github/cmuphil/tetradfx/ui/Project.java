@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author josephramsey
  */
-public class Contents {
+public class Project {
     private final Tab dataTab;
     private final Tab graphTab;
     private final Tab searchTab;
@@ -44,11 +44,11 @@ public class Contents {
     private final File graphDir;
     private final File searchDir;
 
-    public Contents(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName, File dir) {
+    public Project(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName, File dir) {
         this.main = new TabPane();
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
-        this.treeItem = new TreeItem<>(contentsName);
+        this.treeItem = new TreeItem<>(projectName);
 
         Tab variablesTab = new Tab("Variables", variables);
         dataTab = new Tab("Data", data);
