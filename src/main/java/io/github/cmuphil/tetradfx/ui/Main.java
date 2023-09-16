@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * <p>The main display for Tetrad-FX. This one uses a split pane layout. Work in progress.</p>
+ * <p>Dislays all of the projects for a session.</p>
  *
  * @author josephramsey
  */

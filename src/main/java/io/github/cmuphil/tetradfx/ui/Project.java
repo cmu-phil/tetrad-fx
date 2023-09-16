@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * <p>Stores all of the tabbed panes for a given dataset.</p>
+ * <p>Stores all of the tabbed panes for a given project in a session.</p>
  *
  * @author josephramsey
  */
