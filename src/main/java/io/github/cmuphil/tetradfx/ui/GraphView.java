@@ -31,6 +31,8 @@ import java.util.HashMap;
  *
  * <p>Scales well to large, dense graphs.</p>
  *
+ * <p>TODO: Add node and edge selection</p>
+ *
  * @author josephramsey
  */
 public class GraphView extends Pane {
