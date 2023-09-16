@@ -36,7 +36,7 @@ public class NamesToProjects {
     private NamesToProjects(BorderPane parametersPane) {
         this.parametersPane = parametersPane;
 
-        TreeItem<String> root = new TreeItem<>("Session");
+        var root = new TreeItem<>("Session");
         root.setExpanded(true);
 
         String sessionName = "Sample Session";
@@ -64,7 +64,7 @@ public class NamesToProjects {
         } else {
             File[] sessionDirs = dir.listFiles();
 
-            String _sessionName = "Sample Session";
+            var _sessionName = "Sample Session";
             File sessionDir = dir;
 
             if (sessionDirs == null) {
@@ -128,10 +128,10 @@ public class NamesToProjects {
                         }
                     }
 
-                    File[] graphFiles = graphDir.listFiles();
+                    var graphFiles = graphDir.listFiles();
 
                     if (graphFiles != null) {
-                        for (File file : graphFiles) {
+                        for (var file : graphFiles) {
                             if (file.getName().endsWith("txt")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
                                 getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
@@ -142,15 +142,15 @@ public class NamesToProjects {
                         }
                     }
 
-                    File[] searchFiles = searchDir.listFiles();
+                    var searchFiles = searchDir.listFiles();
 
                     if (searchFiles != null) {
                         for (File file : searchFiles) {
                             if (file.getName().endsWith("txt")) {
-                                Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
+                                var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
                                 getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {
-                                Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
+                                var _graph = GraphSaveLoadUtils.loadGraphJson(file);
                                 getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             }
                         }
@@ -164,12 +164,12 @@ public class NamesToProjects {
 
         sessionTreeView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                TreeItem<String> selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
+                var selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
                     selectedName = selectedItem.getValue();
                     activePane.setCenter(getSelectedMain());
 
-                    Node parametersArea = NamesToProjects.getInstance().getSelectedProject().getParametersArea();
+                    var parametersArea = NamesToProjects.getInstance().getSelectedProject().getParametersArea();
                     parametersPane.setCenter(parametersArea);
                 }
             }
@@ -185,7 +185,7 @@ public class NamesToProjects {
     }
 
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
-        File sessionDir = new File(dir, projectName.replace(" ", "_"));
+        var sessionDir = new File(dir, projectName.replace(" ", "_"));
 
         if (!sessionDir.exists()) {
             boolean made = sessionDir.mkdir();
@@ -212,7 +212,7 @@ public class NamesToProjects {
     }
 
     public Project getSelectedProject() {
-        Project project = namesToProjects.get(selectedName);
+        var project = namesToProjects.get(selectedName);
 
         if (project == null) {
             throw new NullPointerException("Project is null");

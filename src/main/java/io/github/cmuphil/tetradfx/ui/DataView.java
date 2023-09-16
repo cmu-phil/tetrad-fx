@@ -54,7 +54,7 @@ public class DataView {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
-        ContextMenu contextMenu = getContextMenu(table, dataSet);
+        var contextMenu = getContextMenu(table, dataSet);
 
         // Show context menu on right-click on the label
         table.setOnMousePressed(event -> {
@@ -112,11 +112,11 @@ public class DataView {
 
     @NotNull
     static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
-        ContextMenu contextMenu = new ContextMenu();
-        Menu layout = new Menu("Do a search using this dataset");
+        var contextMenu = new ContextMenu();
+        var layout = new Menu("Do a search using this dataset");
 
         List<Algorithm> algorithms = new ArrayList<>();
-        ScoreWrapper score = getScore(dataSet);
+        var score = getScore(dataSet);
 
         algorithms.add(new Boss(score));
         IndependenceWrapper test = getTest(dataSet);
@@ -130,7 +130,7 @@ public class DataView {
         algorithms.add(new Bfci(test, score));
         algorithms.add(new GraspFci(test, score));
 
-        List<MenuItem> items = getMenuItems(dataSet, algorithms);
+        var items = getMenuItems(dataSet, algorithms);
 
         layout.getItems().addAll(items);
         contextMenu.getItems().addAll(layout);
@@ -142,90 +142,90 @@ public class DataView {
             }
         });
 
-        Menu transformData = new Menu("Transform Data");
+        var transformData = new Menu("Transform Data");
         contextMenu.getItems().add(transformData);
 
-        MenuItem removeConstantColumns = new MenuItem("Remove Constant Columns");
+        var removeConstantColumns = new MenuItem("Remove Constant Columns");
         removeConstantColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
         });
         transformData.getItems().add(removeConstantColumns);
 
-        MenuItem removeDuplicateColumns = new MenuItem("Remove Duplicate Columns");
+        var removeDuplicateColumns = new MenuItem("Remove Duplicate Columns");
         removeDuplicateColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
         });
         transformData.getItems().add(removeDuplicateColumns);
 
-        MenuItem center = new MenuItem("Center");
+        var center = new MenuItem("Center");
         center.setOnAction(e -> {
             DataSet filtered = DataTransforms.center(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Center", filtered, true, true);
         });
         transformData.getItems().add(center);
 
-        MenuItem standardize = new MenuItem("Standardize");
+        var standardize = new MenuItem("Standardize");
         standardize.setOnAction(e -> {
             DataSet filtered = DataTransforms.standardizeData(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Standardize", filtered, true, true);
         });
         transformData.getItems().add(standardize);
 
-        MenuItem nonparanormalTransform = new MenuItem("Nonparanormal Transform");
+        var nonparanormalTransform = new MenuItem("Nonparanormal Transform");
         nonparanormalTransform.setOnAction(e -> {
             DataSet filtered = DataTransforms.getNonparanormalTransformed(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Nonparanormal Transform", filtered, true, true);
         });
         transformData.getItems().add(nonparanormalTransform);
 
-        MenuItem logTransform = new MenuItem("Log Transform");
+        var logTransform = new MenuItem("Log Transform");
         logTransform.setOnAction(e -> {
             DataSet filtered = DataTransforms.logData(dataSet, 10, false, 2);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Log Transform", filtered, true, true);
         });
         transformData.getItems().add(logTransform);
 
-        MenuItem numericalDiscreteToContinuous = new MenuItem("Numerical Discrete to Continuous");
+        var numericalDiscreteToContinuous = new MenuItem("Numerical Discrete to Continuous");
         numericalDiscreteToContinuous.setOnAction(e -> {
             DataSet filtered = DataTransforms.convertNumericalDiscreteToContinuous(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Numerical Discrete to Continuous", filtered, true, true);
         });
         transformData.getItems().add(numericalDiscreteToContinuous);
 
-        MenuItem discretizeToBinary = new MenuItem("Discretize to Binary");
+        var discretizeToBinary = new MenuItem("Discretize to Binary");
         discretizeToBinary.setOnAction(e -> {
             DataSet filtered = DataTransforms.discretize(dataSet, 2, true);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Discretize to Binary", filtered, true, true);
         });
         transformData.getItems().add(discretizeToBinary);
 
-        MenuItem discretize = new MenuItem("Discretize to Trinary");
+        var discretize = new MenuItem("Discretize to Trinary");
         discretize.setOnAction(e -> {
             DataSet filtered = DataTransforms.discretize(dataSet, 3, true);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Discretize to Trinary", filtered, true, true);
         });
         transformData.getItems().add(discretize);
 
-        MenuItem restrictToMeasured = new MenuItem("Restrict to Measured");
+        var restrictToMeasured = new MenuItem("Restrict to Measured");
         restrictToMeasured.setOnAction(e -> {
             DataSet filtered = DataTransforms.restrictToMeasured(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Restrict to Measured", filtered, true, true);
         });
         transformData.getItems().add(restrictToMeasured);
 
-        MenuItem shuffleColumns = new MenuItem("Shuffle Columns");
+        var shuffleColumns = new MenuItem("Shuffle Columns");
         shuffleColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.shuffleColumns(dataSet);
             NamesToProjects.getInstance().getSelectedProject().addDataSet("Shuffle Columns", filtered, true, true);
         });
         transformData.getItems().add(shuffleColumns);
 
-        Menu makeModel = new Menu("Make Model");
+        var makeModel = new Menu("Make Model");
         contextMenu.getItems().add(makeModel);
 
-        Menu saveData = new Menu("Save Data");
+        var saveData = new Menu("Save Data");
         contextMenu.getItems().add(saveData);
 
         return contextMenu;
