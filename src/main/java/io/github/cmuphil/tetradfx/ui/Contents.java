@@ -6,13 +6,11 @@ import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
 import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +25,8 @@ import java.util.List;
  * @author josephramsey
  */
 public class Contents {
-    private final Tab variablesTab;
     private final Tab dataTab;
     private final Tab graphTab;
-    private final Tab knowledgeTab;
     private final Tab searchTab;
     private final Tab gamesTab;
     private final TextArea parametersArea = new TextArea("Parameters will be displayed here when available.");
@@ -40,16 +36,13 @@ public class Contents {
     private final TabPane variables = new TabPane();
     private final TabPane data = new TabPane();
     private final TabPane graphs = new TabPane();
-    private final TabPane knowledge = new TabPane();
     private final TabPane search = new TabPane();
     private final TabPane games = new TabPane();
     private final TreeItem<String> treeItem;
 
     private final File dataDir;
     private final File graphDir;
-    private final File knowledgeDir;
     private final File searchDir;
-    private final File gamesDir;
 
     public Contents(DataSet dataSet, Graph graph, String contentsName, String dataName, String graphName, File dir) {
         this.main = new TabPane();
@@ -57,18 +50,15 @@ public class Contents {
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(contentsName);
 
-        variablesTab = new Tab("Variables", variables);
+        Tab variablesTab = new Tab("Variables", variables);
         dataTab = new Tab("Data", data);
         graphTab = new Tab("Graph", graphs);
-        knowledgeTab = new Tab("Knowledge", knowledge);
         searchTab = new Tab("Search", search);
         gamesTab = new Tab("Games", games);
 
         dataDir = new File(dir, "data");
         graphDir = new File(dir, "graph");
-        knowledgeDir = new File(dir, "knowledge");
         searchDir = new File(dir, "search");
-        gamesDir = new File(dir, "games");
 
         if (!dataDir.exists()) {
             boolean made = dataDir.mkdir();
@@ -86,14 +76,6 @@ public class Contents {
             }
         }
 
-        if (!knowledgeDir.exists()) {
-            boolean made = knowledgeDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + knowledgeDir.getPath());
-            }
-        }
-
         if (!searchDir.exists()) {
             boolean made = searchDir.mkdir();
 
@@ -102,121 +84,28 @@ public class Contents {
             }
         }
 
-        if (!gamesDir.exists()) {
-            boolean made = gamesDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + gamesDir.getPath());
-            }
+        if (dataSet != null) {
+            addDataSet(dataName, dataSet, false, true);
         }
 
-
-        if (dataSet != null && graph == null) {
-            addDataSet(dataName, dataSet, false, true);
-        } else if (dataSet == null && graph != null) {
-            addGraph(graphName, graph, false, true);
-        } else {
-            addDataSet(dataName, dataSet, false, true);
+        if (graph != null) {
             addGraph(graphName, graph, false, true);
         }
 
         this.main.getTabs().add(variablesTab);
         this.main.getTabs().add(dataTab);
         this.main.getTabs().add(graphTab);
-        this.main.getTabs().add(knowledgeTab);
         this.main.getTabs().add(searchTab);
         this.main.getTabs().add(gamesTab);
 
         variablesTab.setClosable(false);
         dataTab.setClosable(false);
         graphTab.setClosable(false);
-        knowledgeTab.setClosable(false);
         searchTab.setClosable(false);
         gamesTab.setClosable(false);
 
         this.data.setSide(Side.TOP);
         this.graphs.setSide(Side.TOP);
-        this.knowledge.setSide(Side.TOP);
-        this.search.setSide(Side.TOP);
-        this.games.setSide(Side.TOP);
-    }
-
-    public Contents(String contentsName, File dir) {
-        this.main = new TabPane();
-        this.main.setPrefSize(1000, 800);
-        this.main.setSide(Side.LEFT);
-        this.treeItem = new TreeItem<>(contentsName);
-
-        variablesTab = new Tab("Variables", variables);
-        dataTab = new Tab("Data", data);
-        graphTab = new Tab("Graph", graphs);
-        knowledgeTab = new Tab("Knowledge", knowledge);
-        searchTab = new Tab("Search", search);
-        gamesTab = new Tab("Games", games);
-
-        dataDir = new File(dir, "data");
-        graphDir = new File(dir, "graph");
-        knowledgeDir = new File(dir, "knowledge");
-        searchDir = new File(dir, "search");
-        gamesDir = new File(dir, "games");
-
-        if (!dataDir.exists()) {
-            boolean made = dataDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + dataDir.getPath());
-            }
-        }
-
-        if (!graphDir.exists()) {
-            boolean made = graphDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + graphDir.getPath());
-            }
-        }
-
-        if (!knowledgeDir.exists()) {
-            boolean made = knowledgeDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + knowledgeDir.getPath());
-            }
-        }
-
-        if (!searchDir.exists()) {
-            boolean made = searchDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + searchDir.getPath());
-            }
-        }
-
-        if (!gamesDir.exists()) {
-            boolean made = gamesDir.mkdir();
-
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + gamesDir.getPath());
-            }
-        }
-
-        this.main.getTabs().add(variablesTab);
-        this.main.getTabs().add(dataTab);
-        this.main.getTabs().add(graphTab);
-        this.main.getTabs().add(knowledgeTab);
-        this.main.getTabs().add(searchTab);
-        this.main.getTabs().add(gamesTab);
-
-        variablesTab.setClosable(false);
-        dataTab.setClosable(false);
-        graphTab.setClosable(false);
-        knowledgeTab.setClosable(false);
-        searchTab.setClosable(false);
-        gamesTab.setClosable(false);
-
-        this.data.setSide(Side.TOP);
-        this.graphs.setSide(Side.TOP);
-        this.knowledge.setSide(Side.TOP);
         this.search.setSide(Side.TOP);
         this.games.setSide(Side.TOP);
     }

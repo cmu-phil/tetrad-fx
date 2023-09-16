@@ -92,7 +92,7 @@ public class NamesToContents {
                     sessionName = dir.getName().replace('_', ' ');
 
                     if (!namesToContents.containsKey(sessionName)) {
-                        Contents _contents = new Contents(sessionName, sessionDir);
+                        Contents _contents = new Contents(null, null, sessionName, null, null, sessionDir);
                         namesToContents.put(sessionName, _contents);
                         selectedName = sessionName;
                         activePane.setCenter(getSelectedMain());
