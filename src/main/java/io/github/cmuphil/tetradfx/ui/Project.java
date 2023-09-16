@@ -5,6 +5,7 @@ import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.geometry.Side;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;

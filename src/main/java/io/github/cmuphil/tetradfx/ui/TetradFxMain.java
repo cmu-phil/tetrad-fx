@@ -12,6 +12,7 @@ import edu.cmu.tetrad.util.Parameters;
 import edu.cmu.tetrad.util.RandomUtil;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
@@ -29,11 +30,11 @@ import java.io.IOException;
  *
  * @author josephramsey
  */
-public class Main {
-    private static final Main INSTANCE = new Main();
+public class TetradFxMain {
+    private static final TetradFxMain INSTANCE = new TetradFxMain();
 
-    public static Main getInstance() {
-        return Main.INSTANCE;
+    public static TetradFxMain getInstance() {
+        return TetradFxMain.INSTANCE;
     }
 
     // Passing primaryStage in here so that I can quit the application from a menu item

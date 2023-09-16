@@ -1,6 +1,6 @@
 package io.github.cmuphil.tetradfx;
 
-import io.github.cmuphil.tetradfx.ui.Main;
+import io.github.cmuphil.tetradfx.ui.TetradFxMain;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -26,7 +26,7 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/tyler32.png"))));
 
-        Scene scene = new Scene(Main.getInstance().getRoot(primaryStage));
+        Scene scene = new Scene(TetradFxMain.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
         primaryStage.setTitle("Tetrad-FX");
 

@@ -1,4 +1,4 @@
-package io.github.cmuphil.tetradfx.ui;
+package io.github.cmuphil.tetradfx.utils;
 
 import javafx.beans.property.SimpleStringProperty;
 

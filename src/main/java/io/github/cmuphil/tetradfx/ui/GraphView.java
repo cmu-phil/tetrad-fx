@@ -3,6 +3,8 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.graph.*;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.for751lib.GraphTransforms;
+import io.github.cmuphil.tetradfx.utils.CenteredShape;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
