@@ -49,7 +49,7 @@ public class GraphView extends Pane {
 //    private static final Color HIGHLIGHTED_LINE_COLOR = Color.rgb(238, 180, 34);
 
     private GraphView(Graph graph) {
-        Pane content = new Pane();
+        var content = new Pane();
 
         displayNodes = new HashMap<>();
         displayEdges = new HashMap<>();
@@ -59,7 +59,7 @@ public class GraphView extends Pane {
         }
 
         for (Edge edge : graph.getEdges()) {
-            DisplayEdge _edge = new DisplayEdge();
+            var _edge = new DisplayEdge();
             displayEdges.put(edge, _edge);
             content.getChildren().addAll(_edge.getLine(), _edge.getEdgemark1(), _edge.getEdgemark2());
 
@@ -70,7 +70,7 @@ public class GraphView extends Pane {
         }
 
         for (Node node : graph.getNodes()) {
-            Text text = displayNodes.get(node).getText();
+            var text = displayNodes.get(node).getText();
             text.setFont(new Font("Arial", 16));
             content.getChildren().addAll(displayNodes.get(node).getShape(), text);
         }
@@ -95,20 +95,20 @@ public class GraphView extends Pane {
      */
     @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
-        TextArea markdownArea = new TextArea();
+        var markdownArea = new TextArea();
         markdownArea.setPromptText("Notes:");
 
         // Setting the font for the TextArea
         markdownArea.setFont(new Font("Arial", 14));
 
-        BorderPane notesArea = new BorderPane(markdownArea);
+        var notesArea = new BorderPane(markdownArea);
 
-        SplitPane pane = new SplitPane();
+        var pane = new SplitPane();
 
         ChangedStuffINeed.circleLayout(graph);
         Pane graphView = new GraphView(graph);
 
-        ScrollPane scrollPane = new ScrollPane();
+        var scrollPane = new ScrollPane();
         scrollPane.setContent(graphView);
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -132,7 +132,7 @@ public class GraphView extends Pane {
     }
 
     public static void addGame(String s, String name, Pane pane) {
-        Text text = new Text(s);
+        var text = new Text(s);
         text.setWrappingWidth(pane != null ? 400 : 600);
         text.setFont(new Font("Arial", 16));
         text.setStyle("-fx-border-color: black; -fx-border-width: 2px;");
@@ -150,56 +150,56 @@ public class GraphView extends Pane {
         VBox vBox = new VBox(hBox);
         vBox.setAlignment(Pos.CENTER);
 
-        String _name = Utils.nextName(name, NamesToProjects.getInstance().getSelectedProject().getGameNames());
+        var _name = Utils.nextName(name, NamesToProjects.getInstance().getSelectedProject().getGameNames());
 
         NamesToProjects.getInstance().getSelectedProject().addGame(_name, vBox, true);
     }
 
     @NotNull
     private ContextMenu getContextMenu(Pane pane, Graph graph) {
-        ContextMenu contextMenu = new ContextMenu();
+        var contextMenu = new ContextMenu();
 
-        Menu layout = new Menu("Layout");
+        var layout = new Menu("Layout");
 
-        MenuItem item1 = new MenuItem("Circle");
+        var item1 = new MenuItem("Circle");
         item1.setOnAction(e -> layout(graph, 1));
 
-        MenuItem item2 = new MenuItem("Square");
+        var item2 = new MenuItem("Square");
         item2.setOnAction(e -> layout(graph, 2));
 
-        MenuItem item3 = new MenuItem("Force");
+        var item3 = new MenuItem("Force");
         item3.setOnAction(e -> layout(graph, 3));
 
-        MenuItem item4 = new MenuItem("Causal Order");
+        var item4 = new MenuItem("Causal Order");
         item4.setOnAction(e -> layout(graph, 4));
 
         layout.getItems().addAll(item1, item2, item3, item4);
         contextMenu.getItems().addAll(layout);
 
-        Menu transform = new Menu("Transform");
+        var transform = new Menu("Transform");
 
-        MenuItem dagToCPDAG = new MenuItem("DAG to CPDAG");
+        var dagToCPDAG = new MenuItem("DAG to CPDAG");
 
         dagToCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.cpdagForDag(graph);
             NamesToProjects.getInstance().getSelectedProject().addGraph("DAG to CPPAG", dag, true, true);
         });
 
-        MenuItem dagToPag = new MenuItem("DAG to PAG");
+        var dagToPag = new MenuItem("DAG to PAG");
 
         dagToPag.setOnAction(e -> {
             Graph dag = GraphTransforms.dagToPag(graph);
             NamesToProjects.getInstance().getSelectedProject().addGraph("DAG to PAG", dag, true, true);
         });
 
-        MenuItem dagFromCPDAG = new MenuItem("DAG from CPDAG");
+        var dagFromCPDAG = new MenuItem("DAG from CPDAG");
 
         dagFromCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.dagFromCPDAG(graph);
             NamesToProjects.getInstance().getSelectedProject().addGraph("DAG from CPDAG", dag, true, true);
         });
 
-        MenuItem magFromPag = new MenuItem("MAG from PAG");
+        var magFromPag = new MenuItem("MAG from PAG");
 
         magFromPag.setOnAction(e -> {
             Graph mag = GraphTransforms.pagToMag(graph);
@@ -209,18 +209,18 @@ public class GraphView extends Pane {
         transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);
         contextMenu.getItems().add(transform);
 
-        Menu model = new Menu("Model");
+        var model = new Menu("Model");
         model.getItems().add(new MenuItem("Make a model based on this graph and the selected data"));
         contextMenu.getItems().add(model);
 
-        Menu search = new Menu("Do an search using this graph as an oracle");
+        var search = new Menu("Do an search using this graph as an oracle");
         search.getItems().add(new MenuItem("Do an search using this graph as an oracle"));
         contextMenu.getItems().add(search);
 
-        MenuItem saveGraph = new MenuItem("Save Graph");
+        var saveGraph = new MenuItem("Save Graph");
         contextMenu.getItems().add(saveGraph);
 
-        MenuItem games = new MenuItem("Base Games on this Graph!");
+        var games = new MenuItem("Base Games on this Graph!");
         games.setOnAction(e -> Games.baseGamesOnGraph(graph));
         contextMenu.getItems().add(games);
 
@@ -244,21 +244,21 @@ public class GraphView extends Pane {
             default -> throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
         }
 
-        for (Node node : graph.getNodes()) {
+        for (var node : graph.getNodes()) {
             double newX = node.getCenterX();
             double newY = node.getCenterY();
 
-            Shape shape = displayNodes.get(node).getShape();
-            Text text = displayNodes.get(node).getText();
+            var shape = displayNodes.get(node).getShape();
+            var text = displayNodes.get(node).getText();
 
             ((CenteredShape) shape).setCenterX(newX);
             ((CenteredShape) shape).setCenterY(newY);
             text.setX(newX - text.getLayoutBounds().getWidth() / 2);
             text.setY(newY + text.getLayoutBounds().getHeight() / 4);
 
-            for (Edge edge : graph.getEdges(node)) {
-                Node n1 = edge.getNode1();
-                Node n2 = edge.getNode2();
+            for (var edge : graph.getEdges(node)) {
+                var n1 = edge.getNode1();
+                var n2 = edge.getNode2();
 
                 updateLineAndArrow(edge, displayEdges.get(edge).getLine(),
                         displayEdges.get(edge).getEdgemark1(), displayEdges.get(edge).getEdgemark2(),
@@ -268,10 +268,10 @@ public class GraphView extends Pane {
     }
 
     private DisplayNode makeDisplayNode(Node node, Graph graph) {
-        String name = node.getName();
-        Text text = new Text(name);
+        var name = node.getName();
+        var text = new Text(name);
         text.setFont(Font.font(20));
-        Shape shape = getShape(node, text);
+        var shape = getShape(node, text);
 
         shape.setFill(NODE_FILL_COLOR);
         shape.setStroke(LINE_COLOR);
@@ -386,8 +386,8 @@ public class GraphView extends Pane {
      * Changes the edge mark polygon to be an arrowhead.
      */
     private static void createArrowhead(Polygon edgemark, double lineStartX, double lineStartY, double lineEndX, double lineEndY) {
-        double angle = Math.atan2(lineStartY - lineEndY, lineStartX - lineEndX);
-        double arrowSize = 10;
+        var angle = Math.atan2(lineStartY - lineEndY, lineStartX - lineEndX);
+        var arrowSize = 10;
 
         edgemark.getPoints().addAll(
                 lineEndX + arrowSize * Math.cos(angle - Math.PI / 6.),
@@ -408,19 +408,19 @@ public class GraphView extends Pane {
      */
     private void createCircle(Polygon edgemark, double startX, double starty,
                               double endX, double endY) {
-        double radius = 5;
-        double sides = 10;
+        var radius = 5;
+        var sides = 10;
 
-        double sqrt = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
-        double centerX = startX + radius * (endX - startX) / sqrt;
-        double centerY = starty + radius * (endY - starty) / sqrt;
+        var sqrt = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - starty, 2));
+        var centerX = startX + radius * (endX - startX) / sqrt;
+        var centerY = starty + radius * (endY - starty) / sqrt;
 
-        final double ANGLE_STEP = 360.0 / sides;
+        final var ANGLE_STEP = 360.0 / sides;
 
         for (int i = 0; i < sides; i++) {
-            double angle = i * ANGLE_STEP;
-            double x = centerX + radius * Math.cos(Math.toRadians(angle));
-            double y = centerY + radius * Math.sin(Math.toRadians(angle));
+            var angle = i * ANGLE_STEP;
+            var x = centerX + radius * Math.cos(Math.toRadians(angle));
+            var y = centerY + radius * Math.sin(Math.toRadians(angle));
             edgemark.getPoints().addAll(x, y);
         }
 
@@ -437,8 +437,8 @@ public class GraphView extends Pane {
 
         int iterations = 15;
         for (int i = 0; i < iterations; i++) {
-            double midX = (startX + endX) / 2;
-            double midY = (startY + endY) / 2;
+            var midX = (startX + endX) / 2;
+            var midY = (startY + endY) / 2;
 
             if (Shape.contains(midX, midY)) {
                 startX = midX;
@@ -480,18 +480,18 @@ public class GraphView extends Pane {
         private final Polygon edgemark2;
 
         public DisplayEdge() {
-            Line line = new Line();
+            var line = new Line();
             line.setStroke(LINE_COLOR);
             this.line = line;
 
-            Polygon edgemark1 = new Polygon();
+            var edgemark1 = new Polygon();
 
             edgemark1.setStroke(LINE_COLOR);
             edgemark1.setFill(LINE_COLOR);
 
             this.edgemark1 = edgemark1;
 
-            Polygon edgemark2 = new Polygon();
+            var edgemark2 = new Polygon();
             edgemark2.setStroke(LINE_COLOR);
             edgemark2.setFill(LINE_COLOR);
 
