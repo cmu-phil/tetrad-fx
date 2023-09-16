@@ -13,6 +13,7 @@ import edu.cmu.tetrad.util.RandomUtil;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
@@ -58,7 +59,12 @@ public class Main {
 
         TabPane tabPane = new TabPane();
         Tab notes = new Tab("Notes", notesArea);
-        Tab paraneters = new Tab("Parameters", new TextArea("Parameters go here."));
+
+        BorderPane parametersPane = NamesToContents.getInstance().getParametersPane();
+        Node parametersArea = NamesToContents.getInstance().getSelectedContents().getParametersArea();
+        parametersPane.setCenter(parametersArea);
+
+        Tab paraneters = new Tab("Parameters", parametersPane);
         notes.setClosable(false);
         paraneters.setClosable(false);
         tabPane.getTabs().addAll(notes, paraneters);

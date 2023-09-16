@@ -5,6 +5,7 @@ import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
+import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import javafx.scene.Node;
@@ -14,10 +15,7 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Maps datasets to their contents.
@@ -31,9 +29,12 @@ public class NamesToContents {
     private final TreeView<String> sessionTreeView;
     private final TreeItem<String> projects;
     private final File dir;
+    private final BorderPane parametersPane;
     private String selectedName;
 
-    private NamesToContents() {
+    private NamesToContents(BorderPane parametersPane) {
+        this.parametersPane = parametersPane;
+
         TreeItem<String> root = new TreeItem<>("Session");
         root.setExpanded(true);
 
@@ -79,12 +80,8 @@ public class NamesToContents {
 
             sessionName = _sessionName;
 
-//            namesToContents.put(_sessionName, new Contents(sessionName, sessionDir));
             selectedName = sessionName;
-//            activePane.setCenter(getSelectedMain());
-//            TreeItem<String> childItem1 = getSelectedContents().getTreeItem();
             projects = new TreeItem<>(sessionName);
-//            projects.getChildren().add(childItem1);
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
 
@@ -96,24 +93,14 @@ public class NamesToContents {
                         Contents _contents = new Contents(sessionName, sessionDir);
                         namesToContents.put(sessionName, _contents);
                         selectedName = sessionName;
-
-//                        if (_sessionName.equals(sessionName)) {
                         activePane.setCenter(getSelectedMain());
-//                        }
-
                         TreeItem<String> childItem1 = _contents.getTreeItem();
-//                        projects = new TreeItem<>(sessionName);
                         projects.getChildren().add(childItem1);
-//                        sessionTreeView = new TreeView<>(projects);
-//                        projects.setExpanded(true);
-
                     }
 
                     File dataDir = new File(dir, "data");
                     File graphDir = new File(dir, "graph");
-                    File knowledgeDir = new File(dir, "knowledge");
                     File searchDir = new File(dir, "search");
-                    File gamesDir = new File(dir, "games");
 
                     this.selectedName = sessionName;
 
@@ -126,7 +113,13 @@ public class NamesToContents {
                                     int maxNumCategories = 5;
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
                                             "*", true, maxNumCategories, Delimiter.TAB, false);
-                                    getSelectedContents().addDataSet(sessionName, _dataSet, true, false);
+
+                                    String name = _dataSet.getName();
+
+                                    if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
+
+                                    String replace = name.replace('_', ' ');
+                                    getSelectedContents().addDataSet(replace, _dataSet, true, false);
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -154,10 +147,10 @@ public class NamesToContents {
                         for (File file : searchFiles) {
                             if (file.getName().endsWith("txt")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedContents().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
+                                getSelectedContents().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedContents().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false);
+                                getSelectedContents().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             }
                         }
                     }
@@ -174,6 +167,9 @@ public class NamesToContents {
                 if (selectedItem != null) {
                     selectedName = selectedItem.getValue();
                     activePane.setCenter(getSelectedMain());
+
+                    Node parametersArea = NamesToContents.getInstance().getSelectedContents().getParametersArea();
+                    parametersPane.setCenter(parametersArea);
                 }
             }
         });
@@ -181,7 +177,7 @@ public class NamesToContents {
 
     public static NamesToContents getInstance() {
         if (instance == null) {
-            instance = new NamesToContents();
+            instance = new NamesToContents(new BorderPane());
         }
 
         return instance;
@@ -230,5 +226,9 @@ public class NamesToContents {
 
     public Collection<String> getProjectNames() {
         return new HashSet<>(namesToContents.keySet());
+    }
+
+    public BorderPane getParametersPane() {
+        return parametersPane;
     }
 }

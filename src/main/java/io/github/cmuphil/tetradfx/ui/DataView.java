@@ -80,7 +80,7 @@ public class DataView {
                 Graph graph = algorithm.search(dataSet, new Parameters());
                 Contents selected = NamesToContents.getInstance().  getSelectedContents();
                 selected.addSearchResult(algorithm.getClass().getSimpleName(),
-                        graph, true, true);
+                        graph, true, true, new Parameters(), algorithm.getParameters());
             });
 
             items.add(item);

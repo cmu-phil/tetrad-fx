@@ -4,9 +4,12 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
+import edu.cmu.tetrad.util.Parameters;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
 
@@ -23,14 +26,17 @@ import java.util.List;
  * @author josephramsey
  */
 public class Contents {
+    private final Tab variablesTab;
     private final Tab dataTab;
     private final Tab graphTab;
     private final Tab knowledgeTab;
     private final Tab searchTab;
     private final Tab gamesTab;
+    private final TextArea parametersArea = new TextArea("Parameters will be displayed here when available.");
 
     private final TabPane main;
 
+    private final TabPane variables = new TabPane();
     private final TabPane data = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane knowledge = new TabPane();
@@ -50,13 +56,7 @@ public class Contents {
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(contentsName);
 
-        this.treeItem.getChildren().add(new TreeItem<>("Data"));
-        this.treeItem.getChildren().add(new TreeItem<>("Graph"));
-        this.treeItem.getChildren().add(new TreeItem<>("Knowledge"));
-        this.treeItem.getChildren().add(new TreeItem<>("Search"));
-        this.treeItem.getChildren().add(new TreeItem<>("Insights"));
-        this.treeItem.getChildren().add(new TreeItem<>("Games"));
-
+        variablesTab = new Tab("Variables", variables);
         dataTab = new Tab("Data", data);
         graphTab = new Tab("Graph", graphs);
         knowledgeTab = new Tab("Knowledge", knowledge);
@@ -110,28 +110,23 @@ public class Contents {
         }
 
 
-        if (dataSet == null && graph == null) {
-            this.main.getTabs().add(dataTab);
-            this.main.getTabs().add(graphTab);
-        } else if (dataSet != null && graph == null) {
-            this.main.getTabs().add(dataTab);
-            this.main.getTabs().add(graphTab);
+        if (dataSet != null && graph == null) {
             addDataSet(dataName, dataSet, false, true);
-        } else if (dataSet == null) {
-            this.main.getTabs().add(dataTab);
-            this.main.getTabs().add(graphTab);
+        } else if (dataSet == null && graph != null) {
             addGraph(graphName, graph, false, true);
         } else {
-            this.main.getTabs().add(dataTab);
-            this.main.getTabs().add(graphTab);
             addDataSet(dataName, dataSet, false, true);
             addGraph(graphName, graph, false, true);
         }
 
+        this.main.getTabs().add(variablesTab);
+        this.main.getTabs().add(dataTab);
+        this.main.getTabs().add(graphTab);
         this.main.getTabs().add(knowledgeTab);
         this.main.getTabs().add(searchTab);
         this.main.getTabs().add(gamesTab);
 
+        variablesTab.setClosable(false);
         dataTab.setClosable(false);
         graphTab.setClosable(false);
         knowledgeTab.setClosable(false);
@@ -151,13 +146,7 @@ public class Contents {
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(contentsName);
 
-        this.treeItem.getChildren().add(new TreeItem<>("Data"));
-        this.treeItem.getChildren().add(new TreeItem<>("Graph"));
-        this.treeItem.getChildren().add(new TreeItem<>("Knowledge"));
-        this.treeItem.getChildren().add(new TreeItem<>("Search"));
-        this.treeItem.getChildren().add(new TreeItem<>("Insights"));
-        this.treeItem.getChildren().add(new TreeItem<>("Games"));
-
+        variablesTab = new Tab("Variables", variables);
         dataTab = new Tab("Data", data);
         graphTab = new Tab("Graph", graphs);
         knowledgeTab = new Tab("Knowledge", knowledge);
@@ -210,12 +199,14 @@ public class Contents {
             }
         }
 
+        this.main.getTabs().add(new Tab("Variables", new VariableView(null).getTableView()));
         this.main.getTabs().add(dataTab);
         this.main.getTabs().add(graphTab);
         this.main.getTabs().add(knowledgeTab);
         this.main.getTabs().add(searchTab);
         this.main.getTabs().add(gamesTab);
 
+        variablesTab.setClosable(false);
         dataTab.setClosable(false);
         graphTab.setClosable(false);
         knowledgeTab.setClosable(false);
@@ -258,6 +249,12 @@ public class Contents {
         } catch (IOException e) {
             System.out.println("Could not write data set to file");
         }
+
+        this.variables.getTabs().clear();
+        Tab tab2 = new Tab(name, DataView.getTableView(dataSet));
+        tab2.setClosable(closable);
+
+        this.variables.getTabs().add(new Tab("Variables", new VariableView(dataSet).getTableView()));
     }
 
     public void addGraph(String name, Graph graph, boolean closable, boolean nextName) {
@@ -279,7 +276,7 @@ public class Contents {
         GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
     }
 
-    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName) {
+    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters, List<String> usedParameters) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -294,8 +291,18 @@ public class Contents {
         this.main.getSelectionModel().select(searchTab);
         this.search.getSelectionModel().select(tab);
 
+        setParametersText(parameters, usedParameters);
+
         String _name = name.replace(' ', '_') + ".txt";
         GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
+    }
+
+    private void setParametersText(Parameters parameters, List<String> usedParameters) {
+        this.parametersArea.clear();
+
+        for (String parameter : usedParameters) {
+            this.parametersArea.appendText(parameter + "=" + parameters.get(parameter) + "\n");
+        }
     }
 
     public void addGame(String name, Pane pane, boolean nextName) {
@@ -355,6 +362,10 @@ public class Contents {
 
     public TreeItem<String> getTreeItem() {
         return treeItem;
+    }
+
+    public Node getParametersArea() {
+        return parametersArea;
     }
 }
 
