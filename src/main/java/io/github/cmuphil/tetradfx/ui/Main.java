@@ -55,19 +55,24 @@ public class Main {
         text.setWrapText(true);
         text.setFont(new Font("Arial", 14));
         BorderPane notesArea = new BorderPane(text);
-        notesArea.setTop(new Label("Notes:"));
+
+        BorderPane parametersPane = NamesToContents.getInstance().getParametersPane();
+        TextArea parametersArea = NamesToContents.getInstance().getSelectedContents().getParametersArea();
+        parametersPane.setCenter(parametersArea);
+        Tab paraneters = new Tab("Parameters", parametersPane);
+        paraneters.setClosable(false);
 
         TabPane tabPane = new TabPane();
         Tab notes = new Tab("Notes", notesArea);
-
-        BorderPane parametersPane = NamesToContents.getInstance().getParametersPane();
-        Node parametersArea = NamesToContents.getInstance().getSelectedContents().getParametersArea();
-        parametersPane.setCenter(parametersArea);
-
-        Tab paraneters = new Tab("Parameters", parametersPane);
         notes.setClosable(false);
-        paraneters.setClosable(false);
-        tabPane.getTabs().addAll(notes, paraneters);
+
+        tabPane.getTabs().addAll(paraneters, notes);
+
+        parametersArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Make sure the tab containing the TextArea is selected
+            tabPane.getSelectionModel().select(paraneters);
+        });
+
 
         leftSplit.getItems().addAll(NamesToContents.getInstance().getSessionTreeView(),
                tabPane);

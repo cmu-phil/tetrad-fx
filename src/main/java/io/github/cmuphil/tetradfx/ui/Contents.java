@@ -12,6 +12,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -199,7 +200,7 @@ public class Contents {
             }
         }
 
-        this.main.getTabs().add(new Tab("Variables", new VariableView(null).getTableView()));
+        this.main.getTabs().add(variablesTab);
         this.main.getTabs().add(dataTab);
         this.main.getTabs().add(graphTab);
         this.main.getTabs().add(knowledgeTab);
@@ -254,7 +255,11 @@ public class Contents {
         Tab tab2 = new Tab(name, DataView.getTableView(dataSet));
         tab2.setClosable(closable);
 
-        this.variables.getTabs().add(new Tab("Variables", new VariableView(dataSet).getTableView()));
+        // It's important that this not be closable. The user may have put a lot of work into it, and
+        // it should not be accidentally deleted.
+        Tab _variables = new Tab("Variables", new VariableView(dataSet).getTableView());
+        _variables.setClosable(false);
+        this.variables.getTabs().add(_variables);
     }
 
     public void addGraph(String name, Graph graph, boolean closable, boolean nextName) {
@@ -276,7 +281,8 @@ public class Contents {
         GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
     }
 
-    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters, List<String> usedParameters) {
+    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters,
+                                List<String> usedParameters) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -364,7 +370,7 @@ public class Contents {
         return treeItem;
     }
 
-    public Node getParametersArea() {
+    public TextArea getParametersArea() {
         return parametersArea;
     }
 }
