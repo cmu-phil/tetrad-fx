@@ -116,7 +116,7 @@ public class Project {
         return main;
     }
 
-    public void addDataSet(String name, DataSet dataSet, boolean closable, boolean nextName) {
+    public void addDataSet(String name, DataSet dataSet, boolean nextName, boolean closable) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -131,9 +131,9 @@ public class Project {
         this.main.getSelectionModel().select(dataTab);
         this.data.getSelectionModel().select(tab);
 
-        try {
-            File file = new File(dataDir,  name.replace(' ', '_') + ".txt");
+        File file = new File(dataDir, name.replace(' ', '_') + ".txt");
 
+        try {
             try (PrintWriter writer = new PrintWriter(file)) {
                 DataWriter.writeRectangularData(dataSet, writer, '\t');
             }
@@ -149,8 +149,20 @@ public class Project {
         // It's important that this not be closable. The user may have put a lot of work into it, and
         // it should not be accidentally deleted.
         Tab _variables = new Tab("Variables", new VariableView(dataSet).getTableView());
-        _variables.setClosable(false);
+        _variables.setClosable(closable);
         this.data.getTabs().add(_variables);
+
+        tab.setOnClosed(event -> {
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            } else {
+                System.out.println("File does not exist");
+            }
+        });
     }
 
     public void addGraph(String name, Graph graph, boolean nextName, boolean closable) {
@@ -169,9 +181,22 @@ public class Project {
         this.graphs.getSelectionModel().select(tab);
 
         String _name = name.replace(' ', '_') + ".json";
-        ChangedStuffINeed.saveGraphJson(graph, new File(graphDir, _name));
+        File file = new File(graphDir, _name);
+        ChangedStuffINeed.jsonFromJava(graph, file);
 
 //        GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
+
+        tab.setOnClosed(event -> {
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            } else {
+                System.out.println("File does not exist");
+            }
+        });
     }
 
     public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters,
@@ -193,11 +218,24 @@ public class Project {
         setParametersText(parameters, usedParameters);
 
         String _name = name.replace(' ', '_') + ".json";
-        ChangedStuffINeed.saveGraphJson(graph, new File(searchDir, _name));
+        File file = new File(searchDir, _name);
+        ChangedStuffINeed.jsonFromJava(graph, file);
 
 
 //        String _name = name.replace(' ', '_') + ".txt";
 //        GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
+
+        tab.setOnClosed(event -> {
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            } else {
+                System.out.println("File does not exist");
+            }
+        });
     }
 
     private void setParametersText(Parameters parameters, List<String> usedParameters) {
@@ -221,6 +259,10 @@ public class Project {
         this.games.getTabs().add(tab);
         this.main.getSelectionModel().select(gamesTab);
         this.games.getSelectionModel().select(tab);
+
+        tab.setOnClosed(event -> {
+            System.out.println(tab.getText() + " was closed.");
+        });
     }
 
     public Collection<String> getDataNames() {

@@ -190,7 +190,7 @@ public class TetradFxMain {
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exitItem = new MenuItem("Exit");
 
-        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
+        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
         loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 

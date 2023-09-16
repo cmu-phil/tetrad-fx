@@ -1,6 +1,7 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.graph.EdgeListGraph;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
@@ -120,7 +121,7 @@ public class NamesToProjects {
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
 
                                     String replace = name.replace('_', ' ');
-                                    getSelectedProject().addDataSet(replace, _dataSet, true, false);
+                                    getSelectedProject().addDataSet(replace, _dataSet, false, true);
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -136,6 +137,7 @@ public class NamesToProjects {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
                                 getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, true);
                             } else if (file.getName().endsWith("json")) {
+//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
                                 getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, true);
                             }
@@ -150,6 +152,7 @@ public class NamesToProjects {
                                 var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
                                 getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {
+//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 var _graph = GraphSaveLoadUtils.loadGraphJson(file);
                                 getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             }

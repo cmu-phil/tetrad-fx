@@ -1,7 +1,6 @@
 package io.github.cmuphil.tetradfx.for751lib;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import edu.cmu.tetrad.data.DataModel;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
@@ -17,13 +16,8 @@ import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
-import java.util.prefs.Preferences;
 
 public class ChangedStuffINeed {
     /**
@@ -308,20 +302,79 @@ public class ChangedStuffINeed {
         return (DataSet) dataModel;
     }
 
-    public static void saveGraphJson(Graph graph, File file) {
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String text = gson.toJson(graph);
+    public static void jsonFromJava(Object object, File file) {
+        Gson gson = new Gson();
 
-            PrintWriter out = new PrintWriter(file);
-            out.println(text);
-            Preferences.userRoot().put("fileSaveLocation", file.getParent());
-            out.close();
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-            throw new RuntimeException("Not a directed graph.", e1);
-        } catch (IllegalArgumentException e1) {
-            throw new RuntimeException(e1);
+        try (FileWriter writer = new FileWriter(file)) {
+            gson.toJson(object, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            String text = gson.toJson(object);
+//            PrintWriter out = new PrintWriter(file);
+//            out.println(text);
+//            Preferences.userRoot().put("fileSaveLocation", file.getParent());
+//            out.close();
+//        } catch (FileNotFoundException e1) {
+//            e1.printStackTrace();
+//            throw new RuntimeException("Not a directed graph.", e1);
+//        } catch (IllegalArgumentException e1) {
+//            throw new RuntimeException(e1);
+//        }
+    }
+
+    public static Object javaFromJson(File file, Class clazz) {
+        Gson gson = new Gson();
+
+        try (FileReader reader = new FileReader(file)) {
+            return gson.fromJson(reader, clazz);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
+
+//    public static void saveToJson(Object object, File file) {
+//        try {
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            String text = gson.toJson(object);
+//            PrintWriter out = new PrintWriter(file);
+//            out.println(text);
+//            Preferences.userRoot().put("fileSaveLocation", file.getParent());
+//            out.close();
+//        } catch (FileNotFoundException e1) {
+//            e1.printStackTrace();
+//            throw new RuntimeException("Not a directed graph.", e1);
+//        } catch (IllegalArgumentException e1) {
+//            e1.printStackTrace();
+//            throw new RuntimeException(e1);
+//        }
+//    }
+
+//    public static Graph loadGraphJson(File file) {
+//        try {
+//            Reader in1 = new FileReader(file);
+//            return readerToGraphJson(in1);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        throw new IllegalStateException();
+//    }
+//
+//    public static Graph readerToGraphJson(Reader reader) throws IOException {
+//        BufferedReader in = new BufferedReader(reader);
+//
+//        StringBuilder json = new StringBuilder();
+//        String line;
+//
+//        while ((line = in.readLine()) != null) {
+//            json.append(line.trim());
+//        }
+//
+//        return JsonUtils.parseJSONObjectToTetradGraph(json.toString());
+//    }
 }
