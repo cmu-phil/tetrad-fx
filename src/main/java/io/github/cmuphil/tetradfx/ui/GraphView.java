@@ -155,12 +155,10 @@ public class GraphView extends Pane {
 
     @NotNull
     private ContextMenu getContextMenu(Pane pane, Graph graph) {
-        // Create a context menu
         ContextMenu contextMenu = new ContextMenu();
 
         Menu layout = new Menu("Layout");
 
-        // Create menu items
         MenuItem item1 = new MenuItem("Circle");
         item1.setOnAction(e -> layout(graph, 1));
 
@@ -173,7 +171,6 @@ public class GraphView extends Pane {
         MenuItem item4 = new MenuItem("Causal Order");
         item4.setOnAction(e -> layout(graph, 4));
 
-        // Add menu items to the context menu
         layout.getItems().addAll(item1, item2, item3, item4);
         contextMenu.getItems().addAll(layout);
 
@@ -236,7 +233,6 @@ public class GraphView extends Pane {
         return contextMenu;
     }
 
-    // This will become a popup menu for the graph view.
     private void layout(Graph graph, int layoutType) {
         switch (layoutType) {
             case 1 -> ChangedStuffINeed.circleLayout(graph);
@@ -269,8 +265,6 @@ public class GraphView extends Pane {
         }
     }
 
-    // Makes a display node for a node in the graph and sets up its event handlers, so it can
-    // be dragged around with attached edges.
     private DisplayNode makeDisplayNode(Node node, Graph graph) {
         String name = node.getName();
         Text text = new Text(name);
@@ -350,8 +344,6 @@ public class GraphView extends Pane {
         return shape;
     }
 
-    // Currently only support edges with possible arrow endpoints. So, DAGs and CPDAGs. Still
-    // need to implement circle endpoints for PAGs.
     private void updateLineAndArrow(Edge edge, Line line, Polygon edgemark1, Polygon edgemark2,
                                     Shape startShape, Shape endShape) {
         double startX = ((CenteredShape) startShape).getCenterX();
