@@ -2,7 +2,7 @@ package io.github.cmuphil.tetradfx.utils;
 
 import java.util.Collection;
 
-public class Utils {
+public class NameUtils {
     public static String nextName(String name, Collection<String> names) {
         for (int i = 1; i < 1000; i++) {
             String _name = name + " " + i;

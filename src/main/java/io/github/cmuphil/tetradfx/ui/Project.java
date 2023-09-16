@@ -3,9 +3,9 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
-import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
-import io.github.cmuphil.tetradfx.utils.Utils;
+import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
+import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.geometry.Side;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -34,8 +34,8 @@ public class Project {
 
     private final TabPane main;
 
-    private final TabPane variables = new TabPane();
     private final TabPane data = new TabPane();
+    private final TabPane variables = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane search = new TabPane();
     private final TabPane games = new TabPane();
@@ -51,15 +51,14 @@ public class Project {
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(projectName);
 
-        Tab variablesTab = new Tab("Variables", variables);
         dataTab = new Tab("Data", data);
-        graphTab = new Tab("Graph", graphs);
-        searchTab = new Tab("Search", search);
+        searchTab = new Tab("Search Graphs", search);
+        graphTab = new Tab("Other Graphs", graphs);
         gamesTab = new Tab("Games", games);
 
         dataDir = new File(dir, "data");
-        graphDir = new File(dir, "graph");
-        searchDir = new File(dir, "search");
+        searchDir = new File(dir, "search_graphs");
+        graphDir = new File(dir, "other_graphs");
 
         if (!dataDir.exists()) {
             boolean made = dataDir.mkdir();
@@ -86,20 +85,22 @@ public class Project {
         }
 
         if (dataSet != null) {
-            addDataSet(dataName, dataSet, false, true);
+            addDataSet(dataName, dataSet, false, false);
         }
 
         if (graph != null) {
-            addGraph(graphName, graph, false, true);
+            addGraph(graphName, graph, true, false);
         }
 
-        this.main.getTabs().add(variablesTab);
+//        Tab variablesTab = new Tab("Variables", variables);
+
         this.main.getTabs().add(dataTab);
-        this.main.getTabs().add(graphTab);
+//        this.main.getTabs().add(variablesTab);
         this.main.getTabs().add(searchTab);
+        this.main.getTabs().add(graphTab);
         this.main.getTabs().add(gamesTab);
 
-        variablesTab.setClosable(false);
+//        variablesTab.setClosable(false);
         dataTab.setClosable(false);
         graphTab.setClosable(false);
         searchTab.setClosable(false);
@@ -121,7 +122,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getDataNames());
+            name = NameUtils.nextName(name, this.getDataNames());
         }
 
         Tab tab = new Tab(name, DataView.getTableView(dataSet));
@@ -149,16 +150,16 @@ public class Project {
         // it should not be accidentally deleted.
         Tab _variables = new Tab("Variables", new VariableView(dataSet).getTableView());
         _variables.setClosable(false);
-        this.variables.getTabs().add(_variables);
+        this.data.getTabs().add(_variables);
     }
 
-    public void addGraph(String name, Graph graph, boolean closable, boolean nextName) {
+    public void addGraph(String name, Graph graph, boolean nextName, boolean closable) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getGraphNames());
+            name = NameUtils.nextName(name, this.getGraphNames());
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -167,8 +168,10 @@ public class Project {
         this.main.getSelectionModel().select(graphTab);
         this.graphs.getSelectionModel().select(tab);
 
-        String _name = name.replace(' ', '_') + ".txt";
-        GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
+        String _name = name.replace(' ', '_') + ".json";
+        ChangedStuffINeed.saveGraphJson(graph, new File(graphDir, _name));
+
+//        GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
     }
 
     public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters,
@@ -178,7 +181,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getSearchNames());
+            name = NameUtils.nextName(name, this.getSearchNames());
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -189,8 +192,12 @@ public class Project {
 
         setParametersText(parameters, usedParameters);
 
-        String _name = name.replace(' ', '_') + ".txt";
-        GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
+        String _name = name.replace(' ', '_') + ".json";
+        ChangedStuffINeed.saveGraphJson(graph, new File(searchDir, _name));
+
+
+//        String _name = name.replace(' ', '_') + ".txt";
+//        GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
     }
 
     private void setParametersText(Parameters parameters, List<String> usedParameters) {
@@ -207,7 +214,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getGameNames());
+            name = NameUtils.nextName(name, this.getGameNames());
         }
 
         Tab tab = new Tab(name, pane);

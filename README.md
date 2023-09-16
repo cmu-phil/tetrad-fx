@@ -4,7 +4,16 @@ We're doing some doodlings here to try to make an alternative, lightweight [Tetr
 
 One idea we had, which we're currently pursuing, is to shift the focus of Tetrad away from simulation studies and more toward analysis of particular datasets, so what we're doing at the moment is making an app that allows you to load a dataset, transform the data in various ways, do a search on data yielding a graph, transform that graph in various ways. Some graph layouts are included. Currently to search or do other operations you need ot use the context menus.
 
-We added a primitive (yet clever) facility for saving and loading datasets and graphs.
+We added a simple (yet effective) facility for saving and loading 
+datasets and graphs. We'd had problems with Java serialization before
+with the Swing app where new versions broke old serialziations in
+irretrievable ways. So we're using text-based serialization here.
+Data files are saved as flat tab-delimited files. Graphs are saved
+as JSON files. We may add some file zipping to this. The idea
+though is, if your data and graphs are saved out in text format,
+then even if the app changes, you can still read them in and
+recreate the data and graphs. Also, the files can be viewed by
+other tools easily.
 
 Knowledge has not yet been added, since we need to code up a knowledge editor, and also we need a parameter editor.
 

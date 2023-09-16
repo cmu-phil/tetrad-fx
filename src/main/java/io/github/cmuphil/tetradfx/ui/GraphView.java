@@ -4,7 +4,7 @@ import edu.cmu.tetrad.graph.*;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.for751lib.GraphTransforms;
 import io.github.cmuphil.tetradfx.utils.CenteredShape;
-import io.github.cmuphil.tetradfx.utils.Utils;
+import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -152,9 +152,7 @@ public class GraphView extends Pane {
         VBox vBox = new VBox(hBox);
         vBox.setAlignment(Pos.CENTER);
 
-        var _name = Utils.nextName(name, NamesToProjects.getInstance().getSelectedProject().getGameNames());
-
-        NamesToProjects.getInstance().getSelectedProject().addGame(_name, vBox, true);
+        NamesToProjects.getInstance().getSelectedProject().addGame(name, vBox, true);
     }
 
     @NotNull

@@ -8,7 +8,7 @@ import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
-import io.github.cmuphil.tetradfx.utils.Utils;
+import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -59,8 +59,8 @@ public class NamesToProjects {
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
             var dataSet = simulation.simulateDataReducedForm(1000);
-            this.selectedName = Utils.nextName("Sample Simulation", namesToProjects.keySet());
-            add(dataSet, graph, this.selectedName, "Sample Data", "Sample Graph");
+            this.selectedName = NameUtils.nextName("Sample Simulation", namesToProjects.keySet());
+            add(dataSet, graph, this.selectedName, "Sample Data", "True Graph");
         } else {
             File[] sessionDirs = dir.listFiles();
 
@@ -100,8 +100,8 @@ public class NamesToProjects {
                     }
 
                     File dataDir = new File(dir, "data");
-                    File graphDir = new File(dir, "graph");
-                    File searchDir = new File(dir, "search");
+                    File searchDir = new File(dir, "search_graphs");
+                    File graphDir = new File(dir, "other_graphs");
 
                     this.selectedName = sessionName;
 
@@ -134,10 +134,10 @@ public class NamesToProjects {
                         for (var file : graphFiles) {
                             if (file.getName().endsWith("txt")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, true);
                             } else if (file.getName().endsWith("json")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, true);
                             }
                         }
                     }

@@ -1,5 +1,7 @@
 package io.github.cmuphil.tetradfx.for751lib;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.cmu.tetrad.data.DataModel;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
@@ -15,9 +17,13 @@ import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
+import java.util.prefs.Preferences;
 
 public class ChangedStuffINeed {
     /**
@@ -300,5 +306,22 @@ public class ChangedStuffINeed {
         dataModel.setName(file.getName());
 
         return (DataSet) dataModel;
+    }
+
+    public static void saveGraphJson(Graph graph, File file) {
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String text = gson.toJson(graph);
+
+            PrintWriter out = new PrintWriter(file);
+            out.println(text);
+            Preferences.userRoot().put("fileSaveLocation", file.getParent());
+            out.close();
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+            throw new RuntimeException("Not a directed graph.", e1);
+        } catch (IllegalArgumentException e1) {
+            throw new RuntimeException(e1);
+        }
     }
 }
