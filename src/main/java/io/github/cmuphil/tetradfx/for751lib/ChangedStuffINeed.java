@@ -17,7 +17,12 @@ import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class ChangedStuffINeed {
     /**
@@ -377,4 +382,68 @@ public class ChangedStuffINeed {
 //
 //        return JsonUtils.parseJSONObjectToTetradGraph(json.toString());
 //    }
+
+    public static void zip(File dir, File zipFile) {
+        Path sourceDir = dir.toPath(); // Replace with the path to your directory
+//        String zipFileName = "output.zip"; // Name of the output zip file
+
+        try (FileOutputStream fos = new FileOutputStream(zipFile);
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            Files.walkFileTree(sourceDir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE,
+                    new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                            // Only regular files should be added to the zip
+                            if (attrs.isRegularFile()) {
+                                // Get the relative path to the source directory
+                                Path relativePath = sourceDir.relativize(file);
+                                zos.putNextEntry(new ZipEntry(relativePath.toString()));
+                                byte[] bytes = Files.readAllBytes(file);
+                                zos.write(bytes, 0, bytes.length);
+                                zos.closeEntry();
+                            }
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void unzip(File zipFilePath, File destDirectory) throws IOException {
+        if (!destDirectory.exists()) {
+            destDirectory.mkdir();
+        }
+
+        try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+            ZipEntry entry = zipIn.getNextEntry();
+
+            // Iterates over entries in the zip file
+            while (entry != null) {
+                String filePath = destDirectory + File.separator + entry.getName();
+                if (!entry.isDirectory()) {
+                    // If the entry is a file, extracts it
+                    extractFile(zipIn, filePath);
+                } else {
+                    // If the entry is a directory, make the directory
+                    File dir = new File(filePath);
+                    dir.mkdir();
+                }
+                zipIn.closeEntry();
+                entry = zipIn.getNextEntry();
+            }
+        }
+    }
+
+    private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
+            byte[] bytesIn = new byte[4096];
+            int read = 0;
+            while ((read = zipIn.read(bytesIn)) != -1) {
+                bos.write(bytesIn, 0, read);
+            }
+        }
+    }
 }

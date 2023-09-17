@@ -3,6 +3,7 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.NameUtils;
@@ -180,11 +181,11 @@ public class Project {
         this.main.getSelectionModel().select(graphTab);
         this.graphs.getSelectionModel().select(tab);
 
-        String _name = name.replace(' ', '_') + ".json";
-        File file = new File(graphDir, _name);
-        ChangedStuffINeed.jsonFromJava(graph, file);
+        var _name = name.replace(' ', '_') + ".txt";
+//        ChangedStuffINeed.jsonFromJava(graph, file);
 
-//        GraphSaveLoadUtils.saveGraph(graph , new File(graphDir, _name), false);
+        var file = new File(graphDir, _name);
+        GraphSaveLoadUtils.saveGraph(graph , file, false);
 
         tab.setOnClosed(event -> {
             if (file.exists()) {
@@ -217,13 +218,14 @@ public class Project {
 
         setParametersText(parameters, usedParameters);
 
-        String _name = name.replace(' ', '_') + ".json";
-        File file = new File(searchDir, _name);
-        ChangedStuffINeed.jsonFromJava(graph, file);
+//        String _name = name.replace(' ', '_') + ".json";
+//        File file = new File(searchDir, _name);
+//        ChangedStuffINeed.jsonFromJava(graph, file);
 
 
-//        String _name = name.replace(' ', '_') + ".txt";
-//        GraphSaveLoadUtils.saveGraph(graph , new File(searchDir, _name), false);
+        var _name = name.replace(' ', '_') + ".txt";
+        var file = new File(searchDir, _name);
+        GraphSaveLoadUtils.saveGraph(graph , file, false);
 
         tab.setOnClosed(event -> {
             if (file.exists()) {

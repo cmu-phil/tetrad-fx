@@ -177,8 +177,43 @@ public class TetradFxMain {
         MenuBar menuBar = new MenuBar();
 
         Menu fileMenu = new Menu("File");
-        fileMenu.getItems().add(new MenuItem("Load Session"));
-        fileMenu.getItems().add(new MenuItem("Save Session"));
+        MenuItem loadSession = new MenuItem("Load Session");
+        fileMenu.getItems().add(loadSession);
+        MenuItem saveSession = new MenuItem("Save Session");
+        fileMenu.getItems().add(saveSession);
+
+        loadSession.setOnAction(e -> {
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Tetrad-FX (.tfx) File");
+
+            // Setting the extension filter
+            FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Tetrad-FX Files", "*.tfx");
+            fileChooser.getExtensionFilters().add(imageFilter);
+
+            // Make the imageFilter the default
+            fileChooser.setSelectedExtensionFilter(imageFilter);
+
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            NamesToProjects.getInstance().loadSession(selectedFile);
+        });
+
+        saveSession.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Tetrad-FX (.tfx) File");
+
+            // Setting the extension filter
+            FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Tetrad-FX Files", "*.tfx");
+            fileChooser.getExtensionFilters().add(imageFilter);
+
+            // Make the imageFilter the default
+            fileChooser.setSelectedExtensionFilter(imageFilter);
+
+            File selectedFile = fileChooser.showSaveDialog(primaryStage);
+            NamesToProjects.getInstance().saveSession(selectedFile);
+        });
+
+
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem loadData = new MenuItem("Load Data");
         MenuItem loadGraph = new MenuItem("Load Graph");
