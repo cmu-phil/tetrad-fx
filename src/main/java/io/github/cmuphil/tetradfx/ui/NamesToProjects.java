@@ -182,14 +182,16 @@ public class NamesToProjects {
 
     public static NamesToProjects getInstance() {
         if (instance == null) {
-            instance = new NamesToProjects(new BorderPane(), new File("tetrad-fx-docs"));
+            String userHomeDirectory = System.getProperty("user.home");
+            instance = new NamesToProjects(new BorderPane(), new File(userHomeDirectory, "tetrad-fx-docs"));
         }
 
         return instance;
     }
 
     public static void newInstance() {
-        instance = new NamesToProjects(new BorderPane(), new File("tetrad-fx-docs"));
+        String userHomeDirectory = System.getProperty("user.home");
+        instance = new NamesToProjects(new BorderPane(), new File( userHomeDirectory, "tetrad-fx-docs"));
     }
 
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
