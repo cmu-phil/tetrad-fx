@@ -13,6 +13,10 @@ import edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
+import javafx.scene.control.Alert;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
@@ -412,24 +416,26 @@ public class ChangedStuffINeed {
         }
     }
 
-    public static void unzip(File zipFilePath, File destDirectory) throws IOException {
-        if (!destDirectory.exists()) {
-            destDirectory.mkdir();
+    public static void unzipDirectory(String zipFilePath, String destDirectory) throws IOException {
+        File destDir = new File(destDirectory);
+        if (!destDir.exists()) {
+            destDir.mkdir();
         }
-
         try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry = zipIn.getNextEntry();
-
-            // Iterates over entries in the zip file
             while (entry != null) {
                 String filePath = destDirectory + File.separator + entry.getName();
-                if (!entry.isDirectory()) {
-                    // If the entry is a file, extracts it
-                    extractFile(zipIn, filePath);
+                File newFile = new File(filePath);
+                if (entry.isDirectory()) {
+                    // If the ZipEntry is a directory, create the directory.
+                    newFile.mkdirs();
                 } else {
-                    // If the entry is a directory, make the directory
-                    File dir = new File(filePath);
-                    dir.mkdir();
+                    // For files, ensure parent directory exists before extracting
+                    File parentDir = newFile.getParentFile();
+                    if (!parentDir.exists()) {
+                        parentDir.mkdirs();
+                    }
+                    extractFile(zipIn, filePath);
                 }
                 zipIn.closeEntry();
                 entry = zipIn.getNextEntry();
@@ -440,10 +446,41 @@ public class ChangedStuffINeed {
     private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
             byte[] bytesIn = new byte[4096];
-            int read = 0;
+            int read;
             while ((read = zipIn.read(bytesIn)) != -1) {
                 bos.write(bytesIn, 0, read);
             }
         }
+    }
+
+    public static void deleteDirectory(Path dir) throws IOException {
+        Files.walkFileTree(dir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE, new FileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);  // Delete the file
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                return FileVisitResult.TERMINATE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+                    Files.delete(dir);  // Delete the directory
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    throw exc;
+                }
+            }
+        });
     }
 }

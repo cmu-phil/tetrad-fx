@@ -246,23 +246,14 @@ public class NamesToProjects {
     }
 
     public void loadSession(File zipFile) {
+
         try {
-            File destDirectory = new File("tetrad-fx-docs");
+            ChangedStuffINeed.deleteDirectory(dir.toPath());
+            dir.mkdir();
 
-            if (destDirectory.exists()) {
-                if (destDirectory.delete()) {
+            ChangedStuffINeed.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
 
-                    System.out.println("Directory deleted successfully");
-                } else {
-                    System.out.println("Failed to delete the directory");
-                }
-            } else {
-                System.out.println("Directory does not exist");
-            }
-
-            ChangedStuffINeed.unzip(zipFile, dir);
-
-//            ((TabPane)getInstance().getSelectedMain()).getTabs().clear();
+            NamesToProjects.getInstance().clearProject();
 
             File[] sessionDirs = dir.listFiles();
 
@@ -365,5 +356,9 @@ public class NamesToProjects {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void clearProject() {
+
     }
 }
