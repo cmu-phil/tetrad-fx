@@ -44,8 +44,6 @@ public class NamesToProjects {
 
         this.dir = mainDir;
 
-//        dir = new File("tetrad-fx-docs");
-
         if (!dir.exists()) {
             boolean made = dir.mkdir();
             projects = new TreeItem<>(sessionName);
