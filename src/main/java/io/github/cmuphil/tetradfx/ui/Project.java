@@ -5,7 +5,6 @@ import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.geometry.Side;
 import javafx.scene.control.Tab;
@@ -182,8 +181,6 @@ public class Project {
         this.graphs.getSelectionModel().select(tab);
 
         var _name = name.replace(' ', '_') + ".txt";
-//        ChangedStuffINeed.jsonFromJava(graph, file);
-
         var file = new File(graphDir, _name);
         GraphSaveLoadUtils.saveGraph(graph , file, false);
 
@@ -217,11 +214,6 @@ public class Project {
         this.search.getSelectionModel().select(tab);
 
         setParametersText(parameters, usedParameters);
-
-//        String _name = name.replace(' ', '_') + ".json";
-//        File file = new File(searchDir, _name);
-//        ChangedStuffINeed.jsonFromJava(graph, file);
-
 
         var _name = name.replace(' ', '_') + ".txt";
         var file = new File(searchDir, _name);
@@ -262,9 +254,7 @@ public class Project {
         this.main.getSelectionModel().select(gamesTab);
         this.games.getSelectionModel().select(tab);
 
-        tab.setOnClosed(event -> {
-            System.out.println(tab.getText() + " was closed.");
-        });
+        tab.setOnClosed(event -> System.out.println(tab.getText() + " was closed."));
     }
 
     public Collection<String> getDataNames() {
