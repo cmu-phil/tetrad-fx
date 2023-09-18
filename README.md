@@ -29,5 +29,6 @@ The menus don't all do the right things yet.
 
 This project is a bit of a mess at the moment but will hopefully 
 clear up in a few days. 2023-9-16. We are aiming for a first 
-draft of this project with at least a workable subset of 
-functionality by the end of September. Please bear with.
+draft of this project (without any modeling facilities) with 
+at least a workable subset of functionality by the end of 
+September. Please bear with.
