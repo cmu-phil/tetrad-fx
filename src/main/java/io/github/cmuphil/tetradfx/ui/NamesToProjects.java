@@ -27,8 +27,8 @@ public class NamesToProjects {
     private static NamesToProjects instance;
     private final Map<String, Project> namesToProjects = new HashMap<>();
     private final BorderPane activePane = new BorderPane();
-    private TreeView<String> sessionTreeView;
-    private TreeItem<String> projects;
+    private final TreeView<String> sessionTreeView;
+    private final TreeItem<String> projects;
     private final File dir;
     private final BorderPane parametersPane;
     private String selectedName;
