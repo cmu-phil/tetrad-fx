@@ -182,6 +182,9 @@ public class TetradFxMain {
         MenuItem saveSession = new MenuItem("Save Session");
         fileMenu.getItems().add(saveSession);
 
+        loadSession.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+        saveSession.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+
         loadSession.setOnAction(e -> {
 
             FileChooser fileChooser = new FileChooser();
@@ -225,7 +228,7 @@ public class TetradFxMain {
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exitItem = new MenuItem("Exit");
 
-        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+        loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
         loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
