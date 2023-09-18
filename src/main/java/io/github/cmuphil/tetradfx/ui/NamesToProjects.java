@@ -185,8 +185,11 @@ public class NamesToProjects {
             instance = new NamesToProjects(new BorderPane(), new File("tetrad-fx-docs"));
         }
 
-
         return instance;
+    }
+
+    public static void newInstance() {
+        instance = new NamesToProjects(new BorderPane(), new File("tetrad-fx-docs"));
     }
 
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
@@ -236,126 +239,5 @@ public class NamesToProjects {
 
     public BorderPane getParametersPane() {
         return parametersPane;
-    }
-
-    public void saveSession(File zipFile) {
-        ChangedStuffINeed.zip(dir, zipFile);
-    }
-
-    public void loadSession(File zipFile) {
-
-        try {
-            ChangedStuffINeed.deleteDirectory(dir.toPath());
-            dir.mkdir();
-
-            ChangedStuffINeed.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
-
-            NamesToProjects.getInstance().clearProject();
-
-            File[] sessionDirs = dir.listFiles();
-
-            var _sessionName = "Sample Session";
-            File sessionDir = dir;
-
-            if (sessionDirs == null) {
-                throw new NullPointerException("sessionDirs1 is null");
-            }
-
-            for (File dir : sessionDirs) {
-                if (dir.isDirectory()) {
-                    _sessionName = dir.getName().replace('_', ' ');
-                    sessionDir = dir;
-                    break;
-                }
-            }
-
-            String sessionName = _sessionName;
-
-            selectedName = sessionName;
-            projects = new TreeItem<>(sessionName);
-            sessionTreeView = new TreeView<>(projects);
-            projects.setExpanded(true);
-
-            for (File dir : sessionDirs) {
-                if (dir.isDirectory()) {
-                    sessionName = dir.getName().replace('_', ' ');
-
-                    if (!namesToProjects.containsKey(sessionName)) {
-                        Project _project = new Project(null, null, sessionName, null, null, sessionDir);
-                        namesToProjects.put(sessionName, _project);
-                        selectedName = sessionName;
-                        activePane.setCenter(getSelectedMain());
-                        TreeItem<String> childItem1 = _project.getTreeItem();
-                        projects.getChildren().add(childItem1);
-                    }
-
-                    File dataDir = new File(dir, "data");
-                    File searchDir = new File(dir, "search_graphs");
-                    File graphDir = new File(dir, "other_graphs");
-
-                    this.selectedName = sessionName;
-
-                    File[] dataFiles = dataDir.listFiles();
-
-                    if (dataFiles != null) {
-                        for (File file : dataFiles) {
-                            if (file.getName().endsWith(".txt")) {
-                                try {
-                                    int maxNumCategories = 5;
-                                    DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
-                                            "*", true, maxNumCategories, Delimiter.TAB, false);
-
-                                    String name = _dataSet.getName();
-
-                                    if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
-
-                                    String replace = name.replace('_', ' ');
-                                    getSelectedProject().addDataSet(replace, _dataSet, false, true);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-                    }
-
-                    var graphFiles = graphDir.listFiles();
-
-                    if (graphFiles != null) {
-                        for (var file : graphFiles) {
-                            if (file.getName().endsWith("txt")) {
-                                Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, true);
-                            } else if (file.getName().endsWith("json")) {
-//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
-                                Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, true);
-                            }
-                        }
-                    }
-
-                    var searchFiles = searchDir.listFiles();
-
-                    if (searchFiles != null) {
-                        for (File file : searchFiles) {
-                            if (file.getName().endsWith("txt")) {
-                                var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
-                            } else if (file.getName().endsWith("json")) {
-//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
-                                var _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
-                            }
-                        }
-                    }
-                }
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void clearProject() {
-
     }
 }

@@ -14,6 +14,7 @@ import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.geometry.Orientation;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
@@ -35,6 +36,10 @@ public class TetradFxMain {
 
     public static TetradFxMain getInstance() {
         return TetradFxMain.INSTANCE;
+    }
+
+    public static void saveSession(File zipFile, File dir) {
+        ChangedStuffINeed.zip(dir, zipFile);
     }
 
     // Passing primaryStage in here so that I can quit the application from a menu item
@@ -198,7 +203,7 @@ public class TetradFxMain {
             fileChooser.setSelectedExtensionFilter(imageFilter);
 
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            NamesToProjects.getInstance().loadSession(selectedFile);
+            loadSession(selectedFile, primaryStage);
         });
 
         saveSession.setOnAction(e -> {
@@ -213,7 +218,7 @@ public class TetradFxMain {
             fileChooser.setSelectedExtensionFilter(imageFilter);
 
             File selectedFile = fileChooser.showSaveDialog(primaryStage);
-            NamesToProjects.getInstance().saveSession(selectedFile);
+            saveSession(selectedFile, new File("tetrad-fx-docs"));
         });
 
 
@@ -361,6 +366,26 @@ public class TetradFxMain {
         NamesToProjects.getInstance().add(result.dataSet(), result.graph(), NameUtils.nextName("Simulation",
                         NamesToProjects.getInstance().getProjectNames()),
                 "simulated_data", "true_graph");
+    }
+
+    public void loadSession(File zipFile, Stage primaryStage) {
+
+        File dir = new File("tetrad-fx-docs").getAbsoluteFile();
+
+        try {
+            ChangedStuffINeed.deleteDirectory(dir.toPath());
+            dir.mkdir();
+
+            ChangedStuffINeed.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
+
+            NamesToProjects.newInstance();
+
+            Scene scene = new Scene(TetradFxMain.getInstance().getRoot(primaryStage));
+            primaryStage.setScene(scene);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public enum SimulationType {
