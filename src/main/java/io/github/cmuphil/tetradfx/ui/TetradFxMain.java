@@ -38,10 +38,6 @@ public class TetradFxMain {
         return TetradFxMain.INSTANCE;
     }
 
-    public static void saveSession(File zipFile, File dir) {
-        ChangedStuffINeed.zip(dir, zipFile);
-    }
-
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
@@ -77,7 +73,6 @@ public class TetradFxMain {
             // Make sure the tab containing the TextArea is selected
             tabPane.getSelectionModel().select(paraneters);
         });
-
 
         leftSplit.getItems().addAll(NamesToProjects.getInstance().getSessionTreeView(),
                tabPane);
@@ -366,6 +361,10 @@ public class TetradFxMain {
         NamesToProjects.getInstance().add(result.dataSet(), result.graph(), NameUtils.nextName("Simulation",
                         NamesToProjects.getInstance().getProjectNames()),
                 "simulated_data", "true_graph");
+    }
+
+    public static void saveSession(File zipFile, File dir) {
+        ChangedStuffINeed.zip(dir, zipFile);
     }
 
     public void loadSession(File zipFile, Stage primaryStage) {
