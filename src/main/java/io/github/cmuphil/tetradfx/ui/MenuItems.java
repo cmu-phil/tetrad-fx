@@ -19,6 +19,16 @@ import java.util.List;
 
 public class MenuItems {
     public static void searchMenuItems(DataSet dataSet, Menu menu) {
+        if (dataSet == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText(null); // You can set a header text or keep it null
+            alert.setContentText("Please select a dataset to do a search on.");
+
+            alert.showAndWait();
+            return;
+        }
+
         List<Algorithm> algorithms = new ArrayList<>();
         var score = DataView.getScore(dataSet);
 
@@ -39,15 +49,7 @@ public class MenuItems {
         for (Algorithm algorithm : algorithms) {
             MenuItem item = new MenuItem(algorithm.getDescription());
             item.setOnAction(e -> {
-                if (dataSet == null) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null); // You can set a header text or keep it null
-                    alert.setContentText("Please select a dataset to do a search on.");
 
-                    alert.showAndWait();
-                    return;
-                }
                 Graph graph = algorithm.search(dataSet, new Parameters());
                 Project selected = NamesToProjects.getInstance().getSelectedProject();
                 selected.addSearchResult(algorithm.getClass().getSimpleName(),
@@ -58,5 +60,9 @@ public class MenuItems {
         }
 
         menu.getItems().addAll(items);
+    }
+
+    public static void addSearchMenuItems() {
+
     }
 }
