@@ -215,7 +215,7 @@ public class TetradFxMain {
             File selectedFile = fileChooser.showSaveDialog(primaryStage);
             String userHomeDirectory = System.getProperty("user.home");
 
-            saveSession(selectedFile, new File( userHomeDirectory, "tetrad-fx-docs"));
+            saveSession(selectedFile, new File( userHomeDirectory, ".tetrad-fx-docs"));
         });
 
 
@@ -379,7 +379,7 @@ public class TetradFxMain {
 
     public void loadSession(File zipFile, Stage primaryStage) {
         String userHomeDirectory = System.getProperty("user.home");
-        File dir = new File(userHomeDirectory, "tetrad-fx-docs").getAbsoluteFile();
+        File dir = new File(userHomeDirectory, ".tetrad-fx-docs").getAbsoluteFile();
 
         try {
             ChangedStuffINeed.deleteDirectory(dir.toPath());

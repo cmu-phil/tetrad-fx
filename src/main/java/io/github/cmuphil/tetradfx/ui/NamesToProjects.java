@@ -183,7 +183,7 @@ public class NamesToProjects {
     public static NamesToProjects getInstance() {
         if (instance == null) {
             String userHomeDirectory = System.getProperty("user.home");
-            instance = new NamesToProjects(new BorderPane(), new File(userHomeDirectory, "tetrad-fx-docs"));
+            instance = new NamesToProjects(new BorderPane(), new File(userHomeDirectory, ".tetrad-fx-docs"));
         }
 
         return instance;
@@ -191,7 +191,7 @@ public class NamesToProjects {
 
     public static void newInstance() {
         String userHomeDirectory = System.getProperty("user.home");
-        instance = new NamesToProjects(new BorderPane(), new File( userHomeDirectory, "tetrad-fx-docs"));
+        instance = new NamesToProjects(new BorderPane(), new File( userHomeDirectory, ".tetrad-fx-docs"));
     }
 
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
