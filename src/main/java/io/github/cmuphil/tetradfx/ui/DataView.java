@@ -115,13 +115,19 @@ public class DataView {
     }
 
     @NotNull
-    static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
+    static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet _dataSet) {
         var contextMenu = new ContextMenu();
-        var layout = new Menu("Do a search using this dataset");
+        var search = new Menu("Do a search using this dataset");
 
-        MenuItems.searchMenuItems(dataSet, layout);
+        DataSet dataSet = Selected.selectedData.copy();
 
-        contextMenu.getItems().addAll(layout);
+        if (dataSet == null) {
+            return contextMenu;
+        }
+
+        MenuItems.searchMenuItems(dataSet, search);
+
+        contextMenu.getItems().addAll(search);
 
         pane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY ||
