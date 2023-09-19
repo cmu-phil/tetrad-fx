@@ -68,8 +68,9 @@ public class Session {
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
             var dataSet = simulation.simulateDataReducedForm(1000);
-            this.selectedName = NameUtils.nextName("Sample Simulation", namesToProjects.keySet());
-            add(dataSet, graph, this.selectedName, "Sample Data", "True Graph");
+            String newName = NameUtils.nextName("Sample Simulation", namesToProjects.keySet());
+            add(dataSet, graph, newName, "Sample Data", "True Graph");
+            setSelectedName(newName);
         } else {
             File[] sessionDirs = dir.listFiles();
 
@@ -90,7 +91,6 @@ public class Session {
 
             sessionName = _sessionName;
 
-            selectedName = sessionName;
             projects = new TreeItem<>(sessionName);
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
@@ -104,7 +104,7 @@ public class Session {
                     if (!namesToProjects.containsKey(sessionName)) {
                         Project _project = new Project(null, null, sessionName, null, null, sessionDir);
                         namesToProjects.put(sessionName, _project);
-                        selectedName = sessionName;
+                        setSelectedName(sessionName);
                         activePane.setCenter(getSelectedMain());
                         TreeItem<String> childItem1 = _project.getTreeItem();
                         projects.getChildren().add(childItem1);
@@ -113,8 +113,6 @@ public class Session {
                     File dataDir = new File(dir, "data");
                     File searchDir = new File(dir, "search_graphs");
                     File graphDir = new File(dir, "other_graphs");
-
-                    this.selectedName = sessionName;
 
                     File[] dataFiles = dataDir.listFiles();
 
@@ -178,14 +176,33 @@ public class Session {
             if (event.getClickCount() == 2) {
                 var selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
-                    selectedName = selectedItem.getValue();
+                    setSelectedName(selectedItem.getValue());
                     activePane.setCenter(getSelectedMain());
 
-                    var parametersArea = Session.getInstance().getSelectedProject().getParametersArea();
+                    var parametersArea = getSelectedProject().getParametersArea();
                     parametersPane.setCenter(parametersArea);
                 }
             }
         });
+    }
+
+    /**
+     * Returns the selected project name.
+     */
+    public String getSelectedName() {
+        return selectedName;
+    }
+
+    /**
+     * Sets the name of the selected project.
+     * @param selectedName The name of the selected project.
+     */
+    public void setSelectedName(String selectedName) {
+        if (!namesToProjects.containsKey(selectedName)) {
+            throw new IllegalArgumentException("No project with name " + selectedName);
+        }
+
+        this.selectedName = selectedName;
     }
 
     /**
@@ -237,7 +254,7 @@ public class Session {
         }
 
         namesToProjects.put(projectName, new Project(dataSet, graph, projectName, dataName, graphName, sessionDir));
-        selectedName = projectName;
+        setSelectedName(projectName);
         activePane.setCenter(getSelectedMain());
         TreeItem<String> childItem1 = getSelectedProject().getTreeItem();
         projects.getChildren().add(childItem1);
@@ -265,7 +282,7 @@ public class Session {
      * @return The selected project.
      */
     public Project getSelectedProject() {
-        var project = namesToProjects.get(selectedName);
+        var project = namesToProjects.get(getSelectedName());
 
         if (project == null) {
             throw new NullPointerException("Project is null");
