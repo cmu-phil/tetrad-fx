@@ -139,7 +139,6 @@ public class Project {
             try (PrintWriter writer = new PrintWriter(file)) {
                 DataWriter.writeRectangularData(dataSet, writer, '\t');
             }
-
         } catch (IOException e) {
             System.out.println("Could not write data set to file");
         }
