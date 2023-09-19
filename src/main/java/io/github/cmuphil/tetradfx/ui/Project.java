@@ -125,6 +125,8 @@ public class Project {
             name = NameUtils.nextName(name, this.getDataNames());
         }
 
+        Selected.selectedData = dataSet;
+
         Tab tab = new Tab(name, DataView.getTableView(dataSet));
         tab.setClosable(closable);
         this.data.getTabs().add(tab);
