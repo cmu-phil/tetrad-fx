@@ -1,5 +1,6 @@
 package io.github.cmuphil.tetradfx.ui;
 
+import edu.cmu.tetrad.algcomparison.algorithm.Algorithm;
 import edu.cmu.tetrad.algcomparison.independence.ChiSquare;
 import edu.cmu.tetrad.algcomparison.independence.ConditionalGaussianLRT;
 import edu.cmu.tetrad.algcomparison.independence.FisherZ;
@@ -10,11 +11,16 @@ import edu.cmu.tetrad.algcomparison.score.ScoreWrapper;
 import edu.cmu.tetrad.algcomparison.score.SemBicScore;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
+import edu.cmu.tetrad.graph.Graph;
+import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.for751lib.DataTransforms;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
@@ -60,6 +66,34 @@ public class DataView {
     }
 
     @NotNull
+    public static List<MenuItem> getMenuItems(DataSet dataSet, List<Algorithm> algorithms) {
+        List<MenuItem> items = new ArrayList<>();
+
+        for (Algorithm algorithm : algorithms) {
+            MenuItem item = new MenuItem(algorithm.getDescription());
+            item.setOnAction(e -> {
+                if (dataSet == null) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null); // You can set a header text or keep it null
+                    alert.setContentText("Please select a dataset to do a search on.");
+
+                    alert.showAndWait();
+                    return;
+                }
+                Graph graph = algorithm.search(dataSet, new Parameters());
+                Project selected = NamesToProjects.getInstance().getSelectedProject();
+                selected.addSearchResult(algorithm.getClass().getSimpleName(),
+                        graph, true, true, new Parameters(), algorithm.getParameters());
+            });
+
+            items.add(item);
+        }
+
+        return items;
+    }
+
+    @NotNull
     public static ScoreWrapper getScore(DataSet dataSet) {
         if (dataSet.isContinuous()) {
             return new SemBicScore();
@@ -83,11 +117,11 @@ public class DataView {
     @NotNull
     static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         var contextMenu = new ContextMenu();
-        var search = new Menu("Do a search using this dataset");
+        var layout = new Menu("Do a search using this dataset");
 
-        MenuItems.searchMenuItems(dataSet, search);
+        MenuItems.searchMenuItems(dataSet, layout);
 
-        contextMenu.getItems().addAll(search);
+        contextMenu.getItems().addAll(layout);
 
         pane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY ||
