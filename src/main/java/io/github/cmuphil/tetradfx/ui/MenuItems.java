@@ -19,14 +19,14 @@ import javafx.scene.control.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Some menu item builders.
+ *
+ * @author josephramsey
+ */
 public class MenuItems {
     public static List<MenuItem> searchMenuItems() {
-        return searchMenuItems(Selected.getSelectedData());
-    }
-
-    public static List<MenuItem> searchMenuItems(DataSet dataSet) {
-//        DataSet dataSet = Selected.getSelectedData();
-
+        DataSet dataSet = Selected.getSelectedData();
         if (dataSet == null) {
             return new ArrayList<>();
         }
@@ -85,7 +85,7 @@ public class MenuItems {
                 }
 
                 Graph graph = algorithm.search(dataSet, new Parameters());
-                Project selected = NamesToProjects.getInstance().getSelectedProject();
+                Project selected = Session.getInstance().getSelectedProject();
                 selected.addSearchResult(algorithm.getClass().getSimpleName(),
                         graph, true, true, new Parameters(), algorithm.getParameters());
             });

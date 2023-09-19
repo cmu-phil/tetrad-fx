@@ -19,12 +19,16 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Maps datasets to their projects.
+ * <p>Keeps track of projects in a session and which one is selected. The session tree view is
+ * a component that lets the user switch between projects.</p>
+ *
+ * <p>Each project has as its goal to analyze a particular dataset. (This is currently the goal
+ * of Tetrad-FX.)</p>
  *
  * @author josephramsey
  */
-public class NamesToProjects {
-    private static NamesToProjects instance;
+public class Session {
+    private static Session instance;
     private final Map<String, Project> namesToProjects = new HashMap<>();
     private final BorderPane activePane = new BorderPane();
     private final TreeView<String> sessionTreeView;
@@ -33,7 +37,12 @@ public class NamesToProjects {
     private final BorderPane parametersPane;
     private String selectedName;
 
-    private NamesToProjects(BorderPane parametersPane, File mainDir) {
+    /**
+     * Private constructor.
+     * @param parametersPane The parameters pane, which may be modified by the session.
+     * @param mainDir The directory where the session is stored.
+     */
+    private Session(BorderPane parametersPane, File mainDir) {
         this.parametersPane = parametersPane;
 
         var root = new TreeItem<>("Session");
@@ -163,7 +172,6 @@ public class NamesToProjects {
             }
         }
 
-
         System.out.println("dir: " + dir.getAbsolutePath());
 
         sessionTreeView.setOnMouseClicked(event -> {
@@ -173,36 +181,50 @@ public class NamesToProjects {
                     selectedName = selectedItem.getValue();
                     activePane.setCenter(getSelectedMain());
 
-                    var parametersArea = NamesToProjects.getInstance().getSelectedProject().getParametersArea();
+                    var parametersArea = Session.getInstance().getSelectedProject().getParametersArea();
                     parametersPane.setCenter(parametersArea);
                 }
             }
         });
     }
 
-    public static NamesToProjects getInstance() {
+    /**
+     * Returns the singleton instance of the session.
+     * @return The singleton instance of the session.
+     */
+    public static Session getInstance() {
         if (instance == null) {
             String userHomeDirectory = System.getProperty("user.home");
 
             File file = new File(userHomeDirectory, ".tetrad-fx-docs");
 
             if (file.exists()) {
-                instance = new NamesToProjects(new BorderPane(), file);
+                instance = new Session(new BorderPane(), file);
             } else {
                 newInstance();
             }
-
-//            instance = new NamesToProjects(new BorderPane(), new File(userHomeDirectory, ".tetrad-fx-docs"));
         }
 
         return instance;
     }
 
+    /**
+     * Causes a new session to be created. After this method is called, the singleton instance
+     * will be the new session.
+     */
     public static void newInstance() {
         String userHomeDirectory = System.getProperty("user.home");
-        instance = new NamesToProjects(new BorderPane(), new File( userHomeDirectory, ".tetrad-fx-docs"));
+        instance = new Session(new BorderPane(), new File( userHomeDirectory, ".tetrad-fx-docs"));
     }
 
+    /**
+     * Adds a project to the session.
+     * @param dataSet The dataset to be analyzed. (This may be null.)
+     * @param graph The graph to be analyzed. (This may be null.)
+     * @param projectName The name of the project.
+     * @param dataName The name of the dataset. (This may be null.)
+     * @param graphName The name of the graph. (This may be null.)
+     */
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
         var sessionDir = new File(dir, projectName.replace(" ", "_"));
 
@@ -221,15 +243,27 @@ public class NamesToProjects {
         projects.getChildren().add(childItem1);
     }
 
+    /**
+     * Returns the main component of the selected project.
+     * @return The main component of the selected project.
+     */
     public Node getSelectedMain() {
         Project selected = getSelectedProject();
         return selected.getMain();
     }
 
+    /**
+     * Returns the active pane.
+     * @return The active pane.
+     */
     public BorderPane getActivePane() {
         return activePane;
     }
 
+    /**
+     * Returns the selected project.
+     * @return The selected project.
+     */
     public Project getSelectedProject() {
         var project = namesToProjects.get(selectedName);
 
@@ -240,19 +274,27 @@ public class NamesToProjects {
         return project;
     }
 
+    /**
+     * Returns the tree view of the session. Users can click here to switch projects.
+     * @return The tree view of the session.
+     */
     public TreeView<String> getSessionTreeView() {
         return sessionTreeView;
     }
 
-    public Collection<String> getProjectNames() {
+    /**
+     * Returns the names of the projects in the session.
+     * @return The names of the projects in the session.
+     */
+    public HashSet<String> getProjectNames() {
         return new HashSet<>(namesToProjects.keySet());
     }
 
+    /**
+     * Returns the parameters pane.
+     * @return The parameters pane.
+     */
     public BorderPane getParametersPane() {
         return parametersPane;
-    }
-
-    public DataSet  getSelectedDataSet() {
-        return getSelectedProject().getSelectedDataSet();
     }
 }

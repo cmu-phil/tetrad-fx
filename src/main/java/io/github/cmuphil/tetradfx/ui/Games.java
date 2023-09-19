@@ -28,6 +28,11 @@ import java.util.List;
 
 import static io.github.cmuphil.tetradfx.ui.GraphView.addGame;
 
+/**
+ * Implements some tutorial games.
+ *
+ * @author josephramsey
+ */
 public class Games {
     private static final String DRAGGED_STYLE = "-fx-border-color: darkblue; -fx-padding: 10px; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: yellow;";
     private static final String DEFAULT_STYLE = "-fx-border-color: darkblue; -fx-padding: 10px;-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: lightblue;";

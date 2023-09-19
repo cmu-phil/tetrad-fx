@@ -41,7 +41,7 @@ public class TetradFxMain {
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
-        BorderPane activePane = NamesToProjects.getInstance().getActivePane();
+        BorderPane activePane = Session.getInstance().getActivePane();
         MenuBar menuBar = getMenuBar(primaryStage);
         activePane.setTop(menuBar);
         activePane.setPrefSize(1000, 800);
@@ -57,8 +57,8 @@ public class TetradFxMain {
         text.setFont(new Font("Arial", 14));
         BorderPane notesArea = new BorderPane(text);
 
-        BorderPane parametersPane = NamesToProjects.getInstance().getParametersPane();
-        TextArea parametersArea = NamesToProjects.getInstance().getSelectedProject().getParametersArea();
+        BorderPane parametersPane = Session.getInstance().getParametersPane();
+        TextArea parametersArea = Session.getInstance().getSelectedProject().getParametersArea();
         parametersPane.setCenter(parametersArea);
         Tab paraneters = new Tab("Parameters", parametersPane);
         paraneters.setClosable(false);
@@ -74,7 +74,7 @@ public class TetradFxMain {
             tabPane.getSelectionModel().select(paraneters);
         });
 
-        leftSplit.getItems().addAll(NamesToProjects.getInstance().getSessionTreeView(),
+        leftSplit.getItems().addAll(Session.getInstance().getSessionTreeView(),
                tabPane);
 
         mainSplit.getItems().addAll(leftSplit, activePane);
@@ -117,6 +117,9 @@ public class TetradFxMain {
         }
     }
 
+    /**
+     * Loads data from a file.
+     */
     private void loadDataAction() {
         ButtonType applyButtonType = new ButtonType("Load");
         RadioButton continuousBtn = new RadioButton("Optimize for Continuous");
@@ -153,6 +156,10 @@ public class TetradFxMain {
         dialog.showAndWait();
     }
 
+    /**
+     * Loads a graph from a file.
+     * @param primaryStage The primary stage.
+     */
     private void loadGraphAction(Stage primaryStage) {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
@@ -167,11 +174,16 @@ public class TetradFxMain {
             throw new RuntimeException("Unknown file type: " + selectedFile.getName());
         }
 
-        NamesToProjects.getInstance().add(null, graph,
-                NameUtils.nextName(selectedFile.getName(), NamesToProjects.getInstance().getProjectNames()),
+        Session.getInstance().add(null, graph,
+                NameUtils.nextName(selectedFile.getName(), Session.getInstance().getProjectNames()),
                 null, "Graph");
     }
 
+    /**
+     * Creates the menu bar.
+     * @param primaryStage The primary stage.
+     * @return The menu bar.
+     */
     @NotNull
     public MenuBar getMenuBar(Stage primaryStage) {
         MenuBar menuBar = new MenuBar();
@@ -295,12 +307,25 @@ public class TetradFxMain {
         return menuBar;
     }
 
+    /**
+     * Creates a random DAG.
+     * @param numNodes The number of nodes.
+     * @param numEdges The number of edges.
+     * @return The random DAG.
+     */
     @NotNull
     private static Graph randomDag(int numNodes, int numEdges) {
         return RandomGraph.randomGraph(numNodes, 0, numEdges, 100, 100,
                 100, false);
     }
 
+    /**
+     * Loads data from a file.
+     * @param selectedFile The selected file.
+     * @param continuousBtn The continuous button.
+     * @param discreteBtn The discrete button.
+     * @param textField The text field.
+     */
     private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn,
                              TextField textField) {
         if (selectedFile != null) {
@@ -318,14 +343,18 @@ public class TetradFxMain {
         }
     }
 
+    /**
+     * Loads continuous data.
+     * @param selectedFile The selected file.
+     */
     private void loadContinuous(File selectedFile) {
         try {
             DataSet dataSet = ChangedStuffINeed.loadContinuousData(selectedFile, "//", '\"',
                     "*", true, Delimiter.TAB, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
-            NamesToProjects.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
-                            NamesToProjects.getInstance().getProjectNames()),
+            Session.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
+                            Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading continuous data.");
@@ -333,12 +362,16 @@ public class TetradFxMain {
         }
     }
 
+    /**
+     * Loads discrete data.
+     * @param selectedFile The selected file.
+     */
     private void loadDiscrete(File selectedFile) {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            NamesToProjects.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
-                            NamesToProjects.getInstance().getProjectNames()),
+            Session.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
+                            Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading discrete data.");
@@ -346,13 +379,18 @@ public class TetradFxMain {
         }
     }
 
+    /**
+     * Loads mixed data.
+     * @param selectedFile The selected file.
+     * @param textField The text field.
+     */
     private void loadMixed(File selectedFile, TextField textField) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            NamesToProjects.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
-                            NamesToProjects.getInstance().getProjectNames()),
+            Session.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
+                            Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
             System.out.println("Error loading mixed data.");
@@ -360,17 +398,31 @@ public class TetradFxMain {
         }
     }
 
+    /**
+     * Adds a simulation to the session.
+     * @param type The type of simulation.
+     */
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
-        NamesToProjects.getInstance().add(result.dataSet(), result.graph(), NameUtils.nextName("Simulation",
-                        NamesToProjects.getInstance().getProjectNames()),
+        Session.getInstance().add(result.dataSet(), result.graph(), NameUtils.nextName("Simulation",
+                        Session.getInstance().getProjectNames()),
                 "simulated_data", "true_graph");
     }
 
+    /**
+     * Saves the session.
+     * @param zipFile The zip file.
+     * @param dir The directory.
+     */
     private static void saveSession(File zipFile, File dir) {
         ChangedStuffINeed.zip(dir, zipFile);
     }
 
+    /**
+     * Loads the session.
+     * @param zipFile The zip file.
+     * @param primaryStage The primary stage.
+     */
     private void loadSession(File zipFile, Stage primaryStage) {
         String userHomeDirectory = System.getProperty("user.home");
         File dir = new File(userHomeDirectory, ".tetrad-fx-docs").getAbsoluteFile();
@@ -381,7 +433,7 @@ public class TetradFxMain {
 
             ChangedStuffINeed.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
 
-            NamesToProjects.newInstance();
+            Session.newInstance();
 
             Scene scene = new Scene(TetradFxMain.getInstance().getRoot(primaryStage));
             primaryStage.setScene(scene);
@@ -391,12 +443,20 @@ public class TetradFxMain {
         }
     }
 
+    /**
+     * The type of simulation.
+     */
     public enum SimulationType {
         CONTINUOUS,
         DISCRETE,
         MIXED
     }
 
+    /**
+     * The result of a simulation.
+     * @param graph The graph.
+     * @param dataSet The data set.
+     */
     private record Result(Graph graph, DataSet dataSet) {
     }
 }

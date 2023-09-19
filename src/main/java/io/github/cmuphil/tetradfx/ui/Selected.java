@@ -2,8 +2,13 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataSet;
 
+/**
+ * Keeps track of selected things, like datasets. (Currenly only datasets.)
+ *
+ * @author josephramsey
+ */
 public class Selected {
     public static DataSet getSelectedData () {
-        return NamesToProjects.getInstance().getSelectedProject().getSelectedDataSet();
+        return Session.getInstance().getSelectedProject().getSelectedDataSet();
     }
 }

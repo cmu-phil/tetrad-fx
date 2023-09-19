@@ -19,9 +19,19 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>Displays a list of variables in a table with ancillary information and fields the user can
+ * fill in for describing the data.</p>
+ *
+ * @author josephramsey
+ */
 public class VariableView {
     private TableView<VariableRow> tableView;
 
+    /**
+     * Creates a new variable view.
+     * @param dataSet the dataset the variables are from.
+     */
     public VariableView(DataSet dataSet) {
         tableView = new TableView<>();
 
@@ -61,10 +71,20 @@ public class VariableView {
         }
     }
 
+    /**
+     * Gets the table view.
+     * @return the table view.
+     */
     public TableView<VariableRow> getTableView() {
         return tableView;
     }
 
+    /**
+     * Gets the table view.
+     * @param dataSet the dataset the variables are from.
+     * @param variable the variable to get stats for.
+     * @return the table view.
+     */
     private String getVariablestats(DataSet dataSet, edu.cmu.tetrad.graph.Node variable) {
         if (variable instanceof DiscreteVariable) {
             return getDiscreteVariablestats(dataSet, (DiscreteVariable) variable);
@@ -75,6 +95,12 @@ public class VariableView {
         }
     }
 
+    /**
+     * Gets the stats for a continuous variable.
+     * @param dataSet the dataset the variables are from.
+     * @param variable the variable to get stats for.
+     * @return the stats for the variable.
+     */
     private String getContinuousVariablestats(DataSet dataSet, ContinuousVariable variable) {
         int index = dataSet.getColumn(variable);
 
@@ -102,6 +128,12 @@ public class VariableView {
                 "Kurtosis: " + nf.format(kurtosis);
     }
 
+    /**
+     * Gets the stats for a discrete variable.
+     * @param dataSet the dataset the variables are from.
+     * @param variable the variable to get stats for.
+     * @return the stats for the variable.
+     */
     private String getDiscreteVariablestats(DataSet dataSet, DiscreteVariable variable) {
         List<String> categories = variable.getCategories();
         int index = dataSet.getColumn(variable);
@@ -121,6 +153,9 @@ public class VariableView {
         return sb.toString();
     }
 
+    /**
+     * <p>A cell that displays a text area.</p>
+     */
     public static class TextAreaCell extends TableCell<VariableRow, String> {
         private final TextArea textArea;
 

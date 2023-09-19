@@ -43,13 +43,21 @@ public class Project {
 
     private final Map<TableView, DataSet> dataSetMap = new HashMap<>();
 
+    /**
+     * Creates a new project.
+     *
+     * @param dataSet     The dataset to add to the session. (This may be null.)
+     * @param graph       The graph to add to the session. (This may be null.)
+     * @param projectName The name of the project.
+     * @param dataName    The name of the dataset. (This may be null.)
+     * @param graphName   The name of the graph. (This may be null.)
+     * @param dir         The directory to save the project in.
+     */
     public Project(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName, File dir) {
         this.main = new TabPane();
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(projectName);
-
-//        Selected.selectedData = dataSet;
 
         dataTab = new Tab("Data", data);
         searchTab = new Tab("Search Graphs", search);
@@ -108,10 +116,23 @@ public class Project {
         this.games.setSide(Side.TOP);
     }
 
+    /**
+     * Returns the main tab pane for this project.
+     *
+     * @return The main tab pane.
+     */
     public TabPane getMain() {
         return main;
     }
 
+    /**
+     * Adds a dataset to the data tab.
+     *
+     * @param name     The name of the dataset.
+     * @param dataSet  The dataset.
+     * @param nextName Whether to append a number to the name if it already exists.
+     * @param closable Whether the tab should be closable.
+     */
     public void addDataSet(String name, DataSet dataSet, boolean nextName, boolean closable) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
@@ -120,8 +141,6 @@ public class Project {
         if (nextName) {
             name = NameUtils.nextName(name, this.getDataNames());
         }
-
-//        Selected.selectedData = dataSet;
 
         TableView<DataView.DataRow> tableView = DataView.getTableView(dataSet);
         dataSetMap.put(tableView, dataSet);
@@ -140,18 +159,6 @@ public class Project {
         } catch (IOException e) {
             System.out.println("Could not write data set to file");
         }
-
-//        this.variables.getTabs().clear();
-//        Tab tab2 = new Tab(name, DataView.getTableView(dataSet));
-//        tab2.setClosable(closable);
-
-//        tab.setOnSelectionChanged(event -> {
-//            Selected.selectedData = dataSet;
-//        });
-
-//        tab.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//            Selected.selectedData = dataSet;
-//        });
 
         // It's important that this not be closable. The user may have put a lot of work into it, and
         // it should not be accidentally deleted.
@@ -172,6 +179,13 @@ public class Project {
         });
     }
 
+    /**
+     * Adds a graph to the graph tab.
+     * @param name The name of the graph.
+     * @param graph The graph.
+     * @param nextName Whether to append a number to the name if it already exists.
+     * @param closable Whether the tab should be closable.
+     */
     public void addGraph(String name, Graph graph, boolean nextName, boolean closable) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
@@ -204,6 +218,15 @@ public class Project {
         });
     }
 
+    /**
+     * Adds a search result to the search tab.
+     * @param name The name of the search result.
+     * @param graph The graph.
+     * @param closable Whether the tab should be closable.
+     * @param nextName Whether to append a number to the name if it already exists.
+     * @param parameters The parameters used to generate the search result.
+     * @param usedParameters The parameters that were actually used to generate the search result.
+     */
     public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters,
                                 List<String> usedParameters) {
         if (name == null) {
@@ -239,14 +262,12 @@ public class Project {
         });
     }
 
-    private void setParametersText(Parameters parameters, List<String> usedParameters) {
-        this.parametersArea.clear();
-
-        for (String parameter : usedParameters) {
-            this.parametersArea.appendText(parameter + "=" + parameters.get(parameter) + "\n");
-        }
-    }
-
+    /**
+     * Adds a game to the games tab.
+     * @param name The name of the game.
+     * @param pane The pane containing the game.
+     * @param nextName Whether to append a number to the name if it already exists.
+     */
     public void addGame(String name, Pane pane, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
@@ -264,6 +285,10 @@ public class Project {
         tab.setOnClosed(event -> System.out.println(tab.getText() + " was closed."));
     }
 
+    /**
+     * Returns the names of the datasets in this project.
+     * @return The names of the datasets.
+     */
     public Collection<String> getDataNames() {
         List<String> names = new ArrayList<>();
 
@@ -274,6 +299,10 @@ public class Project {
         return names;
     }
 
+    /**
+     * Returns the names of the graphs in this project.
+     * @return The names of the graphs.
+     */
     public Collection<String> getGraphNames() {
         List<String> names = new ArrayList<>();
 
@@ -284,6 +313,10 @@ public class Project {
         return names;
     }
 
+    /**
+     * Returns the names of the search results in this project.
+     * @return The names of the search results.
+     */
     public Collection<String> getSearchNames() {
         List<String> names = new ArrayList<>();
 
@@ -294,6 +327,10 @@ public class Project {
         return names;
     }
 
+    /**
+     * Returns the names of the games in this project.
+     * @return The names of the games.
+     */
     public Collection<String> getGameNames() {
         List<String> names = new ArrayList<>();
 
@@ -304,16 +341,28 @@ public class Project {
         return names;
     }
 
+    /**
+     * Returns the tree item for this project. This is used to display the project in the project tree and
+     * is stored in the project so that it can be reacted to.
+     * @return The tree item.
+     */
     public TreeItem<String> getTreeItem() {
         return treeItem;
     }
 
+    /**
+     * Returns the parameters area, which is stored in this project so that its text can be modified.
+     * @return The parameters area.
+     */
     public TextArea getParametersArea() {
         return parametersArea;
     }
 
+    /**
+     * Returns the selected dataset for this project.
+     * @return The selected dataset.
+     */
     public DataSet getSelectedDataSet() {
-//        TabPane innerPane = (TabPane) dataTab.getContent();
         Tab selected = data.getSelectionModel().getSelectedItem();
         if (selected != null) {
             Node content1 = selected.getContent();
@@ -325,6 +374,20 @@ public class Project {
         }
 
         return null;
+    }
+
+    /**
+     * Sets the text of the parameters area.
+     *
+     * @param parameters     The parameters.
+     * @param usedParameters The parameter names that were actually used.
+     */
+    private void setParametersText(Parameters parameters, List<String> usedParameters) {
+        this.parametersArea.clear();
+
+        for (String parameter : usedParameters) {
+            this.parametersArea.appendText(parameter + "=" + parameters.get(parameter) + "\n");
+        }
     }
 }
 

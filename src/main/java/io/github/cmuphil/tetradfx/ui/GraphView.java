@@ -28,8 +28,6 @@ import java.util.HashMap;
  * algorithm from Tetrad. The nodes can be dragged around with the mouse, and the edges will follow.
  * Currently only for DAGs and CPDAGs</p>
  *
- * <p>Scales well to large, dense graphs.</p>
- *
  * <p>TODO: Add node and edge selection</p>
  *
  * @author josephramsey
@@ -151,7 +149,7 @@ public class GraphView extends Pane {
         VBox vBox = new VBox(hBox);
         vBox.setAlignment(Pos.CENTER);
 
-        NamesToProjects.getInstance().getSelectedProject().addGame(name, vBox, true);
+        Session.getInstance().getSelectedProject().addGame(name, vBox, true);
     }
 
     @NotNull
@@ -181,28 +179,28 @@ public class GraphView extends Pane {
 
         dagToCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.cpdagForDag(graph);
-            NamesToProjects.getInstance().getSelectedProject().addGraph("DAG to CPPAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("DAG to CPPAG", dag, true, true);
         });
 
         var dagToPag = new MenuItem("DAG to PAG");
 
         dagToPag.setOnAction(e -> {
             Graph dag = GraphTransforms.dagToPag(graph);
-            NamesToProjects.getInstance().getSelectedProject().addGraph("DAG to PAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("DAG to PAG", dag, true, true);
         });
 
         var dagFromCPDAG = new MenuItem("DAG from CPDAG");
 
         dagFromCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.dagFromCPDAG(graph);
-            NamesToProjects.getInstance().getSelectedProject().addGraph("DAG from CPDAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("DAG from CPDAG", dag, true, true);
         });
 
         var magFromPag = new MenuItem("MAG from PAG");
 
         magFromPag.setOnAction(e -> {
             Graph mag = GraphTransforms.pagToMag(graph);
-            NamesToProjects.getInstance().getSelectedProject().addGraph("MAG from PAG", mag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("MAG from PAG", mag, true, true);
         });
 
         transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);

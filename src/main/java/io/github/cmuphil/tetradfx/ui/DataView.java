@@ -17,9 +17,7 @@ import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
- * though we are wrapping the Tetrad DataSet in a pretty efficient way here so that it will scale to thousands of
- * variables.</p>
+ * <p>Displays a dataset in a table.</p>
  *
  * @author josephramsey
  */
@@ -83,17 +81,10 @@ public class DataView {
     @NotNull
     static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         var contextMenu = new ContextMenu();
-//        var search = new Menu("Do a search using this dataset");
-
-//        DataSet dataSet = Selected.getSelectedData();
 
         if (dataSet == null) {
             return contextMenu;
         }
-
-//        search.getItems().addAll(MenuItems.searchMenuItems(dataSet));
-//
-//        contextMenu.getItems().addAll(search);
 
         pane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY ||
@@ -108,77 +99,77 @@ public class DataView {
         var removeConstantColumns = new MenuItem("Remove Constant Columns");
         removeConstantColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
         });
         transformData.getItems().add(removeConstantColumns);
 
         var removeDuplicateColumns = new MenuItem("Remove Duplicate Columns");
         removeDuplicateColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
         });
         transformData.getItems().add(removeDuplicateColumns);
 
         var center = new MenuItem("Center");
         center.setOnAction(e -> {
             DataSet filtered = DataTransforms.center(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Center", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Center", filtered, true, true);
         });
         transformData.getItems().add(center);
 
         var standardize = new MenuItem("Standardize");
         standardize.setOnAction(e -> {
             DataSet filtered = DataTransforms.standardizeData(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Standardize", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Standardize", filtered, true, true);
         });
         transformData.getItems().add(standardize);
 
         var nonparanormalTransform = new MenuItem("Nonparanormal Transform");
         nonparanormalTransform.setOnAction(e -> {
             DataSet filtered = DataTransforms.getNonparanormalTransformed(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Nonparanormal Transform", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Nonparanormal Transform", filtered, true, true);
         });
         transformData.getItems().add(nonparanormalTransform);
 
         var logTransform = new MenuItem("Log Transform");
         logTransform.setOnAction(e -> {
             DataSet filtered = DataTransforms.logData(dataSet, 10, false, 2);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Log Transform", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Log Transform", filtered, true, true);
         });
         transformData.getItems().add(logTransform);
 
         var numericalDiscreteToContinuous = new MenuItem("Numerical Discrete to Continuous");
         numericalDiscreteToContinuous.setOnAction(e -> {
             DataSet filtered = DataTransforms.convertNumericalDiscreteToContinuous(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Numerical Discrete to Continuous", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Numerical Discrete to Continuous", filtered, true, true);
         });
         transformData.getItems().add(numericalDiscreteToContinuous);
 
         var discretizeToBinary = new MenuItem("Discretize to Binary");
         discretizeToBinary.setOnAction(e -> {
             DataSet filtered = DataTransforms.discretize(dataSet, 2, true);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Discretize to Binary", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Discretize to Binary", filtered, true, true);
         });
         transformData.getItems().add(discretizeToBinary);
 
         var discretize = new MenuItem("Discretize to Trinary");
         discretize.setOnAction(e -> {
             DataSet filtered = DataTransforms.discretize(dataSet, 3, true);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Discretize to Trinary", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Discretize to Trinary", filtered, true, true);
         });
         transformData.getItems().add(discretize);
 
         var restrictToMeasured = new MenuItem("Restrict to Measured");
         restrictToMeasured.setOnAction(e -> {
             DataSet filtered = DataTransforms.restrictToMeasured(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Restrict to Measured", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Restrict to Measured", filtered, true, true);
         });
         transformData.getItems().add(restrictToMeasured);
 
         var shuffleColumns = new MenuItem("Shuffle Columns");
         shuffleColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.shuffleColumns(dataSet);
-            NamesToProjects.getInstance().getSelectedProject().addDataSet("Shuffle Columns", filtered, true, true);
+            Session.getInstance().getSelectedProject().addDataSet("Shuffle Columns", filtered, true, true);
         });
         transformData.getItems().add(shuffleColumns);
 
