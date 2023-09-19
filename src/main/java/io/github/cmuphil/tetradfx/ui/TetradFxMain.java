@@ -243,7 +243,7 @@ public class TetradFxMain {
         fileMenu.getItems().addAll(loadData, loadGraph, simulation, new SeparatorMenuItem(), exitItem);
 
         Menu search = new Menu("Search");
-        Menu searchMenu = new Menu("Do a search using the selected dataset");
+        Menu searchMenu = new Menu("Selected Data");
 
         DataSet dataSet = null;// NamesToProjects.getInstance().getSelectedProject().getSelectedDataSet();
 
@@ -252,7 +252,7 @@ public class TetradFxMain {
 //        MenuItems.searchMenuItems(dataSet, searchMenu);
 
         search.getItems().add(searchMenu);
-        search.getItems().add(new Menu("Do an search using the selected graph as an oracle"));
+        search.getItems().add(new Menu("Selected Graph"));
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
