@@ -7,18 +7,14 @@ import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.geometry.Side;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>Stores all of the tabbed panes for a given project in a session.</p>
@@ -45,11 +41,15 @@ public class Project {
     private final File graphDir;
     private final File searchDir;
 
+    private final Map<TableView, DataSet> dataSetMap = new HashMap<>();
+
     public Project(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName, File dir) {
         this.main = new TabPane();
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(projectName);
+
+//        Selected.selectedData = dataSet;
 
         dataTab = new Tab("Data", data);
         searchTab = new Tab("Search Graphs", search);
@@ -92,15 +92,11 @@ public class Project {
             addGraph(graphName, graph, true, false);
         }
 
-//        Tab variablesTab = new Tab("Variables", variables);
-
         this.main.getTabs().add(dataTab);
-//        this.main.getTabs().add(variablesTab);
         this.main.getTabs().add(searchTab);
         this.main.getTabs().add(graphTab);
         this.main.getTabs().add(gamesTab);
 
-//        variablesTab.setClosable(false);
         dataTab.setClosable(false);
         graphTab.setClosable(false);
         searchTab.setClosable(false);
@@ -125,9 +121,11 @@ public class Project {
             name = NameUtils.nextName(name, this.getDataNames());
         }
 
-        Selected.selectedData = dataSet;
+//        Selected.selectedData = dataSet;
 
-        Tab tab = new Tab(name, DataView.getTableView(dataSet));
+        TableView<DataView.DataRow> tableView = DataView.getTableView(dataSet);
+        dataSetMap.put(tableView, dataSet);
+        Tab tab = new Tab(name, tableView);
         tab.setClosable(closable);
         this.data.getTabs().add(tab);
         this.main.getSelectionModel().select(dataTab);
@@ -143,9 +141,17 @@ public class Project {
             System.out.println("Could not write data set to file");
         }
 
-        this.variables.getTabs().clear();
-        Tab tab2 = new Tab(name, DataView.getTableView(dataSet));
-        tab2.setClosable(closable);
+//        this.variables.getTabs().clear();
+//        Tab tab2 = new Tab(name, DataView.getTableView(dataSet));
+//        tab2.setClosable(closable);
+
+//        tab.setOnSelectionChanged(event -> {
+//            Selected.selectedData = dataSet;
+//        });
+
+//        tab.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//            Selected.selectedData = dataSet;
+//        });
 
         // It's important that this not be closable. The user may have put a lot of work into it, and
         // it should not be accidentally deleted.
@@ -304,6 +310,21 @@ public class Project {
 
     public TextArea getParametersArea() {
         return parametersArea;
+    }
+
+    public DataSet getSelectedDataSet() {
+//        TabPane innerPane = (TabPane) dataTab.getContent();
+        Tab selected = data.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Node content1 = selected.getContent();
+
+            if (content1 instanceof TableView) {
+                TableView content = (TableView) content1;
+                return dataSetMap.get(content);
+            }
+        }
+
+        return null;
     }
 }
 

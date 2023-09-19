@@ -183,7 +183,16 @@ public class NamesToProjects {
     public static NamesToProjects getInstance() {
         if (instance == null) {
             String userHomeDirectory = System.getProperty("user.home");
-            instance = new NamesToProjects(new BorderPane(), new File(userHomeDirectory, ".tetrad-fx-docs"));
+
+            File file = new File(userHomeDirectory, ".tetrad-fx-docs");
+
+            if (file.exists()) {
+                instance = new NamesToProjects(new BorderPane(), file);
+            } else {
+                newInstance();
+            }
+
+//            instance = new NamesToProjects(new BorderPane(), new File(userHomeDirectory, ".tetrad-fx-docs"));
         }
 
         return instance;
@@ -241,5 +250,9 @@ public class NamesToProjects {
 
     public BorderPane getParametersPane() {
         return parametersPane;
+    }
+
+    public DataSet  getSelectedDataSet() {
+        return getSelectedProject().getSelectedDataSet();
     }
 }

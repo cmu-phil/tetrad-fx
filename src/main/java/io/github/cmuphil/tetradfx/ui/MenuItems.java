@@ -21,7 +21,11 @@ import java.util.List;
 
 public class MenuItems {
     public static List<MenuItem> searchMenuItems() {
-        DataSet dataSet = Selected.selectedData;
+        return searchMenuItems(Selected.getSelectedData());
+    }
+
+    public static List<MenuItem> searchMenuItems(DataSet dataSet) {
+//        DataSet dataSet = Selected.getSelectedData();
 
         if (dataSet == null) {
             return new ArrayList<>();

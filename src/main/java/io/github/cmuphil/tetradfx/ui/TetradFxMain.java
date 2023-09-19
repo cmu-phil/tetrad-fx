@@ -186,7 +186,6 @@ public class TetradFxMain {
         saveSession.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
 
         loadSession.setOnAction(e -> {
-
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Tetrad-FX (.tfx) File");
 
@@ -218,7 +217,6 @@ public class TetradFxMain {
             saveSession(selectedFile, new File( userHomeDirectory, ".tetrad-fx-docs"));
         });
 
-
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem loadData = new MenuItem("Load Data");
         MenuItem loadGraph = new MenuItem("Load Graph");
@@ -245,11 +243,7 @@ public class TetradFxMain {
         Menu search = new Menu("Search");
         Menu searchMenu = new Menu("Selected Data");
 
-        DataSet dataSet = null;// NamesToProjects.getInstance().getSelectedProject().getSelectedDataSet();
-
         searchMenu.getItems().addAll(MenuItems.searchMenuItems());
-
-//        MenuItems.searchMenuItems(dataSet, searchMenu);
 
         search.getItems().add(searchMenu);
         search.getItems().add(new Menu("Selected Graph"));
@@ -373,11 +367,11 @@ public class TetradFxMain {
                 "simulated_data", "true_graph");
     }
 
-    public static void saveSession(File zipFile, File dir) {
+    private static void saveSession(File zipFile, File dir) {
         ChangedStuffINeed.zip(dir, zipFile);
     }
 
-    public void loadSession(File zipFile, Stage primaryStage) {
+    private void loadSession(File zipFile, Stage primaryStage) {
         String userHomeDirectory = System.getProperty("user.home");
         File dir = new File(userHomeDirectory, ".tetrad-fx-docs").getAbsoluteFile();
 

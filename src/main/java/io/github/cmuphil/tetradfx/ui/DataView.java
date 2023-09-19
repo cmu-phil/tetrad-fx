@@ -43,7 +43,7 @@ public class DataView {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
-        var contextMenu = getContextMenu(table);
+        var contextMenu = getContextMenu(table, dataSet);
 
         // Show context menu on right-click on the label
         table.setOnMousePressed(event -> {
@@ -81,19 +81,19 @@ public class DataView {
     }
 
     @NotNull
-    static ContextMenu getContextMenu(TableView<DataRow> pane) {
+    static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet dataSet) {
         var contextMenu = new ContextMenu();
-        var search = new Menu("Do a search using this dataset");
+//        var search = new Menu("Do a search using this dataset");
 
-        DataSet dataSet = Selected.selectedData.copy();
+//        DataSet dataSet = Selected.getSelectedData();
 
         if (dataSet == null) {
             return contextMenu;
         }
 
-        search.getItems().addAll(MenuItems.searchMenuItems());
-
-        contextMenu.getItems().addAll(search);
+//        search.getItems().addAll(MenuItems.searchMenuItems(dataSet));
+//
+//        contextMenu.getItems().addAll(search);
 
         pane.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY ||
