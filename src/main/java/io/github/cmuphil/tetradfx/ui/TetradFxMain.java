@@ -247,7 +247,7 @@ public class TetradFxMain {
 
         DataSet dataSet = null;// NamesToProjects.getInstance().getSelectedProject().getSelectedDataSet();
 
-
+        searchMenu.getItems().addAll(MenuItems.searchMenuItems());
 
 //        MenuItems.searchMenuItems(dataSet, searchMenu);
 

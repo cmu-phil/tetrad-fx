@@ -1,6 +1,5 @@
 package io.github.cmuphil.tetradfx.ui;
 
-import edu.cmu.tetrad.algcomparison.algorithm.Algorithm;
 import edu.cmu.tetrad.algcomparison.independence.ChiSquare;
 import edu.cmu.tetrad.algcomparison.independence.ConditionalGaussianLRT;
 import edu.cmu.tetrad.algcomparison.independence.FisherZ;
@@ -9,20 +8,13 @@ import edu.cmu.tetrad.algcomparison.score.BdeuScore;
 import edu.cmu.tetrad.algcomparison.score.ConditionalGaussianBicScore;
 import edu.cmu.tetrad.algcomparison.score.ScoreWrapper;
 import edu.cmu.tetrad.algcomparison.score.SemBicScore;
-import edu.cmu.tetrad.algcomparison.utils.TakesIndependenceWrapper;
-import edu.cmu.tetrad.algcomparison.utils.UsesScoreWrapper;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
-import edu.cmu.tetrad.graph.Graph;
-import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.for751lib.DataTransforms;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Displays a dataset in a table. Not much to see here; JavaFX's TableView does all the work,
@@ -65,60 +57,6 @@ public class DataView {
         table.setPrefWidth(400);
         table.setSelectionModel(null);
         return table;
-    }
-
-    @NotNull
-    public static List<MenuItem> getSearchMenuItems(DataSet dataSet, List<Class> algorithmClasses) {
-        List<MenuItem> items = new ArrayList<>();
-
-        for (Class algorithmClass : algorithmClasses) {
-            MenuItem item = new MenuItem(algorithmClass.getSimpleName());
-            item.setOnAction(e -> {
-                if (dataSet == null) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null); // You can set a header text or keep it null
-                    alert.setContentText("Please select a dataset to do a search on.");
-
-                    alert.showAndWait();
-                    return;
-                }
-
-                Algorithm algorithm;
-
-                try {
-                    if (UsesScoreWrapper.class.isAssignableFrom(algorithmClass) && (TakesIndependenceWrapper.class.isAssignableFrom(algorithmClass))) {
-                        IndependenceWrapper test = DataView.getTest(dataSet);
-                        ScoreWrapper score = DataView.getScore(dataSet);
-                        algorithm = (Algorithm) algorithmClass.getConstructor(IndependenceWrapper.class, ScoreWrapper.class).newInstance(test, score);
-                    } else if (UsesScoreWrapper.class.isAssignableFrom(algorithmClass)) {
-                        ScoreWrapper score = DataView.getScore(dataSet);
-                        algorithm = (Algorithm) algorithmClass.getConstructor(ScoreWrapper.class).newInstance(score);
-                    } else if (TakesIndependenceWrapper.class.isAssignableFrom(algorithmClass)) {
-                        IndependenceWrapper test = DataView.getTest(dataSet);
-                        algorithm = (Algorithm) algorithmClass.getConstructor(IndependenceWrapper.class).newInstance(test);
-                    } else {
-                        algorithm = (Algorithm) algorithmClass.getConstructor().newInstance();
-                    }
-                } catch (Exception ex) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error Dialog");
-                    alert.setHeaderText(null); // You can set a header text or keep it null
-                    alert.setContentText("Could not instantiate algorithm: " + ex.getMessage());
-                    alert.showAndWait();
-                    return;
-                }
-
-                Graph graph = algorithm.search(dataSet, new Parameters());
-                Project selected = NamesToProjects.getInstance().getSelectedProject();
-                selected.addSearchResult(algorithm.getClass().getSimpleName(),
-                        graph, true, true, new Parameters(), algorithm.getParameters());
-            });
-
-            items.add(item);
-        }
-
-        return items;
     }
 
     @NotNull
