@@ -23,6 +23,7 @@ import java.util.*;
  */
 public class Project {
     private final Tab dataTab;
+    private final Tab valenceTab;
     private final Tab graphTab;
     private final Tab searchTab;
     private final Tab gamesTab;
@@ -31,7 +32,7 @@ public class Project {
     private final TabPane main;
 
     private final TabPane data = new TabPane();
-    private final TabPane variables = new TabPane();
+    private final TabPane valence = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane search = new TabPane();
     private final TabPane games = new TabPane();
@@ -60,7 +61,8 @@ public class Project {
         this.treeItem = new TreeItem<>(projectName);
 
         dataTab = new Tab("Data", data);
-        searchTab = new Tab("Search Graphs", search);
+        valenceTab = new Tab("Valence", valence);
+        searchTab = new Tab("Search", search);
         graphTab = new Tab("Other Graphs", graphs);
         gamesTab = new Tab("Games", games);
 
@@ -101,16 +103,19 @@ public class Project {
         }
 
         this.main.getTabs().add(dataTab);
+        this.main.getTabs().add(valenceTab);
         this.main.getTabs().add(searchTab);
         this.main.getTabs().add(graphTab);
         this.main.getTabs().add(gamesTab);
 
         dataTab.setClosable(false);
+        valenceTab.setClosable(false);
         graphTab.setClosable(false);
         searchTab.setClosable(false);
         gamesTab.setClosable(false);
 
         this.data.setSide(Side.TOP);
+        this.valence.setSide(Side.TOP);
         this.graphs.setSide(Side.TOP);
         this.search.setSide(Side.TOP);
         this.games.setSide(Side.TOP);
@@ -162,9 +167,9 @@ public class Project {
 
         // It's important that this not be closable. The user may have put a lot of work into it, and
         // it should not be accidentally deleted.
-        Tab _variables = new Tab("Variables", new VariableView(dataSet).getTableView());
+        Tab _variables = new Tab("Valence", new ValenceView(dataSet).getTableView());
         _variables.setClosable(closable);
-        this.data.getTabs().add(_variables);
+        this.valence.getTabs().add(_variables);
 
         tab.setOnClosed(event -> {
             if (file.exists()) {

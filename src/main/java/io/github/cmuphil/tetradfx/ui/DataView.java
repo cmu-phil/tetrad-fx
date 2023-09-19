@@ -173,12 +173,6 @@ public class DataView {
         });
         transformData.getItems().add(shuffleColumns);
 
-        var makeModel = new Menu("Make Model");
-        contextMenu.getItems().add(makeModel);
-
-        var saveData = new Menu("Save Data");
-        contextMenu.getItems().add(saveData);
-
         return contextMenu;
     }
 

@@ -206,16 +206,12 @@ public class GraphView extends Pane {
         transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);
         contextMenu.getItems().add(transform);
 
-        var model = new Menu("Model");
-        model.getItems().add(new MenuItem("Make a model based on this graph and the selected data"));
-        contextMenu.getItems().add(model);
+//        var model = new Menu("Model");
+//        model.getItems().add(new MenuItem("Make a model based on this graph and the selected data"));
+//        contextMenu.getItems().add(model);
 
-        var search = new Menu("Do an search using this graph as an oracle");
-        search.getItems().add(new MenuItem("Do an search using this graph as an oracle"));
-        contextMenu.getItems().add(search);
-
-        var saveGraph = new MenuItem("Save Graph");
-        contextMenu.getItems().add(saveGraph);
+//        var saveGraph = new MenuItem("Save Graph");
+//        contextMenu.getItems().add(saveGraph);
 
         var games = new MenuItem("Base Games on this Graph!");
         games.setOnAction(e -> Games.baseGamesOnGraph(graph));
