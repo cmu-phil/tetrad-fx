@@ -271,9 +271,6 @@ public class TetradFxMain {
         insights.getItems().add(new MenuItem("Check Markov and Faithfulness Assumptions"));
         insights.getItems().add(new MenuItem("Check for D-separation/M-separation"));
 
-        Menu layout = new Menu("Layout");
-        layout.getItems().add(new Menu("Do a layout"));
-
         Menu games = new Menu("Games");
 
         MenuItem basedOnGraph_4_4 =  new MenuItem("Make a random game with 4 nodes and 4 edges");
@@ -303,7 +300,7 @@ public class TetradFxMain {
         help.getItems().add(new MenuItem("Tetrad Manual"));
         help.getItems().add(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, search, insights, layout, games, help);
+        menuBar.getMenus().addAll(fileMenu, search, insights, games, help);
         return menuBar;
     }
 
