@@ -43,14 +43,14 @@ public class NamesToProjects {
 
         this.dir = mainDir;
 
-        if (!dir.exists()) {
+        if (!dir.exists() || dir.listFiles().length == 0) {
             boolean made = dir.mkdir();
             projects = new TreeItem<>(sessionName);
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
 
             if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + dir.getPath());
+                System.out.println("Directory was empty: " + dir.getPath());
             }
 
             var graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,

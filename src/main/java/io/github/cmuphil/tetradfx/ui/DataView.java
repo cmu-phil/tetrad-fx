@@ -9,6 +9,8 @@ import edu.cmu.tetrad.algcomparison.score.BdeuScore;
 import edu.cmu.tetrad.algcomparison.score.ConditionalGaussianBicScore;
 import edu.cmu.tetrad.algcomparison.score.ScoreWrapper;
 import edu.cmu.tetrad.algcomparison.score.SemBicScore;
+import edu.cmu.tetrad.algcomparison.utils.TakesIndependenceWrapper;
+import edu.cmu.tetrad.algcomparison.utils.UsesScoreWrapper;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DiscreteVariable;
 import edu.cmu.tetrad.graph.Graph;
@@ -49,7 +51,7 @@ public class DataView {
             table.getItems().add(new DataRow(dataSet, i));
         }
 
-        var contextMenu = getContextMenu(table, dataSet);
+        var contextMenu = getContextMenu(table);
 
         // Show context menu on right-click on the label
         table.setOnMousePressed(event -> {
@@ -66,11 +68,11 @@ public class DataView {
     }
 
     @NotNull
-    public static List<MenuItem> getMenuItems(DataSet dataSet, List<Algorithm> algorithms) {
+    public static List<MenuItem> getSearchMenuItems(DataSet dataSet, List<Class> algorithmClasses) {
         List<MenuItem> items = new ArrayList<>();
 
-        for (Algorithm algorithm : algorithms) {
-            MenuItem item = new MenuItem(algorithm.getDescription());
+        for (Class algorithmClass : algorithmClasses) {
+            MenuItem item = new MenuItem(algorithmClass.getSimpleName());
             item.setOnAction(e -> {
                 if (dataSet == null) {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -81,6 +83,32 @@ public class DataView {
                     alert.showAndWait();
                     return;
                 }
+
+                Algorithm algorithm;
+
+                try {
+                    if (UsesScoreWrapper.class.isAssignableFrom(algorithmClass) && (TakesIndependenceWrapper.class.isAssignableFrom(algorithmClass))) {
+                        IndependenceWrapper test = DataView.getTest(dataSet);
+                        ScoreWrapper score = DataView.getScore(dataSet);
+                        algorithm = (Algorithm) algorithmClass.getConstructor(IndependenceWrapper.class, ScoreWrapper.class).newInstance(test, score);
+                    } else if (UsesScoreWrapper.class.isAssignableFrom(algorithmClass)) {
+                        ScoreWrapper score = DataView.getScore(dataSet);
+                        algorithm = (Algorithm) algorithmClass.getConstructor(ScoreWrapper.class).newInstance(score);
+                    } else if (TakesIndependenceWrapper.class.isAssignableFrom(algorithmClass)) {
+                        IndependenceWrapper test = DataView.getTest(dataSet);
+                        algorithm = (Algorithm) algorithmClass.getConstructor(IndependenceWrapper.class).newInstance(test);
+                    } else {
+                        algorithm = (Algorithm) algorithmClass.getConstructor().newInstance();
+                    }
+                } catch (Exception ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText(null); // You can set a header text or keep it null
+                    alert.setContentText("Could not instantiate algorithm: " + ex.getMessage());
+                    alert.showAndWait();
+                    return;
+                }
+
                 Graph graph = algorithm.search(dataSet, new Parameters());
                 Project selected = NamesToProjects.getInstance().getSelectedProject();
                 selected.addSearchResult(algorithm.getClass().getSimpleName(),
@@ -115,7 +143,7 @@ public class DataView {
     }
 
     @NotNull
-    static ContextMenu getContextMenu(TableView<DataRow> pane, DataSet _dataSet) {
+    static ContextMenu getContextMenu(TableView<DataRow> pane) {
         var contextMenu = new ContextMenu();
         var search = new Menu("Do a search using this dataset");
 
@@ -125,7 +153,7 @@ public class DataView {
             return contextMenu;
         }
 
-        MenuItems.searchMenuItems(dataSet, search);
+        search.getItems().addAll(MenuItems.searchMenuItems());
 
         contextMenu.getItems().addAll(search);
 

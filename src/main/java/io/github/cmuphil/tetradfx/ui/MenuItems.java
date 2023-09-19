@@ -8,32 +8,33 @@ import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.GraspFci;
 import edu.cmu.tetrad.algcomparison.independence.IndependenceWrapper;
 import edu.cmu.tetrad.data.DataSet;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
+import edu.cmu.tetrad.graph.Graph;
+import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItems {
-    public static void searchMenuItems(DataSet dataSet, Menu menu) {
-        List<Algorithm> algorithms = new ArrayList<>();
-        var score = DataView.getScore(dataSet);
+    public static List<MenuItem> searchMenuItems() {
+        DataSet dataSet = Selected.selectedData;
 
-        algorithms.add(new Boss(score));
-        IndependenceWrapper test = DataView.getTest(dataSet);
-        algorithms.add(new Grasp(test, score));
-        algorithms.add(new Pc(test));
-        algorithms.add(new Fges(score));
-        algorithms.add(new Cpc(test));
+        if (dataSet == null) {
+            return new ArrayList<>();
+        }
 
-        algorithms.add(new Fci(test));
-        algorithms.add(new Gfci(test, score));
-        algorithms.add(new Bfci(test, score));
-        algorithms.add(new GraspFci(test, score));
+        List<Class> algorithms = new ArrayList<>();
 
-        var items = DataView.getMenuItems(dataSet, algorithms);
+        algorithms.add(Boss.class);
+        algorithms.add(Grasp.class);
+        algorithms.add(Pc.class);
+        algorithms.add(Fges.class);
+        algorithms.add(Cpc.class);
 
-        menu.getItems().addAll(items);
+        algorithms.add(Fci.class);
+        algorithms.add(Gfci.class);
+        algorithms.add(Bfci.class);
+        algorithms.add(GraspFci.class);
 
+        return DataView.getSearchMenuItems(dataSet, algorithms);
     }
 }
