@@ -8,8 +8,8 @@ in a different interface with a new look and feel, taking advantage
 of what's available in JavaFX (which is quite a lot and is 
 strongly supported by the community).
 
-This project is a bit of a mess at the moment but will hopefully 
-clear up in a few days. 2023-9-20. We are aiming for a first 
+This project is a bit of a mess at the moment (2023-9-20) but will hopefully 
+clear up in a few days. We are aiming for a first 
 draft of this project (without any modeling facilities) with 
 at least a workable subset of functionality by the end of 
 September, 2023, and then we can decide whether to continue the project
