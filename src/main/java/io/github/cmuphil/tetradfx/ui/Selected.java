@@ -10,11 +10,6 @@ import edu.cmu.tetrad.data.DataSet;
 public class Selected {
     public static DataSet getSelectedData () {
         Project selectedProject = Session.getInstance().getSelectedProject();
-        DataSet selectedDataSet = selectedProject.getSelectedDataSet();
-
-        System.out.println("Selected project: " + selectedProject.getName());
-        System.out.println("Selected dataset: " + selectedDataSet.getName());
-
-        return selectedDataSet;
+        return selectedProject.getSelectedDataSet();
     }
 }

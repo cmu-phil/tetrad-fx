@@ -305,10 +305,14 @@ public class ChangedStuffINeed {
         dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
 
         Data data = dataReader.read(dataColumns, hasHeader);
-        DataModel dataModel = DataConvertUtils.toDataModel(data);
-        dataModel.setName(file.getName());
 
-        return (DataSet) dataModel;
+        if (data != null){
+            DataModel dataModel = DataConvertUtils.toDataModel(data);
+            dataModel.setName(file.getName());
+            return (DataSet) dataModel;
+        }
+
+        return null;
     }
 
     public static void jsonFromJava(Object object, File file) {

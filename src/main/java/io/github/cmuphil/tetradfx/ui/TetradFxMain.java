@@ -34,8 +34,12 @@ import java.io.IOException;
 public class TetradFxMain {
     private static final TetradFxMain INSTANCE = new TetradFxMain();
 
+
     public static TetradFxMain getInstance() {
         return TetradFxMain.INSTANCE;
+    }
+
+    public TetradFxMain() {
     }
 
     // Passing primaryStage in here so that I can quit the application from a menu item
@@ -52,30 +56,29 @@ public class TetradFxMain {
         leftSplit.setOrientation(Orientation.VERTICAL);
         leftSplit.setDividerPosition(0, 0.5);
 
-        TextArea text = new TextArea();
-        text.setWrapText(true);
-        text.setFont(new Font("Arial", 14));
-        BorderPane notesArea = new BorderPane(text);
-
         BorderPane parametersPane = Session.getInstance().getParametersPane();
         TextArea parametersArea = Session.getInstance().getSelectedProject().getParametersArea();
+        parametersArea.setFont(new Font("Arial", 14));
         parametersPane.setCenter(parametersArea);
         Tab paraneters = new Tab("Parameters", parametersPane);
         paraneters.setClosable(false);
 
-        TabPane tabPane = new TabPane();
-        Tab notes = new Tab("Notes", notesArea);
+        BorderPane notesPane = Session.getInstance().getNotesPane();
+        TextArea notesArea = Session.getInstance().getSelectedProject().getNotesArea();
+        notesPane.setCenter(notesArea);
+        notesArea.setFont(new Font("Arial", 14));
+        Tab notes = new Tab("Notes", notesPane);
         notes.setClosable(false);
 
-        tabPane.getTabs().addAll(paraneters, notes);
+        TabPane tabPane = new TabPane();
+        tabPane.getTabs().addAll(notes, paraneters);
 
-        parametersArea.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Make sure the tab containing the TextArea is selected
-            tabPane.getSelectionModel().select(paraneters);
-        });
+//        parametersArea.textProperty().addListener((observable, oldValue, newValue) -> {
+//            // Make sure the tab containing the TextArea is selected
+//            tabPane.getSelectionModel().select(paraneters);
+//        });
 
-        leftSplit.getItems().addAll(Session.getInstance().getSessionTreeView(),
-               tabPane);
+        leftSplit.getItems().addAll(Session.getInstance().getSessionTreeView(), tabPane);
 
         mainSplit.getItems().addAll(leftSplit, activePane);
         mainSplit.setDividerPosition(0, 0.2);

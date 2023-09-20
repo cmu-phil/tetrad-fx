@@ -28,13 +28,18 @@ public class MenuItems {
 
     /**
      * Creates a list of menu items for the algorithms, searching from the data in the currently
-     * selected dataset.
+     * selected dataset. Note that is important here that the dataset be found on the fly, since
+     * the user may have changed the selected dataset since the last time the menu was opened.
      * @return a list of menu items for the algorithms, searching from the data in the currently
      * selected dataset.
      */
     public static List<MenuItem> searchFromDataMenuItems() {
         List<Class> algorithms = new ArrayList<>();
 
+        // TODO: Add more algorithms here.
+        // For this, we need to figure out how to use Jessi's annotations
+        // to read in the list automatically. Also, the algorithms can be sorted by type--again, we need
+        // to figure out how to read those annotations.
         algorithms.add(Boss.class);
         algorithms.add(Grasp.class);
         algorithms.add(Pc.class);

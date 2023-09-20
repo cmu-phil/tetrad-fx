@@ -16,7 +16,10 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * <p>Keeps track of projects in a session and which one is selected. The session tree view is
@@ -35,15 +38,16 @@ public class Session {
     private final TreeItem<String> projects;
     private final File dir;
     private final BorderPane parametersPane;
+    private final BorderPane notesPane;
     private String selectedName;
 
     /**
      * Private constructor.
-     * @param parametersPane The parameters pane, which may be modified by the session.
      * @param mainDir The directory where the session is stored.
      */
-    private Session(BorderPane parametersPane, File mainDir) {
-        this.parametersPane = parametersPane;
+    private Session(File mainDir) {
+        this.parametersPane = new BorderPane();
+        this.notesPane = new BorderPane();
 
         var root = new TreeItem<>("Session");
         root.setExpanded(true);
@@ -71,6 +75,7 @@ public class Session {
             String newName = NameUtils.nextName("Sample Simulation", namesToProjects.keySet());
             add(dataSet, graph, newName, "Sample Data", "True Graph");
             setSelectedName(newName);
+            getSelectedProject().setParametersAndNotesText();
         } else {
             File[] sessionDirs = dir.listFiles();
 
@@ -168,6 +173,8 @@ public class Session {
                     }
                 }
             }
+
+            getSelectedProject().setParametersAndNotesText();
         }
 
         System.out.println("dir: " + dir.getAbsolutePath());
@@ -178,9 +185,9 @@ public class Session {
                 if (selectedItem != null) {
                     setSelectedName(selectedItem.getValue());
                     activePane.setCenter(getSelectedMain());
-
-                    var parametersArea = getSelectedProject().getParametersArea();
-                    parametersPane.setCenter(parametersArea);
+                    parametersPane.setCenter(getSelectedProject().getParametersArea());
+                    notesPane.setCenter(getSelectedProject().getNotesArea());
+                    getSelectedProject().setParametersAndNotesText();
                 }
             }
         });
@@ -218,7 +225,7 @@ public class Session {
             File file = new File(userHomeDirectory, ".tetrad-fx-docs");
 
             if (file.exists()) {
-                instance = new Session(new BorderPane(), file);
+                instance = new Session(file);
             } else {
                 newInstance();
             }
@@ -233,7 +240,7 @@ public class Session {
      */
     public static void newInstance() {
         String userHomeDirectory = System.getProperty("user.home");
-        instance = new Session(new BorderPane(), new File( userHomeDirectory, ".tetrad-fx-docs"));
+        instance = new Session(new File(userHomeDirectory, ".tetrad-fx-docs"));
     }
 
     /**
@@ -268,7 +275,7 @@ public class Session {
      */
     public Node getSelectedMain() {
         Project selected = getSelectedProject();
-        return selected.getMain();
+        return selected.getMainTabPane();
     }
 
     /**
@@ -289,6 +296,8 @@ public class Session {
         if (project == null) {
             throw new NullPointerException("Project is null");
         }
+
+        project.setParametersAndNotesText();
 
         return project;
     }
@@ -315,5 +324,13 @@ public class Session {
      */
     public BorderPane getParametersPane() {
         return parametersPane;
+    }
+
+    /**
+     * Returns the notes pane.
+     * @return The notes pane.
+     */
+    public BorderPane getNotesPane() {
+        return notesPane;
     }
 }
