@@ -15,7 +15,9 @@ at least a workable subset of functionality by the end of
 September, 2023, or early Octovber at the latest, and then we can decide whether 
 to continue the project or scrap it. Please bear with. So far it's not been much 
 work, so sunk costs would be minimal. Once the first draft is
-available, of course, any comments will be welcome.
+available, of course, any comments will be welcome. The names of classes
+and package structure are still in flux, so please don't expect stability
+quite yet.
 
 One idea we had, which we're currently pursuing, is to shift the focus of
 Tetrad away from simulation studies and more toward analysis of particular datasets,
