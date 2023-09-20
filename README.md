@@ -44,7 +44,7 @@ in Tetrad's text format. Saving and loading sessions amounts to
 zipping and unzipping this material. Hopefully this fares better.
 It has the added advantage that if you even want to access this material
 from another application, all you have to do is unzip the project
-file and it's all there.
+file and it's all there and can easily be viewed with the naked eye.
 
 On request, we added a gadget to list the variables and their types,
 give basic infomration about them, and allow the user to take notes 
