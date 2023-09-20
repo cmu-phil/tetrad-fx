@@ -12,8 +12,9 @@ This project is a bit of a mess at the moment (2023-9-20) but will hopefully
 clear up in a few days. We are aiming for a first 
 draft of this project (without any modeling facilities) with 
 at least a workable subset of functionality by the end of 
-September, 2023, and then we can decide whether to continue the project
-or scrap it. Please bear with. Once the first draft is
+September, 2023, or early Octovber at the latest, and then we can decide whether 
+to continue the project or scrap it. Please bear with. So far it's not been much 
+work, so sunk costs would be minimal. Once the first draft is
 available, of course, any comments will be welcome.
 
 One idea we had, which we're currently pursuing, is to shift the focus of
