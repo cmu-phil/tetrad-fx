@@ -255,7 +255,7 @@ public class TetradFxMain {
         Menu search = new Menu("Search");
         Menu searchMenu = new Menu("Selected Data");
 
-        searchMenu.getItems().addAll(MenuItems.searchMenuItems());
+        searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems());
 
         search.getItems().add(searchMenu);
         search.getItems().add(new Menu("Selected Graph"));

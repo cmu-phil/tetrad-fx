@@ -43,6 +43,8 @@ public class Project {
     private final File searchDir;
 
     private final Map<TableView, DataSet> dataSetMap = new HashMap<>();
+    private boolean valenceAdded = false;
+    private String name = "";
 
     /**
      * Creates a new project.
@@ -59,6 +61,7 @@ public class Project {
         this.main.setPrefSize(1000, 800);
         this.main.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(projectName);
+        this.name = projectName;
 
         dataTab = new Tab("Data", data);
         valenceTab = new Tab("Valence", valence);
@@ -167,9 +170,13 @@ public class Project {
 
         // It's important that this not be closable. The user may have put a lot of work into it, and
         // it should not be accidentally deleted.
-        Tab _variables = new Tab("Valence", new ValenceView(dataSet).getTableView());
-        _variables.setClosable(closable);
-        this.valence.getTabs().add(_variables);
+
+        if (!valenceAdded) {
+            Tab valence = new Tab("Variables", new VariablesView(dataSet).getTableView());
+            valence.setClosable(closable);
+            this.valence.getTabs().add(valence);
+            valenceAdded = true;
+        }
 
         tab.setOnClosed(event -> {
             if (file.exists()) {
@@ -393,6 +400,10 @@ public class Project {
         for (String parameter : usedParameters) {
             this.parametersArea.appendText(parameter + "=" + parameters.get(parameter) + "\n");
         }
+    }
+
+    public String getName() {
+        return name;
     }
 }
 

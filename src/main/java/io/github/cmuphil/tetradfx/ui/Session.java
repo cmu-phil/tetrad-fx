@@ -190,6 +190,7 @@ public class Session {
      * Returns the selected project name.
      */
     public String getSelectedName() {
+        System.out.println("Getting selected name: " + selectedName);
         return selectedName;
     }
 
@@ -203,6 +204,7 @@ public class Session {
         }
 
         this.selectedName = selectedName;
+        System.out.println("Setting selected name to " + selectedName);
     }
 
     /**

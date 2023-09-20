@@ -25,14 +25,14 @@ import java.util.List;
  *
  * @author josephramsey
  */
-public class ValenceView {
+public class VariablesView {
     private TableView<VariableRow> tableView;
 
     /**
      * Creates a new variable view.
      * @param dataSet the dataset the variables are from.
      */
-    public ValenceView(DataSet dataSet) {
+    public VariablesView(DataSet dataSet) {
         tableView = new TableView<>();
 
         if (dataSet == null) {

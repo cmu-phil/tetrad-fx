@@ -25,12 +25,14 @@ import java.util.List;
  * @author josephramsey
  */
 public class MenuItems {
-    public static List<MenuItem> searchMenuItems() {
-        DataSet dataSet = Selected.getSelectedData();
-        if (dataSet == null) {
-            return new ArrayList<>();
-        }
 
+    /**
+     * Creates a list of menu items for the algorithms, searching from the data in the currently
+     * selected dataset.
+     * @return a list of menu items for the algorithms, searching from the data in the currently
+     * selected dataset.
+     */
+    public static List<MenuItem> searchFromDataMenuItems() {
         List<Class> algorithms = new ArrayList<>();
 
         algorithms.add(Boss.class);
@@ -46,18 +48,15 @@ public class MenuItems {
 
         List<MenuItem> items = new ArrayList<>();
 
+        // Sorry, IntelliJ, but I'm not going to specify a type for the Class variable, since it need
+        // to change from algorithm to algorithm.
         for (Class algorithmClass : algorithms) {
             MenuItem item = new MenuItem(algorithmClass.getSimpleName());
             item.setOnAction(e -> {
-                if (dataSet == null) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null); // You can set a header text or keep it null
-                    alert.setContentText("Please select a dataset to do a search on.");
 
-                    alert.showAndWait();
-                    return;
-                }
+                // This is currently guaranteed ot be non-null; if at some point is it not, best to display
+                // an Alert and return.
+                DataSet dataSet = Selected.getSelectedData();
 
                 Algorithm algorithm;
 

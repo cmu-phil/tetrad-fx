@@ -1,8 +1,11 @@
 package io.github.cmuphil.tetradfx;
 
+
 import io.github.cmuphil.tetradfx.ui.TetradFxMain;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.stage.WindowEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -34,6 +37,24 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/tyler32.png"))));
+
+        primaryStage.fullScreenProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                Platform.runLater(() -> {
+                    if (primaryStage.isFullScreen()) {
+                        primaryStage.setFullScreen(false);
+                        primaryStage.setMaximized(true);
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Information Dialog");
+                        alert.setHeaderText(null); // You can set a header text or keep it null
+                        alert.setContentText("Full screen mode is not supported yet--it messes with our dialogs on a Mac--" +
+                                "but we have maximized your window for you.");
+                        alert.showAndWait();
+                    }
+                });
+            }
+        });
 
         Scene scene = new Scene(TetradFxMain.getInstance().getRoot(primaryStage));
         primaryStage.setScene(scene);
