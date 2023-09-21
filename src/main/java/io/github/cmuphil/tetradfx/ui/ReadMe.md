@@ -36,6 +36,7 @@ POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
     1. Add a data field to the Variables tab.
     1. Download the trial of Analytica on a Windows laptop and see how they annotate datasets and variables.
     1. Figure out how to persist valence information.
+    2. Persist valence. 
 1. Insights menu.
     1. Implement an FX interface for the Markov checker for the Insights menu.
     1. Implement graph and data summaries for the Insights menu.
@@ -46,6 +47,7 @@ POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
 1. Games
     1. Make PC and d-separation games.
     1. Save and load games to the directory. (As graphs, I guess.)
+    1. Persist games.
 1. Add model estimation for linear and multinomial.
 1. Keep track of parents and children for each component in the session.
 1. Adding in annotations to list all Tetrad algorithms and sort them by type, and display
