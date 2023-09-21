@@ -182,8 +182,6 @@ public class Session {
             getSelectedProject().setParametersAndNotesText();
         }
 
-        System.out.println("dir: " + dir.getAbsolutePath());
-
         sessionTreeView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 var selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
