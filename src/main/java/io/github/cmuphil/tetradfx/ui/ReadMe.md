@@ -15,8 +15,8 @@ TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER (prioritized):
 
 1. Save notes and parameter field texts to the file system and reload on loading a session.
 1. Add more standard controls to the data loader.
-1. Make a parameter editor.
-1. Make a Knowledge editor.
+1. Make a parameter editor for search.
+1. Make a Knowledge editor, persist knowledge.
 1. Allow projects to be deleted from the session.
   
 POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
