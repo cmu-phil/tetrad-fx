@@ -23,7 +23,7 @@ Tetrad away from simulation studies and more toward analysis of particular datas
 so what we're doing at the moment is making an app that allows you to load a dataset,
 transform the data in various ways, do a search on data yielding a graph, and transform 
 that graph in various ways. Some graph layouts are included. We have moved the
-Search menu to top-level finally, where searches are done now on the currently
+Search menu to app-level finally, where searches are done now on the currently
 selected dataset. 
 
 We are keeping a running to-do list here, which will be kept up to date:
