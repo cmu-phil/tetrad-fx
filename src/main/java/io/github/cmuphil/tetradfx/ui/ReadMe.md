@@ -17,6 +17,7 @@ Goals of first draft:
 * Allow the user to save out sessions by zipping the contents of the session directory
   and unzip them by unzipping (programmatically). The user is free to unzip these
   themselves abd recover easily readable text files defining the session.
+* Allow the user to close and re-open the Tetrad-FX app without losing content.
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
