@@ -8,7 +8,7 @@ import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
-import io.github.cmuphil.tetradfx.utils.NameUtils;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -77,7 +77,7 @@ public class Session {
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
             var dataSet = simulation.simulateDataReducedForm(1000);
-            String newName = NameUtils.nextName("Sample Simulation", namesToProjects.keySet());
+            String newName = Utils.nextName("Sample Simulation", namesToProjects.keySet());
             add(dataSet, graph, newName, "Sample Data", "True Graph");
             setSelectedName(newName);
             getSelectedProject().setParametersAndNotesText();
@@ -128,7 +128,7 @@ public class Session {
 
                     if (dataFiles != null) {
                         for (File file : dataFiles) {
-                            if (file.getName().endsWith(".txt")) {
+                            if (file.getName().endsWith(".txt") && !file.getName().toLowerCase().contains("note")) {
                                 try {
                                     int maxNumCategories = 5;
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
@@ -151,7 +151,7 @@ public class Session {
 
                     if (graphFiles != null) {
                         for (var file : graphFiles) {
-                            if (file.getName().endsWith("txt")) {
+                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
                                 getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, true);
                             } else if (file.getName().endsWith("json")) {
@@ -166,7 +166,7 @@ public class Session {
 
                     if (searchFiles != null) {
                         for (File file : searchFiles) {
-                            if (file.getName().endsWith("txt")) {
+                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
                                 getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {

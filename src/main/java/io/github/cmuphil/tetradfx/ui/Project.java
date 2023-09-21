@@ -5,7 +5,7 @@ import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
-import io.github.cmuphil.tetradfx.utils.NameUtils;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -40,7 +40,6 @@ public class Project {
     private final File searchDir;
     private final Map<TableView, DataSet> dataSetMap = new HashMap<>();
     private boolean valenceAdded = false;
-    private final String name;
     private final Map<Tab, String> tabsToParameters = new HashMap<>();
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
 
@@ -59,7 +58,6 @@ public class Project {
         this.mainTabPane.setPrefSize(1000, 800);
         this.mainTabPane.setSide(Side.LEFT);
         this.treeItem = new TreeItem<>(projectName);
-        this.name = projectName;
         dataTab = new Tab("Data", data);
         Tab valenceTab = new Tab("Valence", valence);
         searchTab = new Tab("Search", search);
@@ -151,7 +149,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = NameUtils.nextName(name, this.getDataNames());
+            name = Utils.nextName(name, this.getDataNames());
         }
 
         TableView<DataView.DataRow> tableView = DataView.getTableView(dataSet);
@@ -196,9 +194,10 @@ public class Project {
             }
         });
 
-        tabsToNotes.put(tab, "Notes for " + name + ":");
-        notesArea.setText(tabsToNotes.get(tab));
+        readNotes(tab, dataDir, name);
+        persistNotes(tab, dataDir, name);
     }
+
 
     /**
      * Adds a graph to the graph tab.
@@ -213,7 +212,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = NameUtils.nextName(name, this.getGraphNames());
+            name = Utils.nextName(name, this.getGraphNames());
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -238,8 +237,8 @@ public class Project {
             }
         });
 
-        tabsToNotes.put(tab, "Notes for " + name + ":");
-        notesArea.setText(tabsToNotes.get(tab));
+        readNotes(tab, dataDir, name);
+        persistNotes(tab, dataDir, name);
     }
 
     /**
@@ -258,7 +257,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = NameUtils.nextName(name, this.getSearchNames());
+            name = Utils.nextName(name, this.getSearchNames());
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -286,8 +285,8 @@ public class Project {
             }
         });
 
-        tabsToNotes.put(tab, "Notes for " + name + ":");
-        notesArea.setText(tabsToNotes.get(tab));
+        readNotes(tab, dataDir, name);
+        persistNotes(tab, dataDir, name);
     }
 
     /**
@@ -302,7 +301,7 @@ public class Project {
         }
 
         if (nextName) {
-            name = NameUtils.nextName(name, this.getGameNames());
+            name = Utils.nextName(name, this.getGameNames());
         }
 
         Tab tab = new Tab(name, pane);
@@ -314,8 +313,8 @@ public class Project {
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
         tab.setOnClosed(event -> System.out.println(tab.getText() + " was closed."));
 
-        tabsToNotes.put(tab, "Notes for " + name + ":");
-        notesArea.setText(tabsToNotes.get(tab));
+        readNotes(tab, dataDir, name);
+        persistNotes(tab, dataDir, name);
     }
 
     /**
@@ -330,6 +329,42 @@ public class Project {
         }
 
         return names;
+    }
+
+    private void readNotes(Tab tab, File dir, String name) {
+        String _filename1 = dir + "/" + name.replace(' ', '_') + ".notes" + ".txt";
+
+        if (new File(_filename1).exists()) {
+            tabsToNotes.put(tab, Utils.loadTextFromFile(new File(_filename1)));
+            notesArea.setText(tabsToNotes.get(tab));
+        } else {
+            tabsToNotes.put(tab, "Notes for " + name + ":");
+            notesArea.setText(tabsToNotes.get(tab));
+            Utils.saveTextToFile(new File(_filename1), tabsToNotes.get(tab));
+        }
+
+        String _filename2 = dir + "/" + name.replace(' ', '_') + ".paramsNote" + ".txt";
+
+        if (new File(_filename2).exists()) {
+            tabsToParameters.put(tab, Utils.loadTextFromFile(new File(_filename2)));
+            parametersArea.setText(tabsToParameters.get(tab));
+        } else {
+            tabsToParameters.put(tab, "Parameters for " + name + ":");
+            parametersArea.setText(tabsToParameters.get(tab));
+            Utils.saveTextToFile(new File(_filename1), tabsToParameters.get(tab));
+        }
+    }
+
+    private void persistNotes(Tab tab, File dir, String _name) {
+        notesArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
+            String filename = dir + "/" + _name.replace(' ', '_') + ".notes" + ".txt";
+            Utils.saveTextToFile(new File(filename), tabsToNotes.get(tab));
+        });
+
+        parametersArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
+            String filename = dir + "/" + _name.replace(' ', '_') + ".paramsNote" + ".txt";
+            Utils.saveTextToFile(new File(filename), tabsToParameters.get(tab));
+        });
     }
 
     /**
@@ -418,15 +453,6 @@ public class Project {
     }
 
     /**
-     * Returns the name of this project.
-     *
-     * @return The name of this project.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Sets the text of the parameters and notes areas.
      */
     public void setParametersAndNotesText() {
@@ -461,13 +487,9 @@ public class Project {
         parametersArea.setText(getParameterString(selected));
         notesArea.setText(getNoteString(selected));
 
-        parametersArea.setOnKeyTyped(event -> {
-            tabsToParameters.put(selected, parametersArea.getText());
-        });
+        parametersArea.setOnKeyTyped(event -> tabsToParameters.put(selected, parametersArea.getText()));
 
-        notesArea.setOnKeyTyped(event -> {
-            tabsToNotes.put(selected, notesArea.getText());
-        });
+        notesArea.setOnKeyTyped(event -> tabsToNotes.put(selected, notesArea.getText()));
     }
 
     private String getParameterString(Tab tab) {

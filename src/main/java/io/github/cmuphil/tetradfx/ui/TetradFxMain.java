@@ -12,7 +12,7 @@ import edu.cmu.tetrad.util.Parameters;
 import edu.cmu.tetrad.util.RandomUtil;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
-import io.github.cmuphil.tetradfx.utils.NameUtils;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -178,7 +178,7 @@ public class TetradFxMain {
         }
 
         Session.getInstance().add(null, graph,
-                NameUtils.nextName(selectedFile.getName(), Session.getInstance().getProjectNames()),
+                Utils.nextName(selectedFile.getName(), Session.getInstance().getProjectNames()),
                 null, "Graph");
     }
 
@@ -366,7 +366,7 @@ public class TetradFxMain {
                     "*", true, Delimiter.TAB, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
-            Session.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
+            Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
@@ -383,7 +383,7 @@ public class TetradFxMain {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
                     '\"', "*", true, Delimiter.TAB, false);
-            Session.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
+            Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
@@ -402,7 +402,7 @@ public class TetradFxMain {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
                     "*", true, maxNumCategories, Delimiter.TAB, false);
-            Session.getInstance().add(dataSet, null, NameUtils.nextName(selectedFile.getName(),
+            Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
@@ -417,7 +417,7 @@ public class TetradFxMain {
      */
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
-        Session.getInstance().add(result.dataSet(), result.graph(), NameUtils.nextName("Simulation",
+        Session.getInstance().add(result.dataSet(), result.graph(), Utils.nextName("Simulation",
                         Session.getInstance().getProjectNames()),
                 "simulated_data", "true_graph");
     }
