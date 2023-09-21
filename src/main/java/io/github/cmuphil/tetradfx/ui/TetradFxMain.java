@@ -233,6 +233,16 @@ public class TetradFxMain {
         });
 
         fileMenu.getItems().add(new SeparatorMenuItem());
+        MenuItem deleteSelectedProject = new MenuItem("Delete Selected Project");
+
+        deleteSelectedProject.setOnAction(e -> {
+            Session.getInstance().deleteSelectedProject();
+        });
+
+        fileMenu.getItems().add(deleteSelectedProject);
+
+        fileMenu.getItems().add(new SeparatorMenuItem());
+
         MenuItem loadData = new MenuItem("Load Data");
         MenuItem loadGraph = new MenuItem("Load Graph");
         Menu simulation = new Menu("Simulation");
@@ -261,7 +271,7 @@ public class TetradFxMain {
         searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems());
 
         search.getItems().add(searchMenu);
-        search.getItems().add(new Menu("Selected Graph"));
+//        search.getItems().add(new Menu("Selected Graph"));
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
@@ -275,6 +285,8 @@ public class TetradFxMain {
         insights.getItems().add(new MenuItem("Check for D-separation/M-separation"));
 
         Menu games = new Menu("Games");
+
+        Menu permutationGames = new Menu("Permutation Games");
 
         MenuItem basedOnGraph_4_4 =  new MenuItem("Make a random game with 4 nodes and 4 edges");
         MenuItem basedOnGraph_5_5 =  new MenuItem("Make a random game with 5 nodes and 5 edges");
@@ -293,8 +305,9 @@ public class TetradFxMain {
         surpriseMe.setOnAction(e -> Games.baseGamesOnGraph(randomDag(RandomUtil.getInstance().nextInt(6) + 5,
                 RandomUtil.getInstance().nextInt(10) + 3)));
 
-        games.getItems().addAll(basedOnGraph_4_4, basedOnGraph_5_5, basedOnGraph_6_6, basedOnGraph_7_7,
+        permutationGames.getItems().addAll(basedOnGraph_4_4, basedOnGraph_5_5, basedOnGraph_6_6, basedOnGraph_7_7,
                 basedOnGraph_10_10, basedOnGraph_10_15, surpriseMe);
+        games.getItems().add(permutationGames);
 
         Menu help = new Menu("Help");
         help.getItems().add(new MenuItem("About"));
@@ -303,7 +316,7 @@ public class TetradFxMain {
         help.getItems().add(new MenuItem("Tetrad Manual"));
         help.getItems().add(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, search, insights, games, help);
+        menuBar.getMenus().addAll(fileMenu, search, games);
         return menuBar;
     }
 

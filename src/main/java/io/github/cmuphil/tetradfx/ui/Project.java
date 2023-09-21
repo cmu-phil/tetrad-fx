@@ -69,6 +69,8 @@ public class Project {
         dataDir = new File(dir, "data");
         searchDir = new File(dir, "search_graphs");
         graphDir = new File(dir, "other_graphs");
+        notesArea.setWrapText(true);
+        parametersArea.setWrapText(true);
 
         if (!dataDir.exists()) {
             boolean made = dataDir.mkdir();
@@ -105,7 +107,9 @@ public class Project {
         this.mainTabPane.getTabs().add(dataTab);
         this.mainTabPane.getTabs().add(valenceTab);
         this.mainTabPane.getTabs().add(searchTab);
+//        this.mainTabPane.getTabs().add(new Tab("Knowledge", new TextArea()));
         this.mainTabPane.getTabs().add(graphTab);
+//        this.mainTabPane.getTabs().add(new Tab("Estimations", new TextArea()));
         this.mainTabPane.getTabs().add(gamesTab);
         dataTab.setClosable(false);
         valenceTab.setClosable(false);
@@ -176,6 +180,9 @@ public class Project {
             valence.setClosable(closable);
             this.valence.getTabs().add(valence);
             valenceAdded = true;
+
+            this.valence.getTabs().add(new Tab("Missing Values", new TextArea()));
+            this.valence.getTabs().add(new Tab("Data Set Comments"));
         }
 
         tab.setOnClosed(event -> {
@@ -426,9 +433,10 @@ public class Project {
 
         for (String parameter : usedParameters) {
             String s = parameter + "=" + parameters.get(parameter) + "\n";
-            this.parametersArea.setText(s);
-            tabsToParameters.put(tab, s);
+            this.parametersArea.appendText(s);
         }
+
+        tabsToParameters.put(tab, parametersArea.getText());
     }
 
     /**

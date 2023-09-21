@@ -10,12 +10,17 @@ import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -183,14 +188,19 @@ public class Session {
             if (event.getClickCount() == 2) {
                 var selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
-                    setSelectedName(selectedItem.getValue());
-                    activePane.setCenter(getSelectedMain());
-                    parametersPane.setCenter(getSelectedProject().getParametersArea());
-                    notesPane.setCenter(getSelectedProject().getNotesArea());
-                    getSelectedProject().setParametersAndNotesText();
+                    String selectedName = selectedItem.getValue();
+                    selectOtherProject(selectedName);
                 }
             }
         });
+    }
+
+    private void selectOtherProject(String selectedName) {
+        setSelectedName(selectedName);
+        activePane.setCenter(getSelectedMain());
+        parametersPane.setCenter(getSelectedProject().getParametersArea());
+        notesPane.setCenter(getSelectedProject().getNotesArea());
+        getSelectedProject().setParametersAndNotesText();
     }
 
     /**
@@ -332,5 +342,70 @@ public class Session {
      */
     public BorderPane getNotesPane() {
         return notesPane;
+    }
+
+    public static void deleteDirectory(Path dir) throws IOException {
+        if (Files.exists(dir)) {
+            if (Files.isDirectory(dir)) {
+                try (DirectoryStream<Path> entries = Files.newDirectoryStream(dir)) {
+                    for (Path entry : entries) {
+                        deleteDirectory(entry);
+                    }
+                }
+            }
+            Files.delete(dir);
+        }
+    }
+
+    public void deleteSelectedProject() {
+        Project selectedProject = Session.getInstance().getSelectedProject();
+
+        if (projects.getChildren().size() == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Delete Project");
+            alert.setHeaderText("Delete Project");
+            alert.setContentText("You cannot delete the last project in the session.");
+
+            alert.showAndWait();
+            return;
+        }
+
+        if (selectedProject != null) {
+            ButtonType myYesButton = new ButtonType("Yes, go ahead and delete it");
+            ButtonType myNoButton = new ButtonType("No, DON\"T DELETE IT!");
+            String text = "Are you sure you want to delete the project " + selectedName + "?"
+                    + "\n\nThis will delete all data, graphs, and search results associated with this project."
+                    + "\n\nThis action cannot be undone. You may wish to save the session first.";
+
+            String selectedName = Session.getInstance().getSelectedName();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, text, myYesButton, myNoButton);
+            alert.setTitle("Delete Project");
+            alert.setHeaderText("Delete Project");
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == myYesButton) {
+                    namesToProjects.remove(selectedName);
+                    projects.getChildren().remove(selectedProject.getTreeItem());
+
+                    File _dir = new File(dir, selectedName.replace(" ", "_"));
+
+                    try {
+                        if (_dir.exists()) {
+                            deleteDirectory(_dir.toPath());
+                        } else {
+                            System.out.println("Directory does not exist: " + _dir.getAbsolutePath());
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    TreeItem<String> stringTreeItem = projects.getChildren().get(0);
+                    selectOtherProject(stringTreeItem.getValue());
+
+                } else if (response == myNoButton) {
+                    System.out.println("User clicked Cancel");
+                }
+            });
+        }
     }
 }
