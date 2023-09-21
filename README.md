@@ -26,7 +26,7 @@ that graph in various ways. Some graph layouts are included. We have moved the
 Search menu to top-level finally, where searches are done now on the currently
 selected dataset. 
 
-I am keeping a running to-do list here, which will be kept up to date:
+We are keeping a running to-do list here, which will be kept up to date:
 
 https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/tetradfx/ui/ReadMe.md
 
