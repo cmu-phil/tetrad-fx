@@ -2,12 +2,15 @@ This package contains the classes that make up the TetradFX UI.
 
 Goals of first draft:
 
-* Load datsets and allow searches to be done on them with knowledge.
+* Allow the user to start projects in a session by loading datasets.
+* Allow the user to make stock simulations with associated true graphs.
+* Allow the user to delete projects in a session.
+* Allow the user to define background knowledge for a search.
+* Allow the user to run select algorithms with and without background knowledge.
 * Allow the user to set parmaeters for each search.
 * Allow the suer to switch back and forth between analyses for loaded datasets.
 * Allow notes to be taken on each component with notes on parameters settings as well.
-* Make stock simulations with true graphs.
-* Allow grpah layouts to be done.
+* Allow grpahs to be laid out in various ways.
 * Allow transformations of data and graphs.
 * Allow some tutorial games to be played.
 
