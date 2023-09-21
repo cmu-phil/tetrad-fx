@@ -7,16 +7,16 @@ Goals of first draft:
 * Allow the user to delete projects in a session.
 * Allow the user to define background knowledge for a search.
 * Allow the user to run select algorithms with and without background knowledge.
-* Allow the user to set parmaeters for each search.
+* Allow the user to set parameters for each search.
 * Allow the suer to switch back and forth between analyses for loaded datasets.
 * Allow notes to be taken on each component with notes on parameters settings as well.
-* Allow grpahs to be laid out in various ways.
+* Allow graphs to be laid out in various ways.
 * Allow transformations of data and graphs.
 * Allow some tutorial games to be played.
 * Allow the user to enter valence information per variable.
-* Allow the user to save out sesssions by zipping the contents of the session directory
+* Allow the user to save out sessions by zipping the contents of the session directory
   and unzip them by unzipping (programmatically). The user is free to unzip these
-  thenskves abd recover easily readable text files defining the session.
+  themselves abd recover easily readable text files defining the session.
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
@@ -32,18 +32,18 @@ POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
 1. Elaborate on Data/Variables annotator. 
     1. Add a data field to the Variables tab.
     1. Download the trial of Analytica on a Windows laptop and see how they annotate datasets and variables.
-    1. Figufre out how to persist valence information.
+    1. Figure out how to persist valence information.
 1. Insights menu.
-    1. Implement an FX interface for the Markov checker for the Insignts menu.
+    1. Implement an FX interface for the Markov checker for the Insights menu.
     1. Implement graph and data summaries for the Insights menu.
-    1. Add graph comparisons to the Insignts menu.
+    1. Add graph comparisons to the Insights menu.
 1. Graph Viewer
     1. Make the graph viewer selectable.
     1. Rubberband selection.
 1. Games
-    1. Make PC and d-separation gamffes.
+    1. Make PC and d-separation games.
     1. Save and load games to the directory. (As graphs, I guess.)
-1. Add model estimation for lieear and multinomial.
+1. Add model estimation for linear and multinomial.
 1. Keep track of parents and children for each component in the session.
 1. Adding in annotations to list all Tetrad algorithms and sort them by type, and display
    information about each algorithm.
