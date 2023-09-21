@@ -195,6 +195,10 @@ public class Session {
         });
     }
 
+    /**
+     * Selects a project in the session.
+     * @param selectedName The name of the project to be selected.
+     */
     private void selectOtherProject(String selectedName) {
         setSelectedName(selectedName);
         activePane.setCenter(getSelectedMain());
