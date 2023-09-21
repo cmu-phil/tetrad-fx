@@ -5,6 +5,7 @@ Goals of first draft:
 * Allow the user to start projects in a session by loading datasets.
 * Allow the user to make stock simulations with associated true graphs.
 * Allow the user to delete projects in a session.
+* Allow the user to delete tabs in a project.
 * Allow the user to define background knowledge for a search.
 * Allow the user to run select algorithms with and without background knowledge.
 * Allow the user to set parameters for each search.
