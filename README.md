@@ -11,13 +11,13 @@ strongly supported by the community).
 This project is a bit of a mess at the moment (2023-9-20) but will hopefully 
 clear up in a few days. We are aiming for a first 
 draft of this project (without any modeling facilities) with 
-at least a workable subset of functionality by the end of 
+at least a workable subset of search functionality by the end of 
 September, 2023, or early October at the latest, and then we can decide whether 
-to continue the project or scrap it. Please bear with. (So far it's not been much 
-work, so sunk costs or scrapping it would be minimal.) Once the first draft is
-available, of course, any comments will be welcome. The names of classes
-and package structure are still in flux, so please don't expect stability
-quite yet.
+to continue the project or scrap it. Please bear with. Once the first draft is
+available, of course, any comments will be welcome.
+
+The names of classes and package structure are still in flux, so please 
+don't expect stability quite yet.
 
 One idea we had, which we're currently pursuing, is to shift the focus of
 Tetrad away from simulation studies and more toward analysis of particular datasets,
@@ -30,15 +30,5 @@ selected dataset.
 I am keeping a running to-do list here, which will be kept up to date:
 
 https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/tetradfx/ui/ReadMe.md
-
-On request, we added a gadget to list the variables and their types,
-give basic infomration about them, and allow the user to take notes 
-on particular variables. This may morph. We will add a field to let
-the user type out comments to be included in the dataset files as well,
-and read these in if they're already in the datasets. We think.
-
-The menus don't all do things at the moment. First first draft,
-menu items that don't do anything will be commented out and added
-later, if we choose to continue to develop the app.
 
 
