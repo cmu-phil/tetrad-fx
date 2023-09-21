@@ -27,24 +27,9 @@ that graph in various ways. Some graph layouts are included. We have moved the
 Search menu to top-level finally, where searches are done now on the currently
 selected dataset. 
 
-We will also add some items to the Insights menu, including plot matrices, 
-graph comaprisons, and so on, details to come. Also, we will add a facility for 
-editing and employing background knowledge, and a facility to display, keep track 
-of, and persist notes and parameter settings per compoennt. All of this will
-need to be reimplemented for JavaFX and we may have new ideas for how to do
-the UIs for them, but it should not be hard. We'll see now much we can get done
-for the first draft.
+I am keeping a running to-do list here, which will be kept up to date:
 
-We added a simple (yet effective) facility for saving and loading 
-datasets and graphs. We'd had problems with Java serialization before
-with the Swing app where new versions broke old serialziations in
-irretrievable ways. So we're using text-based serialization here.
-Data files are saved as flat tab-delimited files. Graphs are saved
-in Tetrad's text format. Saving and loading sessions amounts to
-zipping and unzipping this material. Hopefully this fares better.
-It has the added advantage that if you even want to access this material
-from another application, all you have to do is unzip the project
-file and it's all there and can easily be viewed with the naked eye.
+https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/tetradfx/ui/ReadMe.md
 
 On request, we added a gadget to list the variables and their types,
 give basic infomration about them, and allow the user to take notes 
