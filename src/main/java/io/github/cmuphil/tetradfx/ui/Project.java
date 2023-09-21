@@ -9,7 +9,6 @@ import io.github.cmuphil.tetradfx.utils.NameUtils;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 import java.io.File;
@@ -196,6 +195,9 @@ public class Project {
                 System.out.println("File does not exist");
             }
         });
+
+        tabsToNotes.put(tab, "Notes for " + name + ":");
+        notesArea.setText(tabsToNotes.get(tab));
     }
 
     /**
@@ -235,6 +237,9 @@ public class Project {
                 System.out.println("File does not exist");
             }
         });
+
+        tabsToNotes.put(tab, "Notes for " + name + ":");
+        notesArea.setText(tabsToNotes.get(tab));
     }
 
     /**
@@ -280,6 +285,9 @@ public class Project {
                 System.out.println("File does not exist");
             }
         });
+
+        tabsToNotes.put(tab, "Notes for " + name + ":");
+        notesArea.setText(tabsToNotes.get(tab));
     }
 
     /**
@@ -305,6 +313,9 @@ public class Project {
         tabsToNotes.put(tab, "");
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
         tab.setOnClosed(event -> System.out.println(tab.getText() + " was closed."));
+
+        tabsToNotes.put(tab, "Notes for " + name + ":");
+        notesArea.setText(tabsToNotes.get(tab));
     }
 
     /**

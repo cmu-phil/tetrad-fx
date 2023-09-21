@@ -175,18 +175,18 @@ public class GraphView extends Pane {
 
         var transform = new Menu("Transform");
 
-        var dagToCPDAG = new MenuItem("DAG to CPDAG");
+        var dagToCPDAG = new MenuItem("CPDAG from DAG");
 
         dagToCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.cpdagForDag(graph);
-            Session.getInstance().getSelectedProject().addGraph("DAG to CPPAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("CPDAG from DAG", dag, true, true);
         });
 
-        var dagToPag = new MenuItem("DAG to PAG");
+        var dagToPag = new MenuItem("PAG from DAG");
 
         dagToPag.setOnAction(e -> {
             Graph dag = GraphTransforms.dagToPag(graph);
-            Session.getInstance().getSelectedProject().addGraph("DAG to PAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("PAG from DAG", dag, true, true);
         });
 
         var dagFromCPDAG = new MenuItem("DAG from CPDAG");

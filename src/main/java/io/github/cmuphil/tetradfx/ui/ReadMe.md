@@ -8,7 +8,7 @@ Goals of first draft:
 * Allow the user to define background knowledge for a search.
 * Allow the user to run select algorithms with and without background knowledge.
 * Allow the user to set parameters for each search.
-* Allow the suer to switch back and forth between analyses for loaded datasets.
+* Allow the user to switch back and forth between analyses for loaded datasets.
 * Allow notes to be taken on each component with notes on parameters settings as well.
 * Allow graphs to be laid out in various ways.
 * Allow transformations of data and graphs.
