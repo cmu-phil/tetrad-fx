@@ -47,3 +47,8 @@ POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
 1. Keep track of parents and children for each component in the session.
 1. Adding in annotations to list all Tetrad algorithms and sort them by type, and display
    information about each algorithm.
+1. Simulations
+    1. Currently there are just a few stock simulation types available, but Tetrad has a robust simulation
+       facility. We are not intending to make this simulation facility a centerpiece of this app, but
+       there's not reason not to allow the user to use it (or at least some of it) if they want to, so
+       maybe adding some parameter editing here might be nice.
