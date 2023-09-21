@@ -2,6 +2,8 @@ This package contains the classes that make up the TetradFX UI.
 
 Goals of first draft:
 
+* Allow the user to view even large dense graphs.
+* Allow the user to view even large datasets, within the limits of persistence.
 * Allow the user to start projects in a session by loading datasets.
 * Allow the user to make stock simulations with associated true graphs.
 * Allow the user to delete projects in a session.
