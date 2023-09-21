@@ -20,7 +20,7 @@ Goals of first draft:
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER (prioritized):
 
-1. Save notes and parameter field texts to the file system and reload on loading a session.
+1. Persist notes and parameter field texts.
 1. Add more standard controls to the data loader.
 1. Make a parameter editor for search.
 1. Make a Knowledge editor, persist knowledge.
