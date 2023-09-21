@@ -9,10 +9,9 @@ of what's available in JavaFX (which is quite a lot and is
 strongly supported by the community).
 
 This project is a bit of a mess at the moment (2023-9-20) but will hopefully 
-clear up in a few days. We are aiming for a first 
-draft of this project (without any modeling facilities) with 
-at least a workable subset of search functionality by the end of 
-September, 2023, or early October at the latest, and then we can decide whether 
+clear up in a few days. We are aiming for a firstdraft of this project with 
+at least a workable subset of search functionality by the end of September 
+2023, or early October 2023 at the latest, and then we can decide whether 
 to continue the project or scrap it. Please bear with. Once the first draft is
 available, of course, any comments will be welcome.
 
