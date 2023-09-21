@@ -18,7 +18,7 @@ Goals of first draft:
   and unzip them by unzipping (programmatically). The user is free to unzip these
   thenskves abd recover easily readable text files defining the session.
 
-TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER (prioritized):
+TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
 1. Persist notes and parameter field texts.
 1. Add more standard controls to the data loader.
