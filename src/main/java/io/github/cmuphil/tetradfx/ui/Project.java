@@ -268,7 +268,6 @@ public class Project {
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-        setParametersText(tab, parameters, usedParameters);
         var _name = name.replace(' ', '_') + ".txt";
         var file = new File(searchDir, _name);
         GraphSaveLoadUtils.saveGraph(graph , file, false);
@@ -285,6 +284,7 @@ public class Project {
             }
         });
 
+        setParametersText(tab, parameters, usedParameters);
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
     }
@@ -334,6 +334,9 @@ public class Project {
     private void readNotes(Tab tab, File dir, String name) {
         String _filename1 = dir + "/" + name.replace(' ', '_') + ".notes" + ".txt";
 
+        tabsToNotes.computeIfAbsent(tab, k -> "");
+        tabsToParameters.computeIfAbsent(tab, k -> "");
+
         if (new File(_filename1).exists()) {
             tabsToNotes.put(tab, Utils.loadTextFromFile(new File(_filename1)));
             notesArea.setText(tabsToNotes.get(tab));
@@ -349,7 +352,9 @@ public class Project {
             tabsToParameters.put(tab, Utils.loadTextFromFile(new File(_filename2)));
             parametersArea.setText(tabsToParameters.get(tab));
         } else {
-            tabsToParameters.put(tab, "Parameters for " + name + ":");
+            if (tabsToParameters.get(tab).isEmpty()) {
+                tabsToParameters.put(tab, "Parameters for " + name + ":");
+            }
             parametersArea.setText(tabsToParameters.get(tab));
             Utils.saveTextToFile(new File(_filename1), tabsToParameters.get(tab));
         }
