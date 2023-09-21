@@ -14,7 +14,7 @@ Goals of first draft:
 * Allow transformations of data and graphs.
 * Allow some tutorial games to be played.
 * Allow the user to enter valence information per variable.
-* Allow the uer to save out sesssions by zipping the contents of the session directory
+* Allow the user to save out sesssions by zipping the contents of the session directory
   and unzip them by unzipping (programmatically). The user is free to unzip these
   thenskves abd recover easily readable text files defining the session.
 
