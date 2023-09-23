@@ -14,7 +14,9 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,7 @@ public class MenuItems {
         algorithms.add(Gfci.class);
         algorithms.add(Bfci.class);
         algorithms.add(GraspFci.class);
+
 
         List<MenuItem> items = new ArrayList<>();
 
@@ -87,6 +90,12 @@ public class MenuItems {
                     alert.showAndWait();
                     return;
                 }
+
+//                Alert _alert = new Alert(Alert.AlertType.INFORMATION);
+//                _alert.setTitle("Information Dialog");
+//                _alert.setHeaderText(null); // You can set a header text or keep it null
+//                _alert.get
+//                _alert.showAndWait();
 
                 Graph graph = algorithm.search(dataSet, new Parameters());
                 Project selected = Session.getInstance().getSelectedProject();
