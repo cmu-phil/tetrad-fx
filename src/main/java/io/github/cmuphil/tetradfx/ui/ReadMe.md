@@ -1,3 +1,5 @@
+NEWS 2023-09-23 Added a parameter editor for search. Still need to add parameters for test and/or scores.
+
 This package contains the classes that make up the TetradFX UI.
 
 Goals of first draft:
