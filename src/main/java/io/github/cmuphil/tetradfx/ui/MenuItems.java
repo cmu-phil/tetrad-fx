@@ -92,7 +92,7 @@ public class MenuItems {
 
                 new ParameterDialog(parameters, myParams).showDialog();
 
-                Graph graph = algorithm.search(dataSet, new Parameters());
+                Graph graph = algorithm.search(dataSet, parameters);
                 Project selected = Session.getInstance().getSelectedProject();
                 selected.addSearchResult(algorithm.getClass().getSimpleName(),
                         graph, true, true, new Parameters(), algorithm.getParameters());
