@@ -21,10 +21,7 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>Keeps track of projects in a session and which one is selected. The session tree view is
@@ -61,7 +58,7 @@ public class Session {
 
         this.dir = mainDir;
 
-        if (!dir.exists() || dir.listFiles().length == 0) {
+        if (!dir.exists() || Objects.requireNonNull(dir.listFiles()).length == 0) {
             boolean made = dir.mkdir();
             projects = new TreeItem<>(sessionName);
             sessionTreeView = new TreeView<>(projects);

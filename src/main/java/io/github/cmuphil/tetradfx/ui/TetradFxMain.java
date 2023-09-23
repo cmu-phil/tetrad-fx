@@ -35,10 +35,52 @@ public class TetradFxMain {
     private static final TetradFxMain INSTANCE = new TetradFxMain();
     private final Parameters parameters = new Parameters();
 
+    /**
+     * @return The singleton instance of this class.
+     */
     public static TetradFxMain getInstance() {
         return TetradFxMain.INSTANCE;
     }
 
+    /**
+     * Gets a simulation. This just returns some stock simulations for now.
+     *
+     * @param parameters The parameters.
+     * @param type       The type of simulation.
+     * @return The result of the simulation.
+     */
+    // This will eventually be replaced by some flexible UI for making simulations (or eliminated).
+    @NotNull
+    private static Result getSimulation(Parameters parameters, SimulationType type) {
+        if (type == SimulationType.CONTINUOUS) {
+            Graph graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
+                    200, 500, 100, 1000, false);
+            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
+            simulation.setCoefRange(0, 0.5);
+            simulation.setSelfLoopCoef(0.1);
+            DataSet dataSet = simulation.simulateDataReducedForm(1000);
+            return new Result(graph, dataSet);
+        } else if (type == SimulationType.DISCRETE) {
+            BayesNetSimulation simulation = new BayesNetSimulation(new RandomForward());
+            simulation.createData(parameters, true);
+            Graph graph = simulation.getTrueGraph(0);
+            DataSet dataSet = (DataSet) simulation.getDataModel(0);
+            return new Result(graph, dataSet);
+        } else {
+            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
+            simulation.createData(parameters, true);
+            Graph graph = simulation.getTrueGraph(0);
+            DataSet dataSet = (DataSet) simulation.getDataModel(0);
+            return new Result(graph, dataSet);
+        }
+    }
+
+    /**
+     * Creates the root pane.
+     *
+     * @param primaryStage The primary stage.
+     * @return The root pane.
+     */
     // Passing primaryStage in here so that I can quit the application from a menu item
     // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
@@ -84,32 +126,6 @@ public class TetradFxMain {
         root.getChildren().add(borderPane);
 
         return root;
-    }
-
-    // This will eventually be replaced by some flexible UI for making simulations (or eliminated).
-    @NotNull
-    private static Result getSimulation(Parameters parameters, SimulationType type) {
-        if (type == SimulationType.CONTINUOUS) {
-            Graph graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
-                    200, 500, 100, 1000, false);
-            LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
-            simulation.setCoefRange(0, 0.5);
-            simulation.setSelfLoopCoef(0.1);
-            DataSet dataSet = simulation.simulateDataReducedForm(1000);
-            return new Result(graph, dataSet);
-        } else if (type == SimulationType.DISCRETE) {
-            BayesNetSimulation simulation = new BayesNetSimulation(new RandomForward());
-            simulation.createData(parameters, true);
-            Graph graph = simulation.getTrueGraph(0);
-            DataSet dataSet = (DataSet) simulation.getDataModel(0);
-            return new Result(graph, dataSet);
-        } else {
-            LeeHastieSimulation simulation = new LeeHastieSimulation(new RandomForward());
-            simulation.createData(parameters, true);
-            Graph graph = simulation.getTrueGraph(0);
-            DataSet dataSet = (DataSet) simulation.getDataModel(0);
-            return new Result(graph, dataSet);
-        }
     }
 
     /**
@@ -227,12 +243,8 @@ public class TetradFxMain {
         fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem deleteSelectedProject = new MenuItem("Delete Selected Project");
 
-        deleteSelectedProject.setOnAction(e -> {
-            Session.getInstance().deleteSelectedProject();
-        });
-
+        deleteSelectedProject.setOnAction(e -> Session.getInstance().deleteSelectedProject());
         fileMenu.getItems().add(deleteSelectedProject);
-
         fileMenu.getItems().add(new SeparatorMenuItem());
 
         MenuItem loadData = new MenuItem("Load Data");
@@ -263,7 +275,6 @@ public class TetradFxMain {
         searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(parameters));
 
         search.getItems().add(searchMenu);
-//        search.getItems().add(new Menu("Selected Graph"));
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
@@ -434,7 +445,11 @@ public class TetradFxMain {
 
         try {
             ChangedStuffINeed.deleteDirectory(dir.toPath());
-            dir.mkdir();
+            boolean created = dir.mkdir();
+
+            if (!created) {
+                throw new RuntimeException("Could not create directory: " + dir.getAbsolutePath());
+            }
 
             ChangedStuffINeed.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
 

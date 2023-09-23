@@ -40,12 +40,7 @@ public class GraphView extends Pane {
     // These are some colors from the Swing Tetrad app, just pulled them over.
     private static final Color NODE_FILL_COLOR = Color.rgb(148, 198, 226);
     private static final Color NODE_EDGE_COLOR = Color.rgb(146, 154, 166);
-//    private static final Color NODE_SELECTED_FILL_COLOR = Color.rgb(244, 219, 110);
-//    private static final Color NODE_SELECTED_EDGE_COLOR = Color.rgb(215, 193, 97);
-//    private static final Color NODE_TEXT_COLOR = Color.rgb(0, 1, 53);d
     private static final Color LINE_COLOR = Color.rgb(26, 113, 169);
-//    private static final Color SELECTED_LINE_COLOR = Color.rgb(244, 0, 20);
-//    private static final Color HIGHLIGHTED_LINE_COLOR = Color.rgb(238, 180, 34);
 
     private GraphView(Graph graph) {
         var content = new Pane();
@@ -205,13 +200,6 @@ public class GraphView extends Pane {
 
         transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);
         contextMenu.getItems().add(transform);
-
-//        var model = new Menu("Model");
-//        model.getItems().add(new MenuItem("Make a model based on this graph and the selected data"));
-//        contextMenu.getItems().add(model);
-
-//        var saveGraph = new MenuItem("Save Graph");
-//        contextMenu.getItems().add(saveGraph);
 
         var games = new MenuItem("Base Games on this Graph!");
         games.setOnAction(e -> Games.baseGamesOnGraph(graph));

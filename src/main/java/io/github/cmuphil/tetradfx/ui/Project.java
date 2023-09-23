@@ -38,7 +38,7 @@ public class Project {
     private final File dataDir;
     private final File graphDir;
     private final File searchDir;
-    private final Map<TableView, DataSet> dataSetMap = new HashMap<>();
+    private final Map<TableView<DataView.DataRow>, DataSet> dataSetMap = new HashMap<>();
     private boolean valenceAdded = false;
     private final Map<Tab, String> tabsToParameters = new HashMap<>();
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
@@ -334,8 +334,8 @@ public class Project {
     private void readNotes(Tab tab, File dir, String name) {
         String _filename1 = dir + "/" + name.replace(' ', '_') + ".notes" + ".txt";
 
-        tabsToNotes.computeIfAbsent(tab, k -> "");
-        tabsToParameters.computeIfAbsent(tab, k -> "");
+        tabsToNotes.putIfAbsent(tab, "");
+        tabsToParameters.putIfAbsent(tab, "");
 
         if (new File(_filename1).exists()) {
             tabsToNotes.put(tab, Utils.loadTextFromFile(new File(_filename1)));
