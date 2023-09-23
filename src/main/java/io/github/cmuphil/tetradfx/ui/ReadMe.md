@@ -19,13 +19,13 @@ Goals of first draft:
 * Allow the user to enter valence information per variable.
 * Allow the user to save out sessions by zipping the contents of the session directory
   and unzip them by unzipping (programmatically). The user is free to unzip these
-  themselves abd recover easily readable text files defining the session.
+  themselves and recover easily readable text files defining the session.
 * Allow the user to close and re-open the Tetrad-FX app without losing content.
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
 1. Add more standard controls to the data loader.
-1. Make a parameter editor for search.
+1. Add parameters to parameter editor for test and/or score.
 1. Make a Knowledge editor, persist knowledge.
   
 POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
