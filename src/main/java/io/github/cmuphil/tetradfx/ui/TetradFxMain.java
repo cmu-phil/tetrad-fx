@@ -33,13 +33,10 @@ import java.io.IOException;
  */
 public class TetradFxMain {
     private static final TetradFxMain INSTANCE = new TetradFxMain();
-
+    private final Parameters parameters = new Parameters();
 
     public static TetradFxMain getInstance() {
         return TetradFxMain.INSTANCE;
-    }
-
-    public TetradFxMain() {
     }
 
     // Passing primaryStage in here so that I can quit the application from a menu item
@@ -72,11 +69,6 @@ public class TetradFxMain {
 
         TabPane tabPane = new TabPane();
         tabPane.getTabs().addAll(notes, paraneters);
-
-//        parametersArea.textProperty().addListener((observable, oldValue, newValue) -> {
-//            // Make sure the tab containing the TextArea is selected
-//            tabPane.getSelectionModel().select(paraneters);
-//        });
 
         leftSplit.getItems().addAll(Session.getInstance().getSessionTreeView(), tabPane);
 
@@ -268,7 +260,7 @@ public class TetradFxMain {
         Menu search = new Menu("Search");
         Menu searchMenu = new Menu("Selected Data");
 
-        searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems());
+        searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(parameters));
 
         search.getItems().add(searchMenu);
 //        search.getItems().add(new Menu("Selected Graph"));

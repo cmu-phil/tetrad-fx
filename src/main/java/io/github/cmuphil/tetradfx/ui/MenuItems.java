@@ -14,9 +14,7 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ public class MenuItems {
      * @return a list of menu items for the algorithms, searching from the data in the currently
      * selected dataset.
      */
-    public static List<MenuItem> searchFromDataMenuItems() {
+    public static List<MenuItem> searchFromDataMenuItems(Parameters parameters) {
         List<Class> algorithms = new ArrayList<>();
 
         // TODO: Add more algorithms here.
@@ -52,7 +50,6 @@ public class MenuItems {
         algorithms.add(Gfci.class);
         algorithms.add(Bfci.class);
         algorithms.add(GraspFci.class);
-
 
         List<MenuItem> items = new ArrayList<>();
 
@@ -91,11 +88,9 @@ public class MenuItems {
                     return;
                 }
 
-//                Alert _alert = new Alert(Alert.AlertType.INFORMATION);
-//                _alert.setTitle("Information Dialog");
-//                _alert.setHeaderText(null); // You can set a header text or keep it null
-//                _alert.get
-//                _alert.showAndWait();
+                List<String> myParams = algorithm.getParameters();
+
+                new ParameterDialog(parameters, myParams).showDialog();
 
                 Graph graph = algorithm.search(dataSet, new Parameters());
                 Project selected = Session.getInstance().getSelectedProject();

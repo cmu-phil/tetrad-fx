@@ -57,7 +57,7 @@ public class ParameterDialog {
     /**
      * Shows the dialog and edits the parameters upon clicking the Apply button.
      */
-    public void showExtendedInputDialog() {
+    public void showDialog() {
         ParamDescriptions paramDescs = ParamDescriptions.getInstance();
 
         Dialog<Object[]> dialog = new Dialog<>();
@@ -240,7 +240,12 @@ public class ParameterDialog {
         RadioButton noButton = new RadioButton("No");
         yesButton.setToggleGroup(group);
         noButton.setToggleGroup(group);
-        yesButton.setSelected(defaultValue);
+
+        if (defaultValue) {
+            yesButton.setSelected(true);
+        } else {
+            noButton.setSelected(true);
+        }
 
         HBox radioGroup = new HBox(10, yesButton, noButton);
         grid.add(new Label(description), 0, row);
