@@ -1,5 +1,7 @@
 package io.github.cmuphil.tetradfx;
 
+import edu.cmu.tetrad.util.ParamDescription;
+import edu.cmu.tetrad.util.ParamDescriptions;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -9,6 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class ParameterEditorUiStarter extends Application {
@@ -34,6 +39,18 @@ public class ParameterEditorUiStarter extends Application {
     }
 
     private void showExtendedInputDialog() {
+        edu.cmu.tetrad.util.Parameters parameters = new edu.cmu.tetrad.util.Parameters();
+        ParamDescriptions paramDescs = ParamDescriptions.getInstance();
+        Set<String> params = paramDescs.getNames();
+        ParamDescription alphparameter = paramDescs.get("alpha");
+        Object _default = alphparameter.getDefaultValue();
+
+        if (_default instanceof Double) {
+            double min = alphparameter.getLowerBoundDouble();
+            double max = alphparameter.getUpperBoundDouble();
+        }
+
+
         Dialog<Object[]> dialog = new Dialog<>();
         dialog.setTitle("Enter Data");
         dialog.setHeaderText("Please enter the required values.");
@@ -45,10 +62,19 @@ public class ParameterEditorUiStarter extends Application {
         grid.setHgap(10);
         grid.setVgap(10);
 
+        int row = -1;
+
         // Alphanumeric fields
-        TextField[] alphaNumericFields = new TextField[2];
+        List<Object> _parameters = new ArrayList<>();
+        List<Object> _defaults = new ArrayList<>();
+        List<Object> editables = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            TextField tf = new TextField(""); // Default to an empty string
+            ++row;
+
+            _parameters.add("Alphanumeric " + row + ":");
+            _defaults.add("Default");
+
+            TextField tf = new TextField("");
 
             tf.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue.matches("[a-zA-Z0-9]*")) {  // Check to ensure only alphanumeric characters
@@ -56,16 +82,20 @@ public class ParameterEditorUiStarter extends Application {
                 }
             });
 
-            grid.add(new Label("Alphanumeric " + (i + 1) + ":"), 0, i + 6);  // Adjusting the row index for layout
-            grid.add(tf, 1, i + 6);
-            alphaNumericFields[i] = tf;
+            grid.add(new Label((String) _parameters.get(row)), 0, row);  // Adjusting the row index for layout
+            grid.add(tf, 1, row);
+            editables.add(tf);
         }
 
-        TextField[] integerFields = new TextField[2];
         for (int i = 0; i < 2; i++) {
-            int min = INT_BOUNDS[i * 2];
-            int max = INT_BOUNDS[i * 2 + 1];
-            int defaultValue = INT_DEFAULTS[i];
+            ++row;
+
+            _parameters.add("Integer " + row + ":");
+            _defaults.add(5);
+
+            int min = 2;
+            int max = 5;
+            int defaultValue = (Integer) _defaults.get(row);
 
             TextField tf = new TextField(String.valueOf(defaultValue));
 
@@ -83,17 +113,19 @@ public class ParameterEditorUiStarter extends Application {
 
             tf.setOnAction(e -> validateIntegerInput(tf, min, max, defaultValue));
 
-            grid.add(new Label("Integer " + (i + 1) + " (" + min + "-" + max + "):"), 0, i);
-            grid.add(tf, 1, i);
-            integerFields[i] = tf;
+            grid.add(new Label("Integer " + row + " (" + min + "-" + max + "):"), 0, row);
+            grid.add(tf, 1, row);
+            editables.add(tf);
         }
 
         // Real-valued fields with user-defined bounds
-        TextField[] realFields = new TextField[2];
         for (int i = 0; i < 2; i++) {
-            double min = REAL_BOUNDS[i * 2];
-            double max = REAL_BOUNDS[i * 2 + 1];
-            double defaultValue = REAL_DEFAULTS[i];
+            ++row;
+
+            double min = 1;
+            double max = 5;
+            _defaults.add(5.0);
+            double defaultValue = (Double) _defaults.get(row);
 
             TextField tf = new TextField(String.valueOf(defaultValue));
 
@@ -113,53 +145,50 @@ public class ParameterEditorUiStarter extends Application {
 
             tf.setOnAction(e -> validateRealInput(tf, min, max, defaultValue));
 
-            grid.add(new Label("Real Value " + (i + 1) + " (" + min + "-" + max + "):"), 0, i + 2);
-            grid.add(tf, 1, i + 2);
-            realFields[i] = tf;
+            grid.add(new Label("Real Value " + row + " (" + min + "-" + max + "):"), 0, row);
+            grid.add(tf, 1, row);
+            editables.add(tf);
         }
 
         // Radio buttons for Yes/No choice
-        ToggleGroup[] yesNoGroups = new ToggleGroup[2];
         for (int i = 0; i < 2; i++) {
+            ++row;
+
+            _defaults.add(true);
+            boolean defaultValue = (Boolean) _defaults.get(row);
+
             ToggleGroup group = new ToggleGroup();
             RadioButton yesButton = new RadioButton("Yes");
             RadioButton noButton = new RadioButton("No");
             yesButton.setToggleGroup(group);
             noButton.setToggleGroup(group);
-            yesButton.setSelected(true);  // default value
+            yesButton.setSelected(defaultValue);  // default value
 
             HBox radioGroup = new HBox(10, yesButton, noButton);
-            grid.add(new Label("Choice " + (i + 1) + ":"), 0, i + 4);
-            grid.add(radioGroup, 1, i + 4);
-            yesNoGroups[i] = group;
+            grid.add(new Label("Choice " + row + ":"), 0, row);
+            grid.add(radioGroup, 1, row);
+            editables.add(group);
         }
 
-        dialogPane.setContent(grid);
+        dialog.setResizable(true);
+        VBox vBox = new VBox(grid);
+        ScrollPane scrollPane = new ScrollPane(vBox);
+        dialogPane.setContent(scrollPane);
 
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.APPLY) {
-                String[] alphanumericResults = new String[2];
-                for (int i = 0; i < 2; i++) {
-                    alphanumericResults[i] = alphaNumericFields[i].getText();
+                String[] results = new String[2];
+
+                for (int i = 0; i < editables.size(); i++) {
+                    if (editables.get(i) instanceof TextField) {
+                        results[i] = ((TextField) editables.get(i)).getText();
+                    } else if (editables.get(i) instanceof ToggleGroup) {
+                        RadioButton selected = (RadioButton) ((ToggleGroup) editables.get(i)).getSelectedToggle();
+                        results[i] = selected.getText();
+                    }
                 }
 
-                int[] intResults = new int[2];
-                for (int i = 0; i < 2; i++) {
-                    intResults[i] = Integer.parseInt(integerFields[i].getText());
-                }
-
-                double[] realResults = new double[2];
-                for (int i = 0; i < 2; i++) {
-                    realResults[i] = Double.parseDouble(realFields[i].getText());
-                }
-
-                String[] choices = new String[2];
-                for (int i = 0; i < 2; i++) {
-                    RadioButton selected = (RadioButton) yesNoGroups[i].getSelectedToggle();
-                    choices[i] = selected.getText();
-                }
-
-                return new Object[]{alphanumericResults, intResults, realResults, choices};
+                return results;
             }
             return null;
         });
@@ -213,7 +242,6 @@ public class ParameterEditorUiStarter extends Application {
             tf.setText(String.valueOf(defaultValue)); // or default value, or previous value, etc.
         }
     }
-
 
     public static void main(String[] args) {
         launch(args);
