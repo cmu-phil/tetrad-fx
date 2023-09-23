@@ -5,11 +5,10 @@ lightweight [Tetrad](https://github.com/cmu-phil/tetrad) UI using JavaFX.
 The idea is to use the Tetrad library (and continue to refine and 
 develop it without giving up the Swing app) but present that material 
 in a different interface with a new look and feel, taking advantage 
-of what's available in JavaFX (which is quite a lot and is 
-strongly supported by the community).
+of what's available in JavaFX.
 
 This project is a bit of a mess at the moment (2023-9-20) but will hopefully 
-clear up in a few days. We are aiming for a firstdraft of this project with 
+clear up in a few days. We are aiming for a first draft of this project with 
 at least a workable subset of search functionality by the end of September 
 2023, or early October 2023 at the latest, and then we can decide whether 
 to continue the project or scrap it. Please bear with. Once the first draft is
