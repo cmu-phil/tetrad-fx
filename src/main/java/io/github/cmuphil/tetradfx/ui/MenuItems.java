@@ -90,6 +90,14 @@ public class MenuItems {
 
                 List<String> myParams = algorithm.getParameters();
 
+                if (algorithm instanceof TakesIndependenceWrapper) {
+                    myParams.addAll(((TakesIndependenceWrapper) algorithm).getIndependenceWrapper().getParameters());
+                }
+
+                if (algorithm instanceof UsesScoreWrapper) {
+                    myParams.addAll(((UsesScoreWrapper) algorithm).getScoreWrapper().getParameters());
+                }
+
                 new ParameterDialog(parameters, myParams).showDialog();
 
                 Graph graph = algorithm.search(dataSet, parameters);
