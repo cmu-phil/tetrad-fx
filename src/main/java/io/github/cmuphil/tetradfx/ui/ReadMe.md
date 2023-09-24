@@ -63,7 +63,6 @@ TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND D
 
 1. Make a Knowledge editor and persist knowledge.
 2. Disallow irrelevant data transformations for particular data types.
-3. Show only TabPanes with non-empty lists of tabs.
 4. Persist valence tabs.
 5. Persist game tabs.
 5. Remove unused valence tabs.
