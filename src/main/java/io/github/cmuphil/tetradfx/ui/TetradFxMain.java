@@ -76,13 +76,12 @@ public class TetradFxMain {
     }
 
     /**
-     * Creates the root pane.
+     * Creates the root pane. Passing primaryStage in here so that I can quit the application from a menu item
+     * and pop up dialogs.
      *
      * @param primaryStage The primary stage.
      * @return The root pane.
      */
-    // Passing primaryStage in here so that I can quit the application from a menu item
-    // and pop up dialogs.
     public Pane getRoot(Stage primaryStage) {
         BorderPane activePane = Session.getInstance().getActivePane();
         MenuBar menuBar = getMenuBar(primaryStage);
