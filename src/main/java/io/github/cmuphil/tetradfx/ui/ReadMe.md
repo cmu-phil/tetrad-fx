@@ -28,7 +28,7 @@ OpenAI. (2023). ChatGPT (August 3 Version) [Large language model]. https://chat.
   themselves and recover easily readable text files defining the session.
 * Allow the user to close and re-open the Tetrad-FX app without losing content.
 
-Some goals suggested by Copilot:
+Some goals suggested by GitHub's Copilot:
 
 1. Make the UI more responsive.
 2. Make the UI more intuitive.
@@ -65,6 +65,7 @@ TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND D
 2. Disallow irrelevant data transformations for particular data types.
 3. Show only TabPanes with non-empty lists of tabs.
 4. Persist valence tabs.
+5. Persist game tabs.
 5. Remove unused valence tabs.
 6. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
 7. The user may need to increase RAM, as large datasets stored and loaded in memory can take
@@ -77,20 +78,20 @@ POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
     1. May make a ReadTheDocs.
 2. Elaborate on Data/Variables annotator. 
     1. Add a data field to the Variables tab.
-    1. Download the trial of Analytica on a Windows laptop and see how they annotate datasets and variables.
-    1. Figure out how to persist valence information.
-    2. Persist valence. 
+    2 Download the trial of Analytica on a Windows laptop and see how they annotate datasets and variables.
+    3 Figure out how to persist valence information.
+    4. Persist valence. 
 3. Insights menu.
     1. Implement an FX interface for the Markov checker for the Insights menu.
-    1. Implement graph and data summaries for the Insights menu.
-    1. Add graph comparisons to the Insights menu.
+    2. Implement graph and data summaries for the Insights menu.
+    3. Add graph comparisons to the Insights menu.
 4. Graph Viewer
     1. Make the graph viewer selectable.
-    1. Rubberband selection.
+    2. Rubberband selection.
 5. Games
     1. Make PC and d-separation games.
-    1. Save and load games to the directory. (As graphs, I guess.)
-    1. Persist games.
+    2. Save and load games to the directory. (As graphs, I guess.)
+    3. Persist games.
 6. Add model estimation for linear and multinomial.
 7. Keep track of parents and children for each component in the session. 8\
 8. Adding in annotations to list all Tetrad algorithms and sort them by type, and display
