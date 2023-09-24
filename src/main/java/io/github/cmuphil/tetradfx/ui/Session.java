@@ -277,10 +277,14 @@ public class Session {
             }
         }
 
-        namesToProjects.put(projectName, new Project(dataSet, graph, projectName, dataName, graphName, sessionDir));
+        Project project = new Project(dataSet, graph, projectName, dataName, graphName, sessionDir);
+        namesToProjects.put(projectName, project);
         selectedName = projectName;
-        TreeItem<String> childItem1 = getSelectedProject().getTreeItem();
-        projects.getChildren().add(childItem1);
+
+        System.out.println("add setting select name to " + selectedName);
+
+        TreeItem<String> item = getSelectedProject().getTreeItem();
+        projects.getChildren().add(item);
         selectProject(projectName);
     }
 

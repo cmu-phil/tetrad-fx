@@ -420,8 +420,8 @@ public class TetradFxMain {
      */
     private void addSimulation(SimulationType type) {
         Result result = getSimulation(new Parameters(), type);
-        Session.getInstance().add(result.dataSet(), result.graph(), Utils.nextName("Simulation",
-                        Session.getInstance().getProjectNames()),
+        String newName = Utils.nextName("Simulation", Session.getInstance().getProjectNames());
+        Session.getInstance().add(result.dataSet(), result.graph(), newName,
                 "simulated_data", "true_graph");
     }
 
