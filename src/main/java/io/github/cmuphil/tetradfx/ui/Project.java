@@ -24,6 +24,7 @@ import java.util.*;
 public class Project {
 
     private final Tab dataTab;
+    private final Tab valenceTab;
     private final Tab graphTab;
     private final Tab searchTab;
     private final Tab gamesTab;
@@ -78,7 +79,7 @@ public class Project {
             }
         }
 
-        Tab valenceTab = new Tab("Valence", valence);
+        valenceTab = new Tab("Valence", valence);
 
         searchTab = new Tab("Search", search);
         searchDir = new File(dir, "search_graphs");
@@ -122,6 +123,8 @@ public class Project {
         setUpTabPane(mainTabPane, gamesTab, games);
 
         setParametersAndNotesText();
+
+        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
     }
 
     /**
@@ -181,6 +184,8 @@ public class Project {
         }
 
         tab.setOnClosed(event -> {
+            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
             if (file.exists()) {
                 if (file.delete()) {
                     System.out.println("File deleted successfully");
@@ -194,6 +199,9 @@ public class Project {
 
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
+
+        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
     }
 
     /**
@@ -223,6 +231,8 @@ public class Project {
         GraphSaveLoadUtils.saveGraph(graph , file, false);
 
         tab.setOnClosed(event -> {
+            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
             if (file.exists()) {
                 if (file.delete()) {
                     System.out.println("File deleted successfully");
@@ -236,6 +246,9 @@ public class Project {
 
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
+
+        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
     }
 
     /**
@@ -270,6 +283,8 @@ public class Project {
         GraphSaveLoadUtils.saveGraph(graph , file, false);
 
         tab.setOnClosed(event -> {
+            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
             if (file.exists()) {
                 if (file.delete()) {
                     System.out.println("File deleted successfully");
@@ -284,6 +299,9 @@ public class Project {
         setParametersText(tab, parameters, usedParameters);
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
+
+        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
     }
 
     /**
@@ -308,10 +326,16 @@ public class Project {
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-        tab.setOnClosed(event -> System.out.println(tab.getText() + " was closed."));
+
+        tab.setOnClosed(event -> {
+            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        });
 
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
+
+        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+
     }
 
     /**
@@ -458,7 +482,10 @@ public class Project {
      * Sets the text of the parameters and notes areas.
      */
     public void setParametersAndNotesText() {
-        TabPane tabPane = (TabPane) mainTabPane.getSelectionModel().getSelectedItem().getContent();
+        Tab selectedItem = mainTabPane.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) return;
+        Node content = selectedItem.getContent();
+        TabPane tabPane = (TabPane) content;
         setParametersAndNotesText(tabPane);
     }
 
@@ -516,6 +543,17 @@ public class Project {
         _dataTab.setClosable(false);
         _dataTab.setOnSelectionChanged(event -> setParametersAndNotesText(_data));
         _data.setSide(Side.TOP);
+    }
+
+    private void displayNonemptyTabsOnly(List<Tab> tabs) {
+        mainTabPane.getTabs().clear();
+
+        for (Tab tab : tabs) {
+            TabPane tabPane = (TabPane) tab.getContent();
+            if (!tabPane.getTabs().isEmpty()) {
+                mainTabPane.getTabs().add(tab);
+            }
+        }
     }
 }
 

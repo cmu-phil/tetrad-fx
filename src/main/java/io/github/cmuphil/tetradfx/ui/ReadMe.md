@@ -69,8 +69,8 @@ TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND D
 5. Remove unused valence tabs.
 6. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
 7. The user may need to increase RAM, as large datasets stored and loaded in memory can take
-   up a lot of space. So they need to be told how to do this and maybe given a nice
-   interface for doing it.
+up a lot of space. So they need to be told how to do this and maybe given a nice
+interface for doing it.
   
 POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
 
@@ -98,7 +98,7 @@ POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
    information about each algorithm.
 9. Simulations
     1. Currently there are just a few stock simulation types available, but Tetrad has a robust simulation
-       facility. We are not intending to make this simulation facility a centerpiece of this app, but
-       there's not reason not to allow the user to use it (or at least some of it) if they want to, so
-       maybe adding some parameter editing here might be nice.
+facility. We are not intending to make this simulation facility a centerpiece of this app, but 
+there's not reason not to allow the user to use it (or at least some of it) if they want to, so
+maybe adding some parameter editing here might be nice.
 10. Add oracle independence searches for graphs.
