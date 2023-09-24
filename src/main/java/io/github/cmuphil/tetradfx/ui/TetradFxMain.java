@@ -132,8 +132,6 @@ public class TetradFxMain {
      * Loads data from a file.
      */
     private void loadDataAction() {
-
-
         var applyButtonType = new ButtonType("Load");
 
         var continuousBtn = new RadioButton("Optimize for Continuous");
@@ -191,8 +189,6 @@ public class TetradFxMain {
 
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(layout.getScene().getWindow());
-
-
 
         ((Button) dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e ->
                 loadTheData(selectedFile, continuousBtn, discreteBtn, textField, toggleFirstRowVarNamesYes,
