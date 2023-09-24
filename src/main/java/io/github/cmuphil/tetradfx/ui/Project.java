@@ -353,7 +353,7 @@ public class Project {
                 tabsToParameters.put(tab, "Parameters for " + name + ":");
             }
             parametersArea.setText(tabsToParameters.get(tab));
-            Utils.saveTextToFile(new File(_filename1), tabsToParameters.get(tab));
+            Utils.saveTextToFile(new File(_filename2), tabsToParameters.get(tab));
         }
     }
 

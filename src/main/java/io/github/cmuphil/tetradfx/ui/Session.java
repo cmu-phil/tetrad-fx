@@ -195,8 +195,8 @@ public class Session {
     public void selectProject(String selectedName) {
         setSelectedName(selectedName);
         activePane.setCenter(getSelectedMain());
-        parametersPane.setCenter(getSelectedProject().getParametersArea());
         notesPane.setCenter(getSelectedProject().getNotesArea());
+        parametersPane.setCenter(getSelectedProject().getParametersArea());
         getSelectedProject().setParametersAndNotesText();
         sessionTreeView.getSelectionModel().select(getSelectedProject().getTreeItem());
     }
@@ -278,6 +278,7 @@ public class Session {
         }
 
         namesToProjects.put(projectName, new Project(dataSet, graph, projectName, dataName, graphName, sessionDir));
+        selectedName = projectName;
         TreeItem<String> childItem1 = getSelectedProject().getTreeItem();
         projects.getChildren().add(childItem1);
         selectProject(projectName);
