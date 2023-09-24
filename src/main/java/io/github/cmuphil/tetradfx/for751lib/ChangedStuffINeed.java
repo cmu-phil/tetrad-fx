@@ -285,7 +285,6 @@ public class ChangedStuffINeed {
      * @throws IOException If an error occurred in reading the file.
      */
     // From SimpleDataLoader
-    @NotNull
     public static DataSet loadMixedData(File file, String commentMarker, char quoteCharacter,
                                         String missingValueMarker, boolean hasHeader, int maxNumCategories,
                                         Delimiter delimiter, boolean excludeFirstColumn)

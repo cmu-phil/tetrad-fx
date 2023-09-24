@@ -38,35 +38,36 @@ public class Session {
     private final BorderPane activePane = new BorderPane();
     private final TreeView<String> sessionTreeView;
     private final TreeItem<String> projects;
-    private final File dir;
+    private final File sessionDir;
     private final BorderPane parametersPane;
     private final BorderPane notesPane;
     private String selectedName;
 
     /**
-     * Private constructor.
-     * @param mainDir The directory where the session is stored.
+     * Private constructor. Loads the session from the session directory.
+     * @param sessionDir The directory where the session is stored.z
      */
-    private Session(File mainDir) {
+    private Session(File sessionDir) {
         this.parametersPane = new BorderPane();
         this.notesPane = new BorderPane();
 
         var root = new TreeItem<>("Session");
         root.setExpanded(true);
 
-        String sessionName = "Sample Session";
+        this.sessionDir = sessionDir;
 
-        this.dir = mainDir;
-
-        if (!dir.exists() || Objects.requireNonNull(dir.listFiles()).length == 0) {
-            boolean made = dir.mkdir();
-            projects = new TreeItem<>(sessionName);
-            sessionTreeView = new TreeView<>(projects);
-            projects.setExpanded(true);
+        if (!this.sessionDir.exists() || Objects.requireNonNull(this.sessionDir.listFiles()).length == 0) {
+            boolean made = this.sessionDir.mkdir();
 
             if (!made) {
-                System.out.println("Directory was empty: " + dir.getPath());
+                System.out.println("Directory exists: " + this.sessionDir.getPath());
+            } else {
+                System.out.println("Made directory: " + this.sessionDir.getPath());
             }
+
+            projects = new TreeItem<>("Session");
+            sessionTreeView = new TreeView<>(projects);
+            projects.setExpanded(true);
 
             var graph = RandomGraph.randomGraphRandomForwardEdges(10, 0,
                     20, 500, 100, 1000, false);
@@ -76,45 +77,38 @@ public class Session {
             var dataSet = simulation.simulateDataReducedForm(1000);
             String newName = Utils.nextName("Sample Simulation", namesToProjects.keySet());
             add(dataSet, graph, newName, "Sample Data", "True Graph");
-            setSelectedName(newName);
-            getSelectedProject().setParametersAndNotesText();
+            selectProject(newName);
+//            getSelectedProject().setParametersAndNotesText();
         } else {
-            File[] sessionDirs = dir.listFiles();
+            File[] projectDirs = this.sessionDir.listFiles();
 
-            var _sessionName = "Sample Session";
-            File sessionDir = dir;
-
-            if (sessionDirs == null) {
-                throw new NullPointerException("sessionDirs1 is null");
+            if (projectDirs == null) {
+                throw new NullPointerException("There were no projects in the session directory");
             }
 
-            for (File dir : sessionDirs) {
-                if (dir.isDirectory()) {
-                    _sessionName = dir.getName().replace('_', ' ');
-                    sessionDir = dir;
-                    break;
-                }
-            }
-
-            sessionName = _sessionName;
-
-            projects = new TreeItem<>(sessionName);
+            projects = new TreeItem<>("Session");
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
 
             namesToProjects.clear();
 
-            for (File dir : sessionDirs) {
-                if (dir.isDirectory()) {
-                    sessionName = dir.getName().replace('_', ' ');
+            for (File dir : projectDirs) {
+                if (!dir.isDirectory()) {
+                    try {
+                        Files.delete(dir.toPath());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    String projectName = dir.getName().replace('_', ' ');
+                    File projectDir = new File(this.sessionDir, projectName.replace(" ", "_"));
 
-                    if (!namesToProjects.containsKey(sessionName)) {
-                        Project _project = new Project(null, null, sessionName, null, null, sessionDir);
-                        namesToProjects.put(sessionName, _project);
-                        setSelectedName(sessionName);
-                        activePane.setCenter(getSelectedMain());
+                    if (!namesToProjects.containsKey(projectName)) {
+                        Project _project = new Project(null, null, projectName, null, null, projectDir);
+                        namesToProjects.put(projectName, _project);
                         TreeItem<String> childItem1 = _project.getTreeItem();
                         projects.getChildren().add(childItem1);
+                        selectProject(projectName);
                     }
 
                     File dataDir = new File(dir, "data");
@@ -181,14 +175,14 @@ public class Session {
             getSelectedProject().setParametersAndNotesText();
         }
 
-        System.out.println("dir: " + dir.getAbsolutePath());
+        System.out.println("dir: " + this.sessionDir.getAbsolutePath());
 
         sessionTreeView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 var selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
                     String selectedName = selectedItem.getValue();
-                    selectOtherProject(selectedName);
+                    selectProject(selectedName);
                 }
             }
         });
@@ -198,12 +192,13 @@ public class Session {
      * Selects a project in the session.
      * @param selectedName The name of the project to be selected.
      */
-    private void selectOtherProject(String selectedName) {
+    public void selectProject(String selectedName) {
         setSelectedName(selectedName);
         activePane.setCenter(getSelectedMain());
         parametersPane.setCenter(getSelectedProject().getParametersArea());
         notesPane.setCenter(getSelectedProject().getNotesArea());
         getSelectedProject().setParametersAndNotesText();
+        sessionTreeView.getSelectionModel().select(getSelectedProject().getTreeItem());
     }
 
     /**
@@ -218,7 +213,7 @@ public class Session {
      * Sets the name of the selected project.
      * @param selectedName The name of the selected project.
      */
-    public void setSelectedName(String selectedName) {
+    private void setSelectedName(String selectedName) {
         if (!namesToProjects.containsKey(selectedName)) {
             throw new IllegalArgumentException("No project with name " + selectedName);
         }
@@ -235,7 +230,14 @@ public class Session {
         if (instance == null) {
             String userHomeDirectory = System.getProperty("user.home");
 
-            File file = new File(userHomeDirectory, ".tetrad-fx-docs");
+            // Temp, delete the old directory.
+            try {
+                ChangedStuffINeed.deleteDirectory(new File(userHomeDirectory, ".tetrad-fx-docs").toPath());
+            } catch (IOException e) {
+                // Ignore.
+            }
+
+            File file = new File(userHomeDirectory, ".tetrad-fx-session");
 
             if (file.exists()) {
                 instance = new Session(file);
@@ -253,7 +255,7 @@ public class Session {
      */
     public static void newInstance() {
         String userHomeDirectory = System.getProperty("user.home");
-        instance = new Session(new File(userHomeDirectory, ".tetrad-fx-docs"));
+        instance = new Session(new File(userHomeDirectory, ".tetrad-fx-session"));
     }
 
     /**
@@ -265,7 +267,7 @@ public class Session {
      * @param graphName The name of the graph. (This may be null.)
      */
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
-        var sessionDir = new File(dir, projectName.replace(" ", "_"));
+        var sessionDir = new File(this.sessionDir, projectName.replace(" ", "_"));
 
         if (!sessionDir.exists()) {
             boolean made = sessionDir.mkdir();
@@ -276,10 +278,9 @@ public class Session {
         }
 
         namesToProjects.put(projectName, new Project(dataSet, graph, projectName, dataName, graphName, sessionDir));
-        setSelectedName(projectName);
-        activePane.setCenter(getSelectedMain());
         TreeItem<String> childItem1 = getSelectedProject().getTreeItem();
         projects.getChildren().add(childItem1);
+        selectProject(projectName);
     }
 
     /**
@@ -390,7 +391,7 @@ public class Session {
                     namesToProjects.remove(selectedName);
                     projects.getChildren().remove(selectedProject.getTreeItem());
 
-                    File _dir = new File(dir, selectedName.replace(" ", "_"));
+                    File _dir = new File(sessionDir, selectedName.replace(" ", "_"));
 
                     try {
                         if (_dir.exists()) {
@@ -402,9 +403,8 @@ public class Session {
                         throw new RuntimeException(e);
                     }
 
-                    TreeItem<String> stringTreeItem = projects.getChildren().get(0);
-                    selectOtherProject(stringTreeItem.getValue());
-
+                    TreeItem<String> treeItem = projects.getChildren().get(0);
+                    selectProject(treeItem.getValue());
                 } else if (response == myNoButton) {
                     System.out.println("User clicked Cancel");
                 }

@@ -22,26 +22,33 @@ import java.util.*;
  * @author josephramsey
  */
 public class Project {
+
     private final Tab dataTab;
     private final Tab graphTab;
     private final Tab searchTab;
     private final Tab gamesTab;
+
     private final TextArea parametersArea = new TextArea("");
     private final TextArea notesArea = new TextArea("");
+
     private final TabPane mainTabPane;
     private final TabPane data = new TabPane();
     private final TabPane valence = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane search = new TabPane();
     private final TabPane games = new TabPane();
+
     private final TreeItem<String> treeItem;
+
     private final File dataDir;
     private final File graphDir;
     private final File searchDir;
-    private final Map<TableView<DataView.DataRow>, DataSet> dataSetMap = new HashMap<>();
-    private boolean valenceAdded = false;
+
     private final Map<Tab, String> tabsToParameters = new HashMap<>();
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
+
+    private final Map<TableView<DataView.DataRow>, DataSet> dataSetMap = new HashMap<>();
+    private boolean valenceAdded = false;
 
     /**
      * Creates a new project.
@@ -54,36 +61,27 @@ public class Project {
      * @param dir         The directory to save the project in.
      */
     public Project(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName, File dir) {
+        this.treeItem = new TreeItem<>(projectName);
+
         this.mainTabPane = new TabPane();
         this.mainTabPane.setPrefSize(1000, 800);
         this.mainTabPane.setSide(Side.LEFT);
-        this.treeItem = new TreeItem<>(projectName);
+
         dataTab = new Tab("Data", data);
-        Tab valenceTab = new Tab("Valence", valence);
-        searchTab = new Tab("Search", search);
-        graphTab = new Tab("Other Graphs", graphs);
-        gamesTab = new Tab("Games", games);
         dataDir = new File(dir, "data");
-        searchDir = new File(dir, "search_graphs");
-        graphDir = new File(dir, "other_graphs");
-        notesArea.setWrapText(true);
-        parametersArea.setWrapText(true);
 
         if (!dataDir.exists()) {
-            boolean made = dataDir.mkdir();
+            boolean made2 = dataDir.mkdir();
 
-            if (!made) {
+            if (!made2) {
                 throw new IllegalArgumentException("Could not make directory " + dataDir.getPath());
             }
         }
 
-        if (!graphDir.exists()) {
-            boolean made = graphDir.mkdir();
+        Tab valenceTab = new Tab("Valence", valence);
 
-            if (!made) {
-                throw new IllegalArgumentException("Could not make directory " + graphDir.getPath());
-            }
-        }
+        searchTab = new Tab("Search", search);
+        searchDir = new File(dir, "search_graphs");
 
         if (!searchDir.exists()) {
             boolean made = searchDir.mkdir();
@@ -93,6 +91,22 @@ public class Project {
             }
         }
 
+        graphTab = new Tab("Other Graphs", graphs);
+        graphDir = new File(dir, "other_graphs");
+
+        if (!graphDir.exists()) {
+            boolean made1 = graphDir.mkdir();
+
+            if (!made1) {
+                throw new IllegalArgumentException("Could not make directory " + graphDir.getPath());
+            }
+        }
+
+        gamesTab = new Tab("Games", games);
+
+        notesArea.setWrapText(true);
+        parametersArea.setWrapText(true);
+
         if (dataSet != null) {
             addDataSet(dataName, dataSet, false, false);
         }
@@ -101,28 +115,12 @@ public class Project {
             addGraph(graphName, graph, true, false);
         }
 
-        this.mainTabPane.getTabs().add(dataTab);
-        this.mainTabPane.getTabs().add(valenceTab);
-        this.mainTabPane.getTabs().add(searchTab);
-//        this.mainTabPane.getTabs().add(new Tab("Knowledge", new TextArea()));
-        this.mainTabPane.getTabs().add(graphTab);
-//        this.mainTabPane.getTabs().add(new Tab("Estimations", new TextArea()));
-        this.mainTabPane.getTabs().add(gamesTab);
-        dataTab.setClosable(false);
-        valenceTab.setClosable(false);
-        graphTab.setClosable(false);
-        searchTab.setClosable(false);
-        gamesTab.setClosable(false);
-        dataTab.setOnSelectionChanged(event -> setParametersAndNotesText(data));
-        valenceTab.setOnSelectionChanged(event -> setParametersAndNotesText(valence));
-        graphTab.setOnSelectionChanged(event -> setParametersAndNotesText(graphs));
-        searchTab.setOnSelectionChanged(event -> setParametersAndNotesText(search));
-        gamesTab.setOnSelectionChanged(event -> setParametersAndNotesText(games));
-        this.data.setSide(Side.TOP);
-        this.valence.setSide(Side.TOP);
-        this.graphs.setSide(Side.TOP);
-        this.search.setSide(Side.TOP);
-        this.games.setSide(Side.TOP);
+        setUpTabPane(mainTabPane, dataTab, data);
+        setUpTabPane(mainTabPane, valenceTab, valence);
+        setUpTabPane(mainTabPane, searchTab, search);
+        setUpTabPane(mainTabPane, graphTab, graphs);
+        setUpTabPane(mainTabPane, gamesTab, games);
+
         setParametersAndNotesText();
     }
 
@@ -197,7 +195,6 @@ public class Project {
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
     }
-
 
     /**
      * Adds a graph to the graph tab.
@@ -505,6 +502,20 @@ public class Project {
     private String getNoteString(Tab selected) {
         tabsToNotes.putIfAbsent(selected, "");
         return tabsToNotes.get(selected);
+    }
+
+    /**
+     * Sets up a tab pane.
+     *
+     * @param _mainTabPane The main tab pane.
+     * @param _dataTab     The data tab.
+     * @param _data        The data tab pane.
+     */
+    private void setUpTabPane(TabPane _mainTabPane, Tab _dataTab, TabPane _data) {
+        _mainTabPane.getTabs().add(_dataTab);
+        _dataTab.setClosable(false);
+        _dataTab.setOnSelectionChanged(event -> setParametersAndNotesText(_data));
+        _data.setSide(Side.TOP);
     }
 }
 
