@@ -8,6 +8,7 @@ import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.util.DataConvertUtils;
 import edu.pitt.dbmi.data.reader.Data;
 import edu.pitt.dbmi.data.reader.DataColumn;
+import edu.pitt.dbmi.data.reader.DataReaderException;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnReader;
@@ -303,15 +304,21 @@ public class ChangedStuffINeed {
         dataReader.setQuoteCharacter(quoteCharacter);
         dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
 
-        Data data = dataReader.read(dataColumns, hasHeader);
+        Data data;
 
-        if (data != null){
-            DataModel dataModel = DataConvertUtils.toDataModel(data);
-            dataModel.setName(file.getName());
-            return (DataSet) dataModel;
+        try {
+            data = dataReader.read(dataColumns, hasHeader);
+        } catch (DataReaderException e) {
+            throw new IOException(e);
         }
 
-        return null;
+        if (data != null){
+            var dataModel = DataConvertUtils.toDataModel(data);
+            dataModel.setName(file.getName());
+            return (DataSet) dataModel;
+        } else {
+            throw new IOException("Data is null");
+        }
     }
 
     public static void jsonFromJava(Object object, File file) {

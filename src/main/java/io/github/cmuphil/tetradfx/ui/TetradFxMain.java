@@ -420,8 +420,11 @@ public class TetradFxMain {
                             Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
-            System.out.println("Error loading continuous data.");
-            throw new RuntimeException(ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error loading continuous data.");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -437,8 +440,11 @@ public class TetradFxMain {
                             Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
-            System.out.println("Error loading discrete data.");
-            throw new RuntimeException(ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error loading discrete data.");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         }
     }
 
@@ -456,8 +462,11 @@ public class TetradFxMain {
                             Session.getInstance().getProjectNames()),
                     "Data", null);
         } catch (IOException ex) {
-            System.out.println("Error loading mixed data.");
-            throw new RuntimeException(ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error loading mixed data.");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
         }
     }
 
