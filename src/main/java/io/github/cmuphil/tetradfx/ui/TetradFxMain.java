@@ -132,17 +132,47 @@ public class TetradFxMain {
      * Loads data from a file.
      */
     private void loadDataAction() {
-        ButtonType applyButtonType = new ButtonType("Load");
-        RadioButton continuousBtn = new RadioButton("Optimize for Continuous");
-        RadioButton discreteBtn = new RadioButton("Optimize for Discrete");
-        RadioButton mixedBtn = new RadioButton("General");
-        ToggleGroup toggleGroup = new ToggleGroup();
+
+
+        var applyButtonType = new ButtonType("Load");
+
+        var continuousBtn = new RadioButton("Optimize for Continuous");
+        var discreteBtn = new RadioButton("Optimize for Discrete");
+        var mixedBtn = new RadioButton("General");
+
+        var toggleGroup = new ToggleGroup();
         continuousBtn.setToggleGroup(toggleGroup);
         discreteBtn.setToggleGroup(toggleGroup);
         mixedBtn.setToggleGroup(toggleGroup);
         mixedBtn.setSelected(true);
-        TextField textField = new TextField("3");
+
+        var textField = new TextField("3");
         textField.setPrefColumnCount(2);
+
+        var firstRowAreVariableNamesLabel = new Label("First row contains variable names:");
+        var toggleGroup2 = new ToggleGroup();
+        var toggleFirstRowVarNamesYes = new RadioButton("Yes");
+        var toggleFirstRowVarNamesNo = new RadioButton("No");
+        toggleFirstRowVarNamesYes.setToggleGroup(toggleGroup2);
+        toggleFirstRowVarNamesNo.setToggleGroup(toggleGroup2);
+        toggleFirstRowVarNamesYes.setSelected(true);
+
+        HBox firstRowAreVariableNames = new HBox(10, firstRowAreVariableNamesLabel, toggleFirstRowVarNamesYes,
+                toggleFirstRowVarNamesNo);
+
+        var delimiterLabel = new Label("Delimiter:");
+        var toggleGroup3 = new ToggleGroup();
+        var whitespace = new RadioButton("Whitespace");
+        var tab = new RadioButton("Tab");
+        var comma = new RadioButton("Comma");
+        var semicolon = new RadioButton("Semicolon");
+        whitespace.setToggleGroup(toggleGroup3);
+        tab.setToggleGroup(toggleGroup3);
+        comma.setToggleGroup(toggleGroup3);
+        semicolon.setToggleGroup(toggleGroup3);
+        whitespace.setSelected(true);
+
+        HBox delimiter = new HBox(10, delimiterLabel, whitespace, tab, comma, semicolon);
 
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\D")) {
@@ -150,9 +180,10 @@ public class TetradFxMain {
             }
         });
 
-        HBox choice = new HBox(10, mixedBtn, new Label("(Max Categories"), textField, new Label(")"),
+        HBox choice = new HBox(10, new Label("Load as:"), mixedBtn, new Label("(Max Categories"), textField, new Label(")"),
                 continuousBtn, discreteBtn);
-        VBox layout = new VBox(10, choice);
+
+        VBox layout = new VBox(10, firstRowAreVariableNames, choice, delimiter);
 
         Dialog<VBox> dialog = new Dialog<>();
         dialog.getDialogPane().setContent(layout);
@@ -161,8 +192,11 @@ public class TetradFxMain {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(layout.getScene().getWindow());
 
+
+
         ((Button) dialog.getDialogPane().lookupButton(applyButtonType)).setOnAction(e ->
-                loadTheData(selectedFile, continuousBtn, discreteBtn, textField));
+                loadTheData(selectedFile, continuousBtn, discreteBtn, textField, toggleFirstRowVarNamesYes,
+                        tab, comma, semicolon));
 
         dialog.showAndWait();
     }
@@ -343,16 +377,29 @@ public class TetradFxMain {
      * @param textField The text field.
      */
     private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn,
-                             TextField textField) {
+                             TextField textField, RadioButton hasHeaderBtnYes,
+                             RadioButton tab, RadioButton comma, RadioButton semicolon) {
         if (selectedFile != null) {
+            boolean hasHeader = hasHeaderBtnYes.isSelected();
+
+            Delimiter delimiter1 = Delimiter.WHITESPACE;
+            if (tab.isSelected()) {
+                delimiter1 = Delimiter.TAB;
+            } else if (comma.isSelected()) {
+                delimiter1 = Delimiter.COMMA;
+            } else if (semicolon.isSelected()) {
+                delimiter1 = Delimiter.SEMICOLON;
+            }
+
+            Delimiter delimiter = delimiter1;
 
             // You can add further processing based on the type of dataset chosen.
             if (continuousBtn.isSelected()) {
-                loadContinuous(selectedFile);
+                loadContinuous(selectedFile, hasHeader, delimiter);
             } else if (discreteBtn.isSelected()) {
-                loadDiscrete(selectedFile);
+                loadDiscrete(selectedFile, hasHeader, delimiter);
             } else {
-                loadMixed(selectedFile, textField);
+                loadMixed(selectedFile, textField, hasHeader, delimiter);
             }
         } else {
             System.out.println("File selection cancelled.");
@@ -363,10 +410,10 @@ public class TetradFxMain {
      * Loads continuous data.
      * @param selectedFile The selected file.
      */
-    private void loadContinuous(File selectedFile) {
+    private void loadContinuous(File selectedFile, boolean hasHeader, Delimiter delimiter) {
         try {
             DataSet dataSet = ChangedStuffINeed.loadContinuousData(selectedFile, "//", '\"',
-                    "*", true, Delimiter.TAB, false);
+                    "*", hasHeader, delimiter, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
             Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
@@ -382,10 +429,10 @@ public class TetradFxMain {
      * Loads discrete data.
      * @param selectedFile The selected file.
      */
-    private void loadDiscrete(File selectedFile) {
+    private void loadDiscrete(File selectedFile, boolean hasHeader, Delimiter delimiter) {
         try {
             DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
-                    '\"', "*", true, Delimiter.TAB, false);
+                    '\"', "*", hasHeader, delimiter, false);
             Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),
                     "Data", null);
@@ -400,11 +447,11 @@ public class TetradFxMain {
      * @param selectedFile The selected file.
      * @param textField The text field.
      */
-    private void loadMixed(File selectedFile, TextField textField) {
+    private void loadMixed(File selectedFile, TextField textField, boolean hasHeader, Delimiter delimiter) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
             DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
-                    "*", true, maxNumCategories, Delimiter.TAB, false);
+                    "*", hasHeader, maxNumCategories, delimiter, false);
             Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),
                     "Data", null);
