@@ -123,7 +123,7 @@ public class Session {
                                 try {
                                     int maxNumCategories = 5;
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
-                                            "*", true, maxNumCategories, Delimiter.TAB, false);
+                                            "*", true, maxNumCategories, Delimiter.TAB, !file.getName().contains("Data"));
 
                                     if (_dataSet == null) continue;
 
@@ -132,7 +132,7 @@ public class Session {
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
 
                                     String replace = name.replace('_', ' ');
-                                    getSelectedProject().addDataSet(replace, _dataSet, false, true);
+                                    getSelectedProject().addDataSet(replace, _dataSet, false, false);
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -146,11 +146,11 @@ public class Session {
                         for (var file : graphFiles) {
                             if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, true);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, !file.getName().contains("true_graph"));
                             } else if (file.getName().endsWith("json")) {
 //                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, true);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, !file.getName().contains("true_graph"));
                             }
                         }
                     }
@@ -294,7 +294,7 @@ public class Session {
      */
     public Node getSelectedMain() {
         Project selected = getSelectedProject();
-        return selected.getMainTabPane();
+        return selected.getSessionTabPane();
     }
 
     /**

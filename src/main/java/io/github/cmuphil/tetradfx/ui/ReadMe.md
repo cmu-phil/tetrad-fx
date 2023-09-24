@@ -65,7 +65,6 @@ TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND D
 2. Disallow irrelevant data transformations for particular data types.
 4. Persist valence tabs.
 5. Persist game tabs.
-5. Remove unused valence tabs.
 6. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
 7. The user may need to increase RAM, as large datasets stored and loaded in memory can take
 up a lot of space. So they need to be told how to do this and maybe given a nice

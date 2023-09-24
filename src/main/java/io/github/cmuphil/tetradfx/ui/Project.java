@@ -32,7 +32,7 @@ public class Project {
     private final TextArea parametersArea = new TextArea("");
     private final TextArea notesArea = new TextArea("");
 
-    private final TabPane mainTabPane;
+    private final TabPane sessionTabPane;
     private final TabPane data = new TabPane();
     private final TabPane valence = new TabPane();
     private final TabPane graphs = new TabPane();
@@ -64,9 +64,9 @@ public class Project {
     public Project(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName, File dir) {
         this.treeItem = new TreeItem<>(projectName);
 
-        this.mainTabPane = new TabPane();
-        this.mainTabPane.setPrefSize(1000, 800);
-        this.mainTabPane.setSide(Side.LEFT);
+        this.sessionTabPane = new TabPane();
+        this.sessionTabPane.setPrefSize(1000, 800);
+        this.sessionTabPane.setSide(Side.LEFT);
 
         dataTab = new Tab("Data", data);
         dataDir = new File(dir, "data");
@@ -108,23 +108,24 @@ public class Project {
         notesArea.setWrapText(true);
         parametersArea.setWrapText(true);
 
-        if (dataSet != null) {
-            addDataSet(dataName, dataSet, false, false);
-        }
-
         if (graph != null) {
             addGraph(graphName, graph, true, false);
         }
 
-        setUpTabPane(mainTabPane, dataTab, data);
-        setUpTabPane(mainTabPane, valenceTab, valence);
-        setUpTabPane(mainTabPane, searchTab, search);
-        setUpTabPane(mainTabPane, graphTab, graphs);
-        setUpTabPane(mainTabPane, gamesTab, games);
+        if (dataSet != null) {
+            addDataSet(dataName, dataSet, false, false);
+        }
+
+        setUpTabPane(sessionTabPane, dataTab, data);
+        setUpTabPane(sessionTabPane, valenceTab, valence);
+        setUpTabPane(sessionTabPane, searchTab, search);
+        setUpTabPane(sessionTabPane, graphTab, graphs);
+        setUpTabPane(sessionTabPane, gamesTab, games);
 
         setParametersAndNotesText();
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        selectIfNonempty(dataTab);
     }
 
     /**
@@ -132,8 +133,8 @@ public class Project {
      *
      * @return The main tab pane.
      */
-    public TabPane getMainTabPane() {
-        return mainTabPane;
+    public TabPane getSessionTabPane() {
+        return sessionTabPane;
     }
 
     /**
@@ -158,7 +159,7 @@ public class Project {
         Tab tab = new Tab(name, tableView);
         tab.setClosable(closable);
         this.data.getTabs().add(tab);
-        this.mainTabPane.getSelectionModel().select(dataTab);
+        this.sessionTabPane.getSelectionModel().select(dataTab);
         this.data.getSelectionModel().select(tab);
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
@@ -179,8 +180,8 @@ public class Project {
             this.valence.getTabs().add(valence);
             valenceAdded = true;
 
-            this.valence.getTabs().add(new Tab("Missing Values", new TextArea()));
-            this.valence.getTabs().add(new Tab("Data Set Comments"));
+//            this.valence.getTabs().add(new Tab("Missing Values", new TextArea()));
+//            this.valence.getTabs().add(new Tab("Data Set Comments"));
         }
 
         tab.setOnClosed(event -> {
@@ -201,7 +202,7 @@ public class Project {
         persistNotes(tab, dataDir, name);
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
-
+        selectIfNonempty(dataTab);
     }
 
     /**
@@ -223,7 +224,7 @@ public class Project {
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
         this.graphs.getTabs().add(tab);
-        this.mainTabPane.getSelectionModel().select(graphTab);
+        this.sessionTabPane.getSelectionModel().select(graphTab);
         this.graphs.getSelectionModel().select(tab);
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
         var _name = name.replace(' ', '_') + ".txt";
@@ -232,6 +233,7 @@ public class Project {
 
         tab.setOnClosed(event -> {
             displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            selectIfNonempty(graphTab);
 
             if (file.exists()) {
                 if (file.delete()) {
@@ -248,7 +250,7 @@ public class Project {
         persistNotes(tab, dataDir, name);
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
-
+        selectIfNonempty(graphTab);
     }
 
     /**
@@ -273,7 +275,7 @@ public class Project {
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
         this.search.getTabs().add(tab);
-        this.mainTabPane.getSelectionModel().select(searchTab);
+        this.sessionTabPane.getSelectionModel().select(searchTab);
         this.search.getSelectionModel().select(tab);
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
@@ -284,6 +286,7 @@ public class Project {
 
         tab.setOnClosed(event -> {
             displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            selectIfNonempty(searchTab);
 
             if (file.exists()) {
                 if (file.delete()) {
@@ -301,7 +304,7 @@ public class Project {
         persistNotes(tab, dataDir, name);
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
-
+        selectIfNonempty(searchTab);
     }
 
     /**
@@ -321,7 +324,7 @@ public class Project {
 
         Tab tab = new Tab(name, pane);
         this.games.getTabs().add(tab);
-        this.mainTabPane.getSelectionModel().select(gamesTab);
+        this.sessionTabPane.getSelectionModel().select(gamesTab);
         this.games.getSelectionModel().select(tab);
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
@@ -329,13 +332,14 @@ public class Project {
 
         tab.setOnClosed(event -> {
             displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            selectIfNonempty(gamesTab);
         });
 
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
-
+        selectIfNonempty(gamesTab);
     }
 
     /**
@@ -482,7 +486,7 @@ public class Project {
      * Sets the text of the parameters and notes areas.
      */
     public void setParametersAndNotesText() {
-        Tab selectedItem = mainTabPane.getSelectionModel().getSelectedItem();
+        Tab selectedItem = sessionTabPane.getSelectionModel().getSelectedItem();
         if (selectedItem == null) return;
         Node content = selectedItem.getContent();
         TabPane tabPane = (TabPane) content;
@@ -546,13 +550,20 @@ public class Project {
     }
 
     private void displayNonemptyTabsOnly(List<Tab> tabs) {
-        mainTabPane.getTabs().clear();
+        sessionTabPane.getTabs().clear();
 
         for (Tab tab : tabs) {
             TabPane tabPane = (TabPane) tab.getContent();
             if (!tabPane.getTabs().isEmpty()) {
-                mainTabPane.getTabs().add(tab);
+                sessionTabPane.getTabs().add(tab);
             }
+        }
+    }
+
+    private void selectIfNonempty(Tab tab) {
+        TabPane tabPane = (TabPane) tab.getContent();
+        if (!tabPane.getTabs().isEmpty()) {
+            sessionTabPane.getSelectionModel().select(tab);
         }
     }
 }
