@@ -24,8 +24,6 @@ Goals of first draft:
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
-1. Add more standard controls to the data loader.
-1. Add parameters to parameter editor for test and/or score.
 1. Make a Knowledge editor, persist knowledge.
   
 POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
