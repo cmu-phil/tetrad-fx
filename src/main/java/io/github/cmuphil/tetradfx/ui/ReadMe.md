@@ -1,8 +1,8 @@
 This package contains the classes that make up the TetradFX UI.
 
-Goals of first draft. (These are not in any particular order.) 
+[A lot of the boilerplace code here was done by ChatGPT. Everything' been cross-checked.]
 
-A lot of the boilerplace code here was done by ChatGPT.
+Goals of first draft. (These are not in any particular order.)
 
 * Allow the user to load datasets.
 * Allow the user to load graphs.
