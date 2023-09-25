@@ -37,6 +37,7 @@ import java.util.*;
  */
 public class Session {
     private static Session instance;
+
     private final Map<String, Project> namesToProjects = new HashMap<>();
     private final BorderPane activePane = new BorderPane();
     private final TreeView<String> sessionTreeView;
@@ -44,8 +45,9 @@ public class Session {
     private final File sessionDir;
     private final BorderPane parametersPane;
     private final BorderPane notesPane;
+    private final Parameters parameters;
+
     private String selectedName;
-    private Parameters parameters;
 
     /**
      * Private constructor. Loads the session from the session directory.
@@ -97,6 +99,8 @@ public class Session {
             namesToProjects.clear();
 
             for (File dir : projectDirs) {
+                if (!dir.isDirectory() && dir.getName().equals("parameters.json")) continue;
+
                 if (!dir.isDirectory()) {
                     try {
                         Files.delete(dir.toPath());
@@ -211,7 +215,7 @@ public class Session {
             }
         });
 
-        this.parameters = ChangedStuffINeed.loadParameters(sessionDir);
+        this.parameters = ChangedStuffINeed.loadParameters(new File(sessionDir, "parameters.json"));
     }
 
     /**
@@ -445,5 +449,9 @@ public class Session {
 
     public Parameters getParameters() {
         return this.parameters;
+    }
+
+    public File getSessionDir() {
+        return sessionDir;
     }
 }

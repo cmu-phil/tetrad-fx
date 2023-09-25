@@ -2,11 +2,13 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.util.ParamDescriptions;
 import edu.cmu.tetrad.util.Parameters;
+import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -19,6 +21,7 @@ import java.util.regex.Pattern;
 public class ParameterDialog {
     private final Parameters parameters;
     private final List<String> myParams;
+    private final File sessionDir;
 
     /**
      * Constructs a new parameter dialog.
@@ -27,9 +30,10 @@ public class ParameterDialog {
      * @param params     The list of parameters to edit. These are keys in the Parameters object and must be defined in
      *                   the ParamDescriptions class.
      */
-    public ParameterDialog(Parameters parameters, List<String> params) {
+    public ParameterDialog(Parameters parameters, List<String> params, File sessionDir) {
         this.parameters = parameters;
         this.myParams = params;
+        this.sessionDir = sessionDir;
     }
 
     /**
@@ -143,8 +147,8 @@ public class ParameterDialog {
                 }
             }
 
-            for (String param : myParams) {
-                System.out.println(param + "=" + parameters.get(param));
+            if (!myParams.isEmpty()) {
+                ChangedStuffINeed.saveParameters(new File(sessionDir, "parameters.json"), parameters);
             }
         });
     }

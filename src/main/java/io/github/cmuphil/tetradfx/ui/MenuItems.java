@@ -16,6 +16,7 @@ import edu.cmu.tetrad.util.Parameters;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuItem;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class MenuItems {
      * @return a list of menu items for the algorithms, searching from the data in the currently
      * selected dataset.
      */
-    public static List<MenuItem> searchFromDataMenuItems(Parameters parameters) {
+    public static List<MenuItem> searchFromDataMenuItems(Parameters parameters, File sessionDir) {
         List<Class> algorithms = new ArrayList<>();
 
         // TODO: Add more algorithms here.
@@ -98,7 +99,7 @@ public class MenuItems {
                     myParams.addAll(((UsesScoreWrapper) algorithm).getScoreWrapper().getParameters());
                 }
 
-                new ParameterDialog(parameters, myParams).showDialog();
+                new ParameterDialog(parameters, myParams, sessionDir).showDialog();
 
                 Graph graph = algorithm.search(dataSet, parameters);
                 Project selected = Session.getInstance().getSelectedProject();

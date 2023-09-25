@@ -34,7 +34,6 @@ import java.io.IOException;
  */
 public class TetradFxMain {
     private static final TetradFxMain INSTANCE = new TetradFxMain();
-    private final Parameters paramseters = new Parameters();
 
     /**
      * @return The singleton instance of this class.
@@ -302,7 +301,8 @@ public class TetradFxMain {
         Menu search = new Menu("Search");
         Menu searchMenu = new Menu("Selected Data");
 
-        searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters()));
+        searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
+                Session.getInstance().getSessionDir()));
 
         search.getItems().add(searchMenu);
         search.getItems().add(new SeparatorMenuItem());
