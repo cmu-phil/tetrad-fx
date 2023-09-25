@@ -2,7 +2,7 @@ This package contains the classes that make up the TetradFX UI.
 
 Goals of first draft. (These are not in any particular order.) 
 
-A lot of time simple pieces of code were done by ChatGPT.
+A lot of the simple pieces of code were done by ChatGPT.
 
 OpenAI. (2023). ChatGPT (August 3 Version) [Large language model]. https://chat.openai.com
 
