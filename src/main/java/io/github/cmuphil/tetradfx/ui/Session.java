@@ -129,8 +129,6 @@ public class Session {
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
                                             "*", true, maxNumCategories, Delimiter.TAB, !file.getName().contains("Data"));
 
-                                    if (_dataSet == null) continue;
-
                                     String name = _dataSet.getName();
 
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
@@ -140,21 +138,6 @@ public class Session {
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
-                            }
-                        }
-                    }
-
-                    var graphFiles = graphDir.listFiles();
-
-                    if (graphFiles != null) {
-                        for (var file : graphFiles) {
-                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
-                                Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, !file.getName().contains("true_graph"));
-                            } else if (file.getName().endsWith("json")) {
-//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
-                                Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, !file.getName().contains("true_graph"));
                             }
                         }
                     }
@@ -191,6 +174,21 @@ public class Session {
                                     alert.setContentText("Could not load knowledge file: " + e.getMessage());
                                     alert.showAndWait();
                                 }
+                            }
+                        }
+                    }
+
+                    var graphFiles = graphDir.listFiles();
+
+                    if (graphFiles != null) {
+                        for (var file : graphFiles) {
+                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
+                                Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, !file.getName().contains("true_graph"));
+                            } else if (file.getName().endsWith("json")) {
+//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
+                                Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, !file.getName().contains("true_graph"));
                             }
                         }
                     }

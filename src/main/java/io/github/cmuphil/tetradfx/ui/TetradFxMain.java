@@ -305,6 +305,7 @@ public class TetradFxMain {
         searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(parameters));
 
         search.getItems().add(searchMenu);
+        search.getItems().add(new SeparatorMenuItem());
 
         MenuItem knowledge = new MenuItem("Add Knowledge");
         knowledge.setOnAction(e -> {
