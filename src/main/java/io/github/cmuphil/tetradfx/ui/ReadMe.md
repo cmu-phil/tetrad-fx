@@ -2,6 +2,11 @@ This package contains the classes that make up the TetradFX UI.
 
 [A lot of the boilerplace code here was done by ChatGPT and GitHub's Copilot. Everything' been cross-checked.]
 
+TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
+
+1. Make a Knowledge editor and persist knowledge.
+1. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
+
 Goals of first draft. (These are not in any particular order.)
 
 * Allow the user to load datasets.
@@ -57,11 +62,7 @@ Some goals suggested by GitHub's Copilot:
 27. Make the UI more installable.
 28. Make the UI more deployable.
 
-TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
-
-1. Make a Knowledge editor and persist knowledge.
-1. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
-  
+ 
 POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
 
 1. Make a proper Help menu.
