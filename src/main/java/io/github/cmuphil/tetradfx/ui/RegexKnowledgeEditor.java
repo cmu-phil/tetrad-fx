@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  *
  * @author josephramsey
  */
-public class KnowledgeEditor {
+public class RegexKnowledgeEditor {
     private final VBox tierPanelContainer = new VBox(10);
     private final List<TextArea> displayAreas = new ArrayList<>();
     private final TextArea unmatchedVarsArea = new TextArea();
@@ -28,7 +28,7 @@ public class KnowledgeEditor {
      * Creates a new KnowledgeEditor for the given Knowledge object.
      * @param knowledge The Knowledge object to edit.
      */
-    public KnowledgeEditor(Knowledge knowledge) {
+    public RegexKnowledgeEditor(Knowledge knowledge) {
         this.knowledge = knowledge;
     }
 

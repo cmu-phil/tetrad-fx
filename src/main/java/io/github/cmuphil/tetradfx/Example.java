@@ -3,7 +3,7 @@ package io.github.cmuphil.tetradfx;
 import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.RandomGraph;
-import io.github.cmuphil.tetradfx.ui.KnowledgeEditor;
+import io.github.cmuphil.tetradfx.ui.RegexKnowledgeEditor;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -35,7 +35,7 @@ public class Example extends Application {
                 100, false);
         Knowledge knowledge = new Knowledge(graph.getNodeNames());
 
-        scrollPane.setContent(new KnowledgeEditor(knowledge).makeRegexFilter());
+        scrollPane.setContent(new RegexKnowledgeEditor(knowledge).makeRegexFilter());
 
         primaryStage.setScene(new Scene(scrollPane, 600, 600));
         primaryStage.setTitle("Dynamic T    ier Filter");
