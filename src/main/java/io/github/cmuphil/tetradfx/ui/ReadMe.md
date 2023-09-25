@@ -62,7 +62,6 @@ Some goals suggested by GitHub's Copilot:
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
 1. Make a Knowledge editor and persist knowledge.
-2. Disallow irrelevant data transformations for particular data types.
 4. Persist valence tabs.
 5. Persist game tabs.
 6. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
