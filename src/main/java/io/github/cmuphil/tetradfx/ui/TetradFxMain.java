@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>Dislays all of the projects for a session.</p>
@@ -306,7 +307,9 @@ public class TetradFxMain {
         search.getItems().addAll(new SeparatorMenuItem());
 
         MenuItem knowledge = new MenuItem("Add Knowledge");
-        knowledge.setOnAction(e -> Session.getInstance().getSelectedProject().addKnowledge("Knowledge", new Knowledge(),
+        List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
+        Knowledge knowledge1 = new Knowledge(variableNames);
+        knowledge.setOnAction(e -> Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
                 true, true));
         searchMenu.getItems().addAll(new SeparatorMenuItem());
         search.getItems().addAll(knowledge);
