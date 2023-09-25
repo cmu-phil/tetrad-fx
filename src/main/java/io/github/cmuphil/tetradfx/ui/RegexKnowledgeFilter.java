@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  *
  * @author josephramsey
  */
-public class RegexKnowledgeEditor {
+public class RegexKnowledgeFilter {
     private final VBox tierPanelContainer = new VBox(10);
     private final List<TextArea> displayAreas = new ArrayList<>();
     private final TextArea unmatchedVarsArea = new TextArea();
@@ -28,7 +28,7 @@ public class RegexKnowledgeEditor {
      * Creates a new KnowledgeEditor for the given Knowledge object.
      * @param knowledge The Knowledge object to edit.
      */
-    public RegexKnowledgeEditor(Knowledge knowledge) {
+    public RegexKnowledgeFilter(Knowledge knowledge) {
         this.knowledge = knowledge;
     }
 
@@ -45,7 +45,7 @@ public class RegexKnowledgeEditor {
 
         HBox tierCountPanel = new HBox(10);
 
-        Label tierCountLabel = new Label("Number of tiers:");
+        Label tierCountLabel = new Label("Number of xtiers:");
         TextField tierCountField = new TextField("2");
         tierCountField.setPrefColumnCount(3);
         tierCountField.setPromptText("Enter number of tiers");
@@ -193,7 +193,5 @@ public class RegexKnowledgeEditor {
                 knowledge.addToTier(i, varName);
             }
         }
-
-        System.out.println(knowledge);
     }
 }
