@@ -85,15 +85,15 @@ public class ParameterDialog {
             if (o instanceof Integer) {
                 int min = paramDescs.get(myParam).getLowerBoundInt();
                 int max = paramDescs.get(myParam).getUpperBoundInt();
-                addIntegerField(description, (Integer) o, min, max, grid, row, editables);
+                addIntegerField(myParam, description, (Integer) o, min, max, grid, row, editables);
             } else if (o instanceof Double) {
                 double min = paramDescs.get(myParam).getLowerBoundDouble();
                 double max = paramDescs.get(myParam).getUpperBoundDouble();
-                addRealField(description, (Double) o, min, max, grid, row, editables);
+                addRealField(myParam, description, (Double) o, min, max, grid, row, editables);
             } else if (o instanceof String) {
                 addAlphanumericField(description, (String) o, grid, row, editables);
             } else if (o instanceof Boolean) {
-                addChoiceField(description, (Boolean) o, grid, row, editables);
+                addChoiceField(myParam, description, (Boolean) o, grid, row, editables);
             }
         }
 
@@ -153,16 +153,18 @@ public class ParameterDialog {
      * Adds a field for an integer. The field is validated to ensure that the value is an integer and within the
      * specified range. If the value is outside the range, the default value is used. The user may enter or click in
      * another field to validate the input.
-     * @param description The description of the parameter.
+     *
+     * @param param
+     * @param description  The description of the parameter.
      * @param defaultValue The default value of the parameter.
-     * @param min The minimum value of the parameter.
-     * @param max The maximum value of the parameter.
-     * @param grid The grid to add the field to.
-     * @param row The row to add the field to.
-     * @param editables The list of editable fields.
+     * @param min          The minimum value of the parameter.
+     * @param max          The maximum value of the parameter.
+     * @param grid         The grid to add the field to.
+     * @param row          The row to add the field to.
+     * @param editables    The list of editable fields.
      */
-    private void addIntegerField(String description, int defaultValue, int min, int max, GridPane grid, int row, List<Object> editables) {
-        TextField tf = new TextField(String.valueOf(defaultValue));
+    private void addIntegerField(String param, String description, int defaultValue, int min, int max, GridPane grid, int row, List<Object> editables) {
+        TextField tf = new TextField(String.valueOf(parameters.getInt(param)));
 
         tf.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("-?\\d*")) {
@@ -187,19 +189,21 @@ public class ParameterDialog {
     }
 
     /**
-     * Adds a field for a real number. The field is validated to ensure that the value is a real number and
-     * within the specified range. If the value is outside the range, the default value is used. The user may
-     * enter or click in another field to validate the input.
-     * @param description The description of the parameter.
+     * Adds a field for a real number. The field is validated to ensure that the value is a real number and within the
+     * specified range. If the value is outside the range, the default value is used. The user may enter or click in
+     * another field to validate the input.
+     *
+     * @param param
+     * @param description  The description of the parameter.
      * @param defaultValue The default value of the parameter.
-     * @param min The minimum value of the parameter.
-     * @param max The maximum value of the parameter.
-     * @param grid The grid to add the field to.
-     * @param row The row to add the field to.
-     * @param editables The list of editable fields.
+     * @param min          The minimum value of the parameter.
+     * @param max          The maximum value of the parameter.
+     * @param grid         The grid to add the field to.
+     * @param row          The row to add the field to.
+     * @param editables    The list of editable fields.
      */
-    private void addRealField(String description, double defaultValue, double min, double max, GridPane grid, int row, List<Object> editables) {
-        TextField tf = new TextField(String.valueOf(defaultValue));
+    private void addRealField(String param, String description, double defaultValue, double min, double max, GridPane grid, int row, List<Object> editables) {
+        TextField tf = new TextField(String.valueOf(parameters.getDouble(param)));
 
         Pattern realPattern = Pattern.compile("-?\\d*(\\.\\d*)?");
 
@@ -217,8 +221,8 @@ public class ParameterDialog {
 
         tf.setOnAction(e -> validateRealInput(tf, min, max, defaultValue));
 
-        String minString = Double.NEGATIVE_INFINITY == min ? "-∞" : String.valueOf(min);
-        String maxString = Double.POSITIVE_INFINITY == max ? "∞" : String.valueOf(max);
+        String minString = min < -1e307 ? "-∞" : String.valueOf(min);
+        String maxString = max > 1e-307 ? "∞" : String.valueOf(max);
 
         grid.add(new Label(description + " (" + minString + "-" + maxString + "):"), 0, row);
         grid.add(tf, 1, row);
@@ -228,20 +232,21 @@ public class ParameterDialog {
     /**
      * Adds a field for a binary Yes/No choice.
      *
+     * @param param
      * @param description  The description of the parameter.
      * @param defaultValue The default value of the parameter.
      * @param grid         The grid to add the field to.
      * @param row          The row to add the field to.
      * @param editables    The list of editable fields.
      */
-    private static void addChoiceField(String description, boolean defaultValue, GridPane grid, int row, List<Object> editables) {
+    private void addChoiceField(String param, String description, boolean defaultValue, GridPane grid, int row, List<Object> editables) {
         ToggleGroup group = new ToggleGroup();
         RadioButton yesButton = new RadioButton("Yes");
         RadioButton noButton = new RadioButton("No");
         yesButton.setToggleGroup(group);
         noButton.setToggleGroup(group);
 
-        if (defaultValue) {
+        if (parameters.getBoolean(param)) {
             yesButton.setSelected(true);
         } else {
             noButton.setSelected(true);
