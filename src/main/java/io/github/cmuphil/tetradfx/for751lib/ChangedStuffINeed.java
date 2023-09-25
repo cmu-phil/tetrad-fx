@@ -325,7 +325,6 @@ public class ChangedStuffINeed {
             gson.toJson(object, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
-//            e.printStackTrace();
         }
     }
 
@@ -335,7 +334,6 @@ public class ChangedStuffINeed {
         try (FileReader reader = new FileReader(file)) {
             return gson.fromJson(reader, clazz);
         } catch (IOException e) {
-//            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -365,7 +363,6 @@ public class ChangedStuffINeed {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
-//            e.printStackTrace();
         }
     }
 
