@@ -3,21 +3,16 @@ package io.github.cmuphil.tetradfx;
 import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.RandomGraph;
-import io.github.cmuphil.tetradfx.ui.KnowledgeView;
+import io.github.cmuphil.tetradfx.ui.KnowledgeEditor;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class Example extends Application {
     public static void main(String[] args) {
@@ -40,7 +35,7 @@ public class Example extends Application {
                 100, false);
         Knowledge knowledge = new Knowledge(graph.getNodeNames());
 
-        scrollPane.setContent(new KnowledgeView(knowledge).makeRegexFilter());
+        scrollPane.setContent(new KnowledgeEditor(knowledge).makeRegexFilter());
 
         primaryStage.setScene(new Scene(scrollPane, 600, 600));
         primaryStage.setTitle("Dynamic T    ier Filter");

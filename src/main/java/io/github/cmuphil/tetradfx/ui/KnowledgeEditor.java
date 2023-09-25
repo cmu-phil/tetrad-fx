@@ -11,17 +11,33 @@ import javafx.scene.layout.VBox;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class KnowledgeView {
+/**
+ * Returns a Node that allows the user to filter variable names into tiers based on regexes. These tiers can then be
+ * used for search, to specify temporal tiers where viariable in later tiers cannot cause variables in earlier tiers,
+ *
+ * @author josephramsey
+ */
+public class KnowledgeEditor {
     private final VBox tierPanelContainer = new VBox(10);
     private final List<TextArea> displayAreas = new ArrayList<>();
     private final TextArea unmatchedVarsArea = new TextArea();
     private final Map<Integer, String> rememberedRegexes = new HashMap<>();
     private final Knowledge knowledge;
 
-    public KnowledgeView(Knowledge knowledge) {
+    /**
+     * Creates a new KnowledgeEditor for the given Knowledge object.
+     * @param knowledge The Knowledge object to edit.
+     */
+    public KnowledgeEditor(Knowledge knowledge) {
         this.knowledge = knowledge;
     }
 
+    /**
+     * Returns a Node that allows the user to filter variable names into tiers based on regexes. These tiers can then be
+     * used for search, to specify temporal tiers where viariable in later tiers cannot cause variables in earlier tiers,
+     * This node should be places in a ScrollPane.
+     * @return A Node that allows the user to filter variable names into tiers based on regexes.
+     */
     public Node makeRegexFilter() {
         VBox root = new VBox(10);
 
@@ -81,6 +97,12 @@ public class KnowledgeView {
         return root;
     }
 
+    /**
+     * Creates the tier panels based on the given count. The panels are added to the tierPanelContainer.
+     * @param count The number of tier panels to create.
+     * @param inputArea The TextArea containing the variable names.
+     * @param rememberedRegexes A Map of tier index to remembered regexes.
+     */
     private void createTierPanels(int count, TextArea inputArea, Map<Integer, String> rememberedRegexes) {
         tierPanelContainer.getChildren().clear();
         displayAreas.clear();
@@ -111,6 +133,10 @@ public class KnowledgeView {
         }
     }
 
+    /**
+     * Updates the display areas based on the given inputArea.
+     * @param inputArea The TextArea containing the variable names.
+     */
     private void updateDisplays(TextArea inputArea) {
         List<String> variableNames = new ArrayList<>(List.of(inputArea.getText().split("[,;\\t\\s]+")));
 
