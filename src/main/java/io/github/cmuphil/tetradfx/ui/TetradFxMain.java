@@ -297,7 +297,7 @@ public class TetradFxMain {
                 new SeparatorMenuItem(), exitItem);
 
         Menu search = new Menu("Search");
-        Menu searchMenu = new Menu("Selected Data");
+        Menu searchMenu = new Menu("Search on Selected Data");
 
         searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
                 Session.getInstance().getSessionDir()));
