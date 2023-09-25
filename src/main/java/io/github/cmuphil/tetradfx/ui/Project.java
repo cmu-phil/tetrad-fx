@@ -2,6 +2,8 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DataWriter;
+import edu.cmu.tetrad.data.Knowledge;
+import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
@@ -12,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -27,6 +30,7 @@ public class Project {
     private final Tab valenceTab;
     private final Tab graphTab;
     private final Tab searchTab;
+    private final Tab knowledgeTab;
     private final Tab gamesTab;
 
     private final TextArea parametersArea = new TextArea("");
@@ -37,6 +41,7 @@ public class Project {
     private final TabPane valence = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane search = new TabPane();
+    private final TabPane knowledge = new TabPane();
     private final TabPane games = new TabPane();
 
     private final TreeItem<String> treeItem;
@@ -44,6 +49,7 @@ public class Project {
     private final File dataDir;
     private final File graphDir;
     private final File searchDir;
+    private final File knowledgeDir;
 
     private final Map<Tab, String> tabsToParameters = new HashMap<>();
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
@@ -92,6 +98,17 @@ public class Project {
             }
         }
 
+        knowledgeTab = new Tab("Knowledge", knowledge);
+        knowledgeDir = new File(dir, "knowledge");
+
+        if (!knowledgeDir.exists()) {
+            boolean made = knowledgeDir.mkdir();
+
+            if (!made) {
+                throw new IllegalArgumentException("Could not make directory " + knowledgeDir.getPath());
+            }
+        }
+
         graphTab = new Tab("Other Graphs", graphs);
         graphDir = new File(dir, "other_graphs");
 
@@ -119,12 +136,13 @@ public class Project {
         setUpTabPane(sessionTabPane, dataTab, data);
         setUpTabPane(sessionTabPane, valenceTab, valence);
         setUpTabPane(sessionTabPane, searchTab, search);
+        setUpTabPane(sessionTabPane, knowledgeTab, knowledge);
         setUpTabPane(sessionTabPane, graphTab, graphs);
         setUpTabPane(sessionTabPane, gamesTab, games);
 
         setParametersAndNotesText();
 
-        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        displayNonemptyTabsOnly();
         selectIfNonempty(dataTab);
     }
 
@@ -185,7 +203,7 @@ public class Project {
         }
 
         tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            displayNonemptyTabsOnly();
 
             if (file.exists()) {
                 if (file.delete()) {
@@ -201,7 +219,7 @@ public class Project {
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
 
-        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        displayNonemptyTabsOnly();
         selectIfNonempty(dataTab);
     }
 
@@ -232,7 +250,7 @@ public class Project {
         GraphSaveLoadUtils.saveGraph(graph , file, false);
 
         tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            displayNonemptyTabsOnly();
             selectIfNonempty(graphTab);
 
             if (file.exists()) {
@@ -249,7 +267,7 @@ public class Project {
         readNotes(tab, graphDir, name);
         persistNotes(tab, graphDir, name);
 
-        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        displayNonemptyTabsOnly();
         selectIfNonempty(graphTab);
     }
 
@@ -285,7 +303,7 @@ public class Project {
         GraphSaveLoadUtils.saveGraph(graph , file, false);
 
         tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            displayNonemptyTabsOnly();
             selectIfNonempty(searchTab);
 
             if (file.exists()) {
@@ -303,8 +321,60 @@ public class Project {
         readNotes(tab, searchDir, name);
         persistNotes(tab, searchDir, name);
 
-        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        displayNonemptyTabsOnly();
         selectIfNonempty(searchTab);
+    }
+
+    public void addKnowledge(String name, Knowledge knowledge, boolean closable, boolean nextName) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
+
+        if (nextName) {
+            name = Utils.nextName(name, this.getKnowledgeNames());
+        }
+
+        Tab tab = new Tab(name, new TextArea(knowledge.toString()));
+        tab.setClosable(closable);
+        this.knowledge.getTabs().add(tab);
+        this.sessionTabPane.getSelectionModel().select(searchTab);
+        this.knowledge.getSelectionModel().select(tab);
+        tabsToParameters.put(tab, "");
+        tabsToNotes.put(tab, "");
+        tab.setOnSelectionChanged(event -> setParametersAndNotesText());
+        var _name = name.replace(' ', '_') + ".txt";
+        var file = new File(knowledgeDir, _name);
+
+        try {
+            DataWriter.saveKnowledge(knowledge, new FileWriter(file));
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText(null); // You can set a header text or keep it null
+            alert.setContentText("Could not save knowledge: " + e.getMessage());
+            alert.showAndWait();
+        }
+
+        tab.setOnClosed(event -> {
+            displayNonemptyTabsOnly();
+            selectIfNonempty(searchTab);
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            } else {
+                System.out.println("File does not exist");
+            }
+        });
+
+        readNotes(tab, knowledgeDir, name);
+        persistNotes(tab, knowledgeDir, name);
+
+        displayNonemptyTabsOnly();
+        selectIfNonempty(knowledgeTab);
     }
 
     /**
@@ -331,14 +401,14 @@ public class Project {
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
 
         tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+            displayNonemptyTabsOnly();
             selectIfNonempty(gamesTab);
         });
 
         readNotes(tab, dataDir, name);
         persistNotes(tab, dataDir, name);
 
-        displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
+        displayNonemptyTabsOnly();
         selectIfNonempty(gamesTab);
     }
 
@@ -419,6 +489,20 @@ public class Project {
         List<String> names = new ArrayList<>();
 
         for (Tab tab : this.search.getTabs()) {
+            names.add(tab.getText());
+        }
+
+        return names;
+    }
+
+    /**
+     * Returns the names of the knowledge files in this project.
+     * @return The names of the knowledge files.
+     */
+    public Collection<String> getKnowledgeNames() {
+        List<String> names = new ArrayList<>();
+
+        for (Tab tab : this.knowledge.getTabs()) {
             names.add(tab.getText());
         }
 
@@ -549,13 +633,23 @@ public class Project {
         _data.setSide(Side.TOP);
     }
 
-    private void displayNonemptyTabsOnly(List<Tab> tabs) {
+    private void displayNonemptyTabsOnly() {
+//        if (true) return;
         sessionTabPane.getTabs().clear();
 
+        List<Tab> tabs = new ArrayList<>();
+        tabs.add(dataTab);
+        tabs.add(valenceTab);
+        tabs.add(searchTab);
+        tabs.add(knowledgeTab);
+        tabs.add(graphTab);
+        tabs.add(gamesTab);
+
         for (Tab tab : tabs) {
-            TabPane tabPane = (TabPane) tab.getContent();
-            if (!tabPane.getTabs().isEmpty()) {
-                sessionTabPane.getTabs().add(tab);
+            if (tab.getContent() instanceof TabPane tabPane) {
+                if (!tabPane.getTabs().isEmpty()) {
+                    sessionTabPane.getTabs().add(tab);
+                }
             }
         }
     }

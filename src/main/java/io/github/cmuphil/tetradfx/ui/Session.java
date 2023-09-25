@@ -1,6 +1,9 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.data.DelimiterType;
+import edu.cmu.tetrad.data.Knowledge;
+import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
@@ -113,6 +116,7 @@ public class Session {
 
                     File dataDir = new File(dir, "data");
                     File searchDir = new File(dir, "search_graphs");
+                    File knowledgeDir = new File(dir, "knowledge");
                     File graphDir = new File(dir, "other_graphs");
 
                     File[] dataFiles = dataDir.listFiles();
@@ -166,6 +170,27 @@ public class Session {
 //                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 var _graph = GraphSaveLoadUtils.loadGraphJson(file);
                                 getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
+                            }
+                        }
+                    }
+
+                    var knowledgeFiles = knowledgeDir.listFiles();
+
+                    if (knowledgeFiles != null) {
+                        for (var file : knowledgeFiles) {
+                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
+                                try {
+                                    Knowledge knowledge = SimpleDataLoader.loadKnowledge(file, DelimiterType.TAB,
+                                            "//");
+                                    getSelectedProject().addKnowledge(file.getName().replace('_', ' ').replace(".txt", ""),
+                                            knowledge, false, false);
+                                } catch (IOException e) {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error Dialog");
+                                    alert.setHeaderText(null); // You can set a header text or keep it null
+                                    alert.setContentText("Could not load knowledge file: " + e.getMessage());
+                                    alert.showAndWait();
+                                }
                             }
                         }
                     }

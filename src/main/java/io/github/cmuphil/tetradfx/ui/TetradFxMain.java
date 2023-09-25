@@ -4,6 +4,7 @@ import edu.cmu.tetrad.algcomparison.graph.RandomForward;
 import edu.cmu.tetrad.algcomparison.simulation.BayesNetSimulation;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
@@ -207,9 +208,9 @@ public class TetradFxMain {
         Graph graph;
 
         if (selectedFile.getName().endsWith(".txt")) {
-             graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
+            graph = GraphSaveLoadUtils.loadGraphTxt(selectedFile);
         } else if (selectedFile.getName().endsWith(".json")) {
-             graph = GraphSaveLoadUtils.loadGraphJson(selectedFile);
+            graph = GraphSaveLoadUtils.loadGraphJson(selectedFile);
         } else {
             throw new RuntimeException("Unknown file type: " + selectedFile.getName());
         }
@@ -304,6 +305,14 @@ public class TetradFxMain {
         searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(parameters));
 
         search.getItems().add(searchMenu);
+
+        MenuItem knowledge = new MenuItem("Add Knowledge");
+        knowledge.setOnAction(e -> {
+            Session.getInstance().getSelectedProject().addKnowledge("Knowledge", new Knowledge(), true, true);
+        });
+        searchMenu.getItems().add(new SeparatorMenuItem());
+        search.getItems().add(knowledge);
+
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
