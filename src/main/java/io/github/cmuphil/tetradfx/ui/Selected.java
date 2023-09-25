@@ -8,7 +8,7 @@ import edu.cmu.tetrad.data.DataSet;
  * @author josephramsey
  */
 public class Selected {
-    public static DataSet getSelectedData () {
+    public static DataSet getSelectedData() {
         Project selectedProject = Session.getInstance().getSelectedProject();
         return selectedProject.getSelectedDataSet();
     }

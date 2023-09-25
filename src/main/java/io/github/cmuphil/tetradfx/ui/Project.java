@@ -73,6 +73,7 @@ public class Project {
         this.sessionTabPane.setPrefSize(1000, 800);
         this.sessionTabPane.setSide(Side.LEFT);
 
+        // Set the various tabs in the session tab pane.
         dataTab = new Tab("Data", data);
         dataDir = new File(dir, "data");
 
@@ -196,9 +197,6 @@ public class Project {
             valence.setClosable(closable);
             this.valence.getTabs().add(valence);
             valenceAdded = true;
-
-//            this.valence.getTabs().add(new Tab("Missing Values", new TextArea()));
-//            this.valence.getTabs().add(new Tab("Data Set Comments"));
         }
 
         tab.setOnClosed(event -> {
@@ -636,7 +634,6 @@ public class Project {
     }
 
     private void displayNonemptyTabsOnly() {
-//        if (true) return;
         sessionTabPane.getTabs().clear();
 
         List<Tab> tabs = new ArrayList<>();

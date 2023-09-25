@@ -308,12 +308,10 @@ public class TetradFxMain {
         search.getItems().add(new SeparatorMenuItem());
 
         MenuItem knowledge = new MenuItem("Add Knowledge");
-        knowledge.setOnAction(e -> {
-            Session.getInstance().getSelectedProject().addKnowledge("Knowledge", new Knowledge(), true, true);
-        });
+        knowledge.setOnAction(e -> Session.getInstance().getSelectedProject().addKnowledge("Knowledge", new Knowledge(),
+                true, true));
         searchMenu.getItems().add(new SeparatorMenuItem());
         search.getItems().add(knowledge);
-
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
