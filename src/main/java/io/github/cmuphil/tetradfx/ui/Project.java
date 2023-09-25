@@ -334,7 +334,7 @@ public class Project {
 //        Tab tab = new Tab(name, new TextArea(knowledge.toString()));
 
 
-        Tab tab = new Tab(name, new RegexKnowledgeFilter(knowledge).makeRegexFilter());
+        Tab tab = new Tab(name, new KnowledgeRegexFilter(knowledge).makeRegexFilter());
         tab.setClosable(closable);
         this.knowledge.getTabs().add(tab);
         this.sessionTabPane.getSelectionModel().select(searchTab);
