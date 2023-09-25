@@ -1,6 +1,6 @@
 This package contains the classes that make up the TetradFX UI.
 
-[A lot of the boilerplace code here was done by ChatGPT. Everything' been cross-checked.]
+[A lot of the boilerplace code here was done by ChatGPT and GitHub's Copilot. Everything' been cross-checked.]
 
 Goals of first draft. (These are not in any particular order.)
 
