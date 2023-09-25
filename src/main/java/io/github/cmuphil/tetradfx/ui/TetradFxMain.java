@@ -230,9 +230,8 @@ public class TetradFxMain {
 
         Menu fileMenu = new Menu("File");
         MenuItem loadSession = new MenuItem("Load Session");
-        fileMenu.getItems().add(loadSession);
         MenuItem saveSession = new MenuItem("Save Session");
-        fileMenu.getItems().add(saveSession);
+        fileMenu.getItems().addAll(loadSession, saveSession);
 
         loadSession.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
         saveSession.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
@@ -269,34 +268,33 @@ public class TetradFxMain {
             saveSession(selectedFile, new File( userHomeDirectory, ".tetrad-fx-session"));
         });
 
-        fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem deleteSelectedProject = new MenuItem("Delete Selected Project");
-
         deleteSelectedProject.setOnAction(e -> Session.getInstance().deleteSelectedProject());
-        fileMenu.getItems().add(deleteSelectedProject);
-        fileMenu.getItems().add(new SeparatorMenuItem());
 
         MenuItem loadData = new MenuItem("Load Data");
-        MenuItem loadGraph = new MenuItem("Load Graph");
-        Menu simulation = new Menu("Simulation");
+//        MenuItem loadGraph = new MenuItem("Load Graph"); // Not part of first draft.
+        Menu simulation = new Menu("Sample Simulations");
         MenuItem continuousSimulation = new MenuItem("Continuous");
         MenuItem discreteSimulation = new MenuItem("Discrete");
         MenuItem mixedSimulation = new MenuItem("Mixed");
         simulation.getItems().addAll(continuousSimulation, discreteSimulation, mixedSimulation);
-        fileMenu.getItems().add(new SeparatorMenuItem());
         MenuItem exitItem = new MenuItem("Exit");
 
         loadData.setAccelerator(KeyCombination.keyCombination("Ctrl+D"));
-        loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));
+//        loadGraph.setAccelerator(KeyCombination.keyCombination("Ctrl+G"));  // Not part of first draft.
         exitItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
 
         loadData.setOnAction(e -> loadDataAction());
-        loadGraph.setOnAction(e -> loadGraphAction(primaryStage));
+//        loadGraph.setOnAction(e -> loadGraphAction(primaryStage));  // Not part of first draft.
         continuousSimulation.setOnAction(e -> addSimulation(SimulationType.CONTINUOUS));
         discreteSimulation.setOnAction(e -> addSimulation(SimulationType.DISCRETE));
         mixedSimulation.setOnAction(e -> addSimulation(SimulationType.MIXED));
         exitItem.setOnAction(e -> primaryStage.close());
-        fileMenu.getItems().addAll(loadData, loadGraph, simulation, new SeparatorMenuItem(), exitItem);
+//        fileMenu.getItems().addAll(loadData, loadGraph, simulation, new SeparatorMenuItem(), exitItem);
+        fileMenu.getItems().addAll(new SeparatorMenuItem(), loadData,
+                new SeparatorMenuItem(), deleteSelectedProject,
+                new SeparatorMenuItem(), simulation,
+                new SeparatorMenuItem(), exitItem);
 
         Menu search = new Menu("Search");
         Menu searchMenu = new Menu("Selected Data");
@@ -304,25 +302,25 @@ public class TetradFxMain {
         searchMenu.getItems().addAll(MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
                 Session.getInstance().getSessionDir()));
 
-        search.getItems().add(searchMenu);
-        search.getItems().add(new SeparatorMenuItem());
+        search.getItems().addAll(searchMenu);
+        search.getItems().addAll(new SeparatorMenuItem());
 
         MenuItem knowledge = new MenuItem("Add Knowledge");
         knowledge.setOnAction(e -> Session.getInstance().getSelectedProject().addKnowledge("Knowledge", new Knowledge(),
                 true, true));
-        searchMenu.getItems().add(new SeparatorMenuItem());
-        search.getItems().add(knowledge);
+        searchMenu.getItems().addAll(new SeparatorMenuItem());
+        search.getItems().addAll(knowledge);
 
         Menu insights = new Menu("Insights");
         Menu histogramsAndScatterplots = new Menu("Histograms and scatterplots");
-        insights.getItems().add(histogramsAndScatterplots);
-        histogramsAndScatterplots.getItems().add(new MenuItem("Plot Matrix"));
-        histogramsAndScatterplots.getItems().add(new MenuItem("By Edge/Node"));
-        insights.getItems().add(new MenuItem("Graph Metrics"));
-        insights.getItems().add(new MenuItem("Data Metrics"));
-        insights.getItems().add(new MenuItem("Causal Effects"));
-        insights.getItems().add(new MenuItem("Check Markov and Faithfulness Assumptions"));
-        insights.getItems().add(new MenuItem("Check for D-separation/M-separation"));
+        insights.getItems().addAll(histogramsAndScatterplots);
+        histogramsAndScatterplots.getItems().addAll(new MenuItem("Plot Matrix"));
+        histogramsAndScatterplots.getItems().addAll(new MenuItem("By Edge/Node"));
+        insights.getItems().addAll(new MenuItem("Graph Metrics"));
+        insights.getItems().addAll(new MenuItem("Data Metrics"));
+        insights.getItems().addAll(new MenuItem("Causal Effects"));
+        insights.getItems().addAll(new MenuItem("Check Markov and Faithfulness Assumptions"));
+        insights.getItems().addAll(new MenuItem("Check for D-separation/M-separation"));
 
         Menu games = new Menu("Games");
 
@@ -347,14 +345,14 @@ public class TetradFxMain {
 
         permutationGames.getItems().addAll(basedOnGraph_4_4, basedOnGraph_5_5, basedOnGraph_6_6, basedOnGraph_7_7,
                 basedOnGraph_10_10, basedOnGraph_10_15, surpriseMe);
-        games.getItems().add(permutationGames);
+        games.getItems().addAll(permutationGames);
 
         Menu help = new Menu("Help");
-        help.getItems().add(new MenuItem("About"));
-        help.getItems().add(new MenuItem("Help"));
-        help.getItems().add(new MenuItem("Tetrad Website"));
-        help.getItems().add(new MenuItem("Tetrad Manual"));
-        help.getItems().add(new MenuItem("Tetrad Forum"));
+        help.getItems().addAll(new MenuItem("About"));
+        help.getItems().addAll(new MenuItem("Help"));
+        help.getItems().addAll(new MenuItem("Tetrad Website"));
+        help.getItems().addAll(new MenuItem("Tetrad Manual"));
+        help.getItems().addAll(new MenuItem("Tetrad Forum"));
 
         menuBar.getMenus().addAll(fileMenu, search, games);
         return menuBar;
