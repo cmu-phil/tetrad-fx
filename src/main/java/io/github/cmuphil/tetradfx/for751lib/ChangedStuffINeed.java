@@ -6,6 +6,7 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.util.DataConvertUtils;
+import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Data;
 import edu.pitt.dbmi.data.reader.DataColumn;
 import edu.pitt.dbmi.data.reader.DataReaderException;
@@ -492,5 +493,17 @@ public class ChangedStuffINeed {
                 }
             }
         });
+    }
+
+    public static void saveParameters(File file, Parameters parameters) {
+        jsonFromJava(parameters, file);
+    }
+
+    public static Parameters loadParameters(File file) {
+        if (file.exists()) {
+            return (Parameters) javaFromJson(file, Parameters.class);
+        } else {
+            return new Parameters();
+        }
     }
 }

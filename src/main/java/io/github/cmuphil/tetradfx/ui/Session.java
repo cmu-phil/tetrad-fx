@@ -45,6 +45,7 @@ public class Session {
     private final BorderPane parametersPane;
     private final BorderPane notesPane;
     private String selectedName;
+    private Parameters parameters;
 
     /**
      * Private constructor. Loads the session from the session directory.
@@ -209,6 +210,8 @@ public class Session {
                 }
             }
         });
+
+        this.parameters = ChangedStuffINeed.loadParameters(sessionDir);
     }
 
     /**
@@ -438,5 +441,9 @@ public class Session {
                 }
             });
         }
+    }
+
+    public Parameters getParameters() {
+        return this.parameters;
     }
 }

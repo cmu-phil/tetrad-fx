@@ -3,7 +3,6 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.data.Knowledge;
-import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
@@ -459,12 +458,15 @@ public class Project {
         notesArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
             String filename = dir + File.separator + _name.replace(' ', '_') + ".notes" + ".txt";
             Utils.saveTextToFile(new File(filename), tabsToNotes.get(tab));
+
+//            persisteParmaeters(dir, _name);
         });
 
         parametersArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
             String filename = dir + File.separator + _name.replace(' ', '_') + ".paramsNote" + ".txt";
             Utils.saveTextToFile(new File(filename), tabsToParameters.get(tab));
         });
+
     }
 
     /**
