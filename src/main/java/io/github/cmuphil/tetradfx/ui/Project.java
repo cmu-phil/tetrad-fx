@@ -246,8 +246,8 @@ public class Project {
             }
         });
 
-        readNotes(tab, dataDir, name);
-        persistNotes(tab, dataDir, name);
+        readNotes(tab, graphDir, name);
+        persistNotes(tab, graphDir, name);
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
         selectIfNonempty(graphTab);
@@ -300,8 +300,8 @@ public class Project {
         });
 
         setParametersText(tab, parameters, usedParameters);
-        readNotes(tab, dataDir, name);
-        persistNotes(tab, dataDir, name);
+        readNotes(tab, searchDir, name);
+        persistNotes(tab, searchDir, name);
 
         displayNonemptyTabsOnly(Arrays.asList(dataTab, valenceTab, searchTab, graphTab, gamesTab));
         selectIfNonempty(searchTab);
@@ -357,7 +357,7 @@ public class Project {
     }
 
     private void readNotes(Tab tab, File dir, String name) {
-        String _filename1 = dir + "/" + name.replace(' ', '_') + ".notes" + ".txt";
+        String _filename1 = dir + File.separator + name.replace(' ', '_') + ".notes" + ".txt";
 
         tabsToNotes.putIfAbsent(tab, "");
         tabsToParameters.putIfAbsent(tab, "");
@@ -371,7 +371,7 @@ public class Project {
             Utils.saveTextToFile(new File(_filename1), tabsToNotes.get(tab));
         }
 
-        String _filename2 = dir + "/" + name.replace(' ', '_') + ".paramsNote" + ".txt";
+        String _filename2 = dir + File.separator + name.replace(' ', '_') + ".paramsNote" + ".txt";
 
         if (new File(_filename2).exists()) {
             tabsToParameters.put(tab, Utils.loadTextFromFile(new File(_filename2)));
@@ -387,12 +387,12 @@ public class Project {
 
     private void persistNotes(Tab tab, File dir, String _name) {
         notesArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
-            String filename = dir + "/" + _name.replace(' ', '_') + ".notes" + ".txt";
+            String filename = dir + File.separator + _name.replace(' ', '_') + ".notes" + ".txt";
             Utils.saveTextToFile(new File(filename), tabsToNotes.get(tab));
         });
 
         parametersArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
-            String filename = dir + "/" + _name.replace(' ', '_') + ".paramsNote" + ".txt";
+            String filename = dir + File.separator + _name.replace(' ', '_') + ".paramsNote" + ".txt";
             Utils.saveTextToFile(new File(filename), tabsToParameters.get(tab));
         });
     }

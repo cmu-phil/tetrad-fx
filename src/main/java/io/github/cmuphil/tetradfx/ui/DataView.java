@@ -96,11 +96,42 @@ public class DataView {
         var transformData = new Menu("Transform Data");
         contextMenu.getItems().add(transformData);
 
+        if (dataSet.isContinuous()) {
+            var center = new MenuItem("Center");
+            center.setOnAction(e -> {
+                DataSet filtered = DataTransforms.center(dataSet);
+                Session.getInstance().getSelectedProject().addDataSet("Center", filtered, true, true);
+            });
+            transformData.getItems().add(center);
+
+            var standardize = new MenuItem("Standardize");
+            standardize.setOnAction(e -> {
+                DataSet filtered = DataTransforms.standardizeData(dataSet);
+                Session.getInstance().getSelectedProject().addDataSet("Standardize", filtered, true, true);
+            });
+            transformData.getItems().add(standardize);
+
+            var nonparanormalTransform = new MenuItem("Nonparanormal Transform");
+            nonparanormalTransform.setOnAction(e -> {
+                DataSet filtered = DataTransforms.getNonparanormalTransformed(dataSet);
+                Session.getInstance().getSelectedProject().addDataSet("Nonparanormal Transform", filtered, true, true);
+            });
+            transformData.getItems().add(nonparanormalTransform);
+
+            var logTransform = new MenuItem("Log Transform");
+            logTransform.setOnAction(e -> {
+                DataSet filtered = DataTransforms.logData(dataSet, 10, false, 2);
+                Session.getInstance().getSelectedProject().addDataSet("Log Transform", filtered, true, true);
+            });
+            transformData.getItems().add(logTransform);
+        }
+
         var removeConstantColumns = new MenuItem("Remove Constant Columns");
         removeConstantColumns.setOnAction(e -> {
             DataSet filtered = DataTransforms.removeConstantColumns(dataSet);
             Session.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
         });
+
         transformData.getItems().add(removeConstantColumns);
 
         var removeDuplicateColumns = new MenuItem("Remove Duplicate Columns");
@@ -109,34 +140,6 @@ public class DataView {
             Session.getInstance().getSelectedProject().addDataSet("Remove Constant Columns", filtered, true, true);
         });
         transformData.getItems().add(removeDuplicateColumns);
-
-        var center = new MenuItem("Center");
-        center.setOnAction(e -> {
-            DataSet filtered = DataTransforms.center(dataSet);
-            Session.getInstance().getSelectedProject().addDataSet("Center", filtered, true, true);
-        });
-        transformData.getItems().add(center);
-
-        var standardize = new MenuItem("Standardize");
-        standardize.setOnAction(e -> {
-            DataSet filtered = DataTransforms.standardizeData(dataSet);
-            Session.getInstance().getSelectedProject().addDataSet("Standardize", filtered, true, true);
-        });
-        transformData.getItems().add(standardize);
-
-        var nonparanormalTransform = new MenuItem("Nonparanormal Transform");
-        nonparanormalTransform.setOnAction(e -> {
-            DataSet filtered = DataTransforms.getNonparanormalTransformed(dataSet);
-            Session.getInstance().getSelectedProject().addDataSet("Nonparanormal Transform", filtered, true, true);
-        });
-        transformData.getItems().add(nonparanormalTransform);
-
-        var logTransform = new MenuItem("Log Transform");
-        logTransform.setOnAction(e -> {
-            DataSet filtered = DataTransforms.logData(dataSet, 10, false, 2);
-            Session.getInstance().getSelectedProject().addDataSet("Log Transform", filtered, true, true);
-        });
-        transformData.getItems().add(logTransform);
 
         var numericalDiscreteToContinuous = new MenuItem("Numerical Discrete to Continuous");
         numericalDiscreteToContinuous.setOnAction(e -> {

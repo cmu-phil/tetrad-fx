@@ -26,7 +26,7 @@ public class Utils {
             out.flush();
             out.close();
         } catch (IOException e1) {
-            throw new IllegalArgumentException("Output file could not " + "be opened: " + file);
+            throw new IllegalArgumentException("Output file could not be opened: " + file);
         }
         return out;
     }
