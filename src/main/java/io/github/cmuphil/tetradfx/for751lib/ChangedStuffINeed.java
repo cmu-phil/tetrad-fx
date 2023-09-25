@@ -15,10 +15,6 @@ import edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
-import javafx.scene.control.Alert;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
@@ -144,7 +140,7 @@ public class ChangedStuffINeed {
                 x += lastHalf + thisHalf + 5;
                 node.setCenterX(x);
                 node.setCenterY(y);
-                lastHalf = thisHalf;
+//                lastHalf = thisHalf;
             }
         }
     }
@@ -328,22 +324,9 @@ public class ChangedStuffINeed {
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(object, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+//            e.printStackTrace();
         }
-
-//        try {
-//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            String text = gson.toJson(object);
-//            PrintWriter out = new PrintWriter(file);
-//            out.println(text);
-//            Preferences.userRoot().put("fileSaveLocation", file.getParent());
-//            out.close();
-//        } catch (FileNotFoundException e1) {
-//            e1.printStackTrace();
-//            throw new RuntimeException("Not a directed graph.", e1);
-//        } catch (IllegalArgumentException e1) {
-//            throw new RuntimeException(e1);
-//        }
     }
 
     public static Object javaFromJson(File file, Class clazz) {
@@ -352,61 +335,19 @@ public class ChangedStuffINeed {
         try (FileReader reader = new FileReader(file)) {
             return gson.fromJson(reader, clazz);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-//    public static void saveToJson(Object object, File file) {
-//        try {
-//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            String text = gson.toJson(object);
-//            PrintWriter out = new PrintWriter(file);
-//            out.println(text);
-//            Preferences.userRoot().put("fileSaveLocation", file.getParent());
-//            out.close();
-//        } catch (FileNotFoundException e1) {
-//            e1.printStackTrace();
-//            throw new RuntimeException("Not a directed graph.", e1);
-//        } catch (IllegalArgumentException e1) {
-//            e1.printStackTrace();
-//            throw new RuntimeException(e1);
-//        }
-//    }
-
-//    public static Graph loadGraphJson(File file) {
-//        try {
-//            Reader in1 = new FileReader(file);
-//            return readerToGraphJson(in1);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        throw new IllegalStateException();
-//    }
-//
-//    public static Graph readerToGraphJson(Reader reader) throws IOException {
-//        BufferedReader in = new BufferedReader(reader);
-//
-//        StringBuilder json = new StringBuilder();
-//        String line;
-//
-//        while ((line = in.readLine()) != null) {
-//            json.append(line.trim());
-//        }
-//
-//        return JsonUtils.parseJSONObjectToTetradGraph(json.toString());
-//    }
-
     public static void zip(File dir, File zipFile) {
         Path sourceDir = dir.toPath(); // Replace with the path to your directory
-//        String zipFileName = "output.zip"; // Name of the output zip file
 
         try (FileOutputStream fos = new FileOutputStream(zipFile);
              ZipOutputStream zos = new ZipOutputStream(fos)) {
 
             Files.walkFileTree(sourceDir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE,
-                    new SimpleFileVisitor<Path>() {
+                    new SimpleFileVisitor<>() {
                         @Override
                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                             // Only regular files should be added to the zip
@@ -423,7 +364,8 @@ public class ChangedStuffINeed {
                     });
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+//            e.printStackTrace();
         }
     }
 
