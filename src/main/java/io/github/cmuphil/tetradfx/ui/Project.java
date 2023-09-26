@@ -74,6 +74,13 @@ public class Project {
         this.sessionTabPane.setPrefSize(1000, 800);
         this.sessionTabPane.setSide(Side.LEFT);
 
+        data.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        valence.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        search.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        knowledge.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        graphs.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        games.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+
         // Set the various tabs in the session tab pane.
         dataTab = new Tab("Data", data);
         dataDir = new File(dir, "data");
@@ -100,7 +107,7 @@ public class Project {
         }
 
         knowledgeTab = new Tab("Knowledge", knowledge);
-        knowledgeDir = new File(dir, "knowledge");
+         knowledgeDir = new File(dir, "knowledge");
 
         if (!knowledgeDir.exists()) {
             boolean made = knowledgeDir.mkdir();

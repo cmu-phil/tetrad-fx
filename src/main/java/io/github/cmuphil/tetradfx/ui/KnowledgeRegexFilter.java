@@ -180,7 +180,7 @@ public class KnowledgeRegexFilter {
             displayArea.setPromptText("Filtered matches appear here...");
             displayAreas.add(displayArea);
 
-            regexArea.setOnKeyTyped(keyEvent -> {
+            regexArea.setOnKeyReleased(keyEvent -> {
                 updateDisplays(inputArea);
                 rememberedRegexes.put(_i, regexArea.getText());
             });
