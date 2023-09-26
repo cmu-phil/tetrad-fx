@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,19 @@ public class ParameterDialog {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+
+        ComboBox<Object> comboBox = new ComboBox<>();
+
+        comboBox.getItems().add("No knowledge");
+        comboBox.getItems().addAll("Choice 1", "Choice 2", "Choice 3");
+        comboBox.setOnAction(event -> {
+            System.out.println("Selected: " + comboBox.getValue());
+        });
+        comboBox.getSelectionModel().select("No knowledge");
+
+        ++row;
+        grid.add(new Label("Please select which knowledge configuration to use"), 0, row);
+        grid.add(comboBox, 1, row);
 
         for (String myParam : myParams) {
             ++row;

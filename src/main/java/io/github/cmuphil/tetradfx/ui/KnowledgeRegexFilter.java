@@ -2,6 +2,7 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.data.Knowledge;
+import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -26,17 +27,63 @@ public class KnowledgeRegexFilter {
     private final VBox tierPanelContainer = new VBox(10);
     private final List<TextArea> displayAreas = new ArrayList<>();
     private final TextArea unmatchedVarsArea = new TextArea();
-    private final Map<Integer, String> rememberedRegexes = new HashMap<>();
+//    private final Map<Integer, String> rememberedRegexes = new HashMap<>();
     private final Knowledge knowledge;
     private final File path;
+    private final SavedRegexesInfo savedRegexesInfo;
 
     /**
      * Creates a new KnowledgeEditor for the given Knowledge object.
      * @param knowledge The Knowledge object to edit.
      */
     public KnowledgeRegexFilter(Knowledge knowledge, File path) {
+        System.out.println(path);
+
+
+        System.out.println(path);
+
         this.knowledge = knowledge;
         this.path = path;
+        File file = new File(path.toString() + ".regexes" + ".json");
+
+        if (file.exists()) {
+            savedRegexesInfo = (SavedRegexesInfo) ChangedStuffINeed.javaFromJson(file,
+                    KnowledgeRegexFilter.SavedRegexesInfo.class);
+        } else {
+            savedRegexesInfo = new SavedRegexesInfo(knowledge.getVariables(), 2, new HashMap<>());
+        }
+    }
+
+    public static class SavedRegexesInfo {
+        private List<String> variables;
+        private int tierCount;
+        private Map<Integer, String> rememberedRegexes;
+
+        public SavedRegexesInfo(List<String> variables, int tierCount, Map<Integer, String> rememberedRegexes) {
+            this.variables = new ArrayList<>(variables);
+            this.tierCount = tierCount;
+            this.rememberedRegexes = new HashMap<>(rememberedRegexes);
+        }
+
+        public List<String> getVariables() {
+            return new ArrayList<>(variables);
+        }
+
+        public int getTierCount() {
+            return tierCount;
+        }
+
+        public void setTierCount(int tierCount) {
+            this.tierCount = tierCount;
+        }
+
+        public Map<Integer, String> getRememberedRegexes() {
+            return rememberedRegexes;
+        }
+
+        public void setRememberedRegexes(Map<Integer, String> rememberedRegexes) {
+            this.rememberedRegexes = rememberedRegexes;
+        }
     }
 
     /**
@@ -52,8 +99,8 @@ public class KnowledgeRegexFilter {
 
         HBox tierCountPanel = new HBox(10);
 
-        Label tierCountLabel = new Label("Number of xtiers:");
-        TextField tierCountField = new TextField("2");
+        Label tierCountLabel = new Label("Number of tiers:");
+        TextField tierCountField = new TextField(savedRegexesInfo.tierCount + "");
         tierCountField.setPrefColumnCount(3);
         tierCountField.setPromptText("Enter number of tiers");
         tierCountPanel.getChildren().addAll(tierCountLabel, tierCountField);
@@ -63,9 +110,8 @@ public class KnowledgeRegexFilter {
         TextArea inputArea = new TextArea();
         inputArea.setPromptText("Enter variable names here...");
 
-        List<String> variableNames = new ArrayList<>(knowledge.getVariables());
-
-        Iterator<String> iterator = variableNames.iterator();
+        List<String> variables = savedRegexesInfo.getVariables();
+        Iterator<String> iterator = variables.iterator();
         while (iterator.hasNext()) {
             String varName = iterator.next();
 
@@ -80,7 +126,7 @@ public class KnowledgeRegexFilter {
         inputArea.setMaxHeight(100);
         root.getChildren().add(inputArea);
 
-        createTierPanels(2, inputArea, rememberedRegexes);
+        createTierPanels(savedRegexesInfo.getTierCount(), inputArea, savedRegexesInfo.getRememberedRegexes());
 
         root.getChildren().add(tierPanelContainer);
 
@@ -93,7 +139,7 @@ public class KnowledgeRegexFilter {
         tierCountField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 int count = Integer.parseInt(newValue);
-                createTierPanels(count, inputArea, rememberedRegexes);
+                createTierPanels(count, inputArea, savedRegexesInfo.getRememberedRegexes());
                 updateDisplays(inputArea);
             } catch (NumberFormatException e) {
                 tierPanelContainer.getChildren().clear();
@@ -134,11 +180,15 @@ public class KnowledgeRegexFilter {
             displayArea.setPromptText("Filtered matches appear here...");
             displayAreas.add(displayArea);
 
-            regexArea.textProperty().addListener((observable, oldValue, newValue) -> updateDisplays(inputArea));
-            regexArea.textProperty().addListener((observable, oldValue, newValue) -> rememberedRegexes.put(_i, newValue));
+            regexArea.setOnKeyTyped(keyEvent -> {
+                updateDisplays(inputArea);
+                rememberedRegexes.put(_i, regexArea.getText());
+            });
 
             hBox.getChildren().addAll(regexArea, displayArea);
             tierPanelContainer.getChildren().add(hBox);
+
+            updateDisplays(inputArea);
         }
     }
 
@@ -215,6 +265,10 @@ public class KnowledgeRegexFilter {
 
         try {
             DataWriter.saveKnowledge(knowledge, new FileWriter(path));
+            savedRegexesInfo.setTierCount(displayAreas.size());
+            savedRegexesInfo.setRememberedRegexes(savedRegexesInfo.getRememberedRegexes());
+            File file = new File(path.getAbsolutePath() + ".regexes" + ".json");
+            ChangedStuffINeed.jsonFromJava(savedRegexesInfo, file);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");

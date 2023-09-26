@@ -331,10 +331,8 @@ public class Project {
             name = Utils.nextName(name, this.getKnowledgeNames());
         }
 
-//        Tab tab = new Tab(name, new TextArea(knowledge.toString()));
-
-
         File path = new File(knowledgeDir, name.replace(' ', '_') + ".txt");
+
         Tab tab = new Tab(name, new KnowledgeRegexFilter(knowledge, path).makeRegexFilter());
         tab.setClosable(closable);
         this.knowledge.getTabs().add(tab);
@@ -460,8 +458,6 @@ public class Project {
         notesArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
             String filename = dir + File.separator + _name.replace(' ', '_') + ".notes" + ".txt";
             Utils.saveTextToFile(new File(filename), tabsToNotes.get(tab));
-
-//            persisteParmaeters(dir, _name);
         });
 
         parametersArea.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_EXITED, event -> {
