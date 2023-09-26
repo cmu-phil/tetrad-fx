@@ -18,9 +18,11 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Returns a Knowledge editor node that allows the user to filter variable names into knwoledge tiers based
+ * <p>Provides a Editor node that allows the user to filter variable names into knowledge tiers based
  * on regexes. These tiers can then be used for search, to specify temporal tiers where variable in later
- * tiers cannot cause variables in earlier tiers,
+ * tiers cannot cause variables in earlier tiers,</p>
+ *
+ * <p>The Knowledge object provided in the constructor is edited by this class.</p>
  *
  * @author josephramsey
  */
@@ -51,7 +53,7 @@ public class RegexFilter {
     }
 
     public static class SavedRegexesInfo {
-        private List<String> variables;
+        private final List<String> variables;
         private int tierCount;
         private Map<Integer, String> rememberedRegexes;
 
