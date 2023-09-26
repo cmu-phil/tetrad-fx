@@ -4,7 +4,7 @@
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
-_This is basically done now, 2023-9-23, but I want to go thorugh and make things smoother and more robust._
+_This is basically done now, 2023-9-25, but I want to go thorugh and make things smoother and more robust._
 
 ## Goals of first draft. (These are not in any particular order.)
 
