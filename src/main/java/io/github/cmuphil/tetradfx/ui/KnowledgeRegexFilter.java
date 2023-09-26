@@ -85,7 +85,7 @@ public class KnowledgeRegexFilter {
         root.getChildren().add(tierPanelContainer);
 
         // Unmatched variables TextArea
-        unmatchedVarsArea.setPromptText("These are the variables that did not match any regex.");
+        unmatchedVarsArea.setPromptText("These are the variables that did not match any regex...");
         unmatchedVarsArea.setEditable(false);
         unmatchedVarsArea.setMaxHeight(100);
         root.getChildren().add(unmatchedVarsArea);
@@ -94,6 +94,7 @@ public class KnowledgeRegexFilter {
             try {
                 int count = Integer.parseInt(newValue);
                 createTierPanels(count, inputArea, rememberedRegexes);
+                updateDisplays(inputArea);
             } catch (NumberFormatException e) {
                 tierPanelContainer.getChildren().clear();
             }
@@ -123,13 +124,14 @@ public class KnowledgeRegexFilter {
             regexArea.setWrapText(true);
             regexArea.setMaxHeight(50);
             regexArea.setMaxWidth(200);
-            regexArea.setPromptText("Enter regex here...");
+            regexArea.setPromptText("Enter regexes here...");
             regexArea.setText(rememberedRegexes.getOrDefault(_i, ""));
 
             TextArea displayArea = new TextArea();
             displayArea.setMaxHeight(100);
             displayArea.setWrapText(true);
             displayArea.setEditable(false);
+            displayArea.setPromptText("Filtered matches appear here...");
             displayAreas.add(displayArea);
 
             regexArea.textProperty().addListener((observable, oldValue, newValue) -> updateDisplays(inputArea));
@@ -156,9 +158,15 @@ public class KnowledgeRegexFilter {
         for (TextArea displayArea : displayAreas) {
             TextArea regexField = (TextArea) ((HBox) displayArea.getParent()).getChildren().get(0);
 
-            Pattern pattern;
+            List<Pattern> patterns = new ArrayList<>();
+
             try {
-                pattern = Pattern.compile(regexField.getText());
+                String text = regexField.getText();
+                String[] regexes = text.split("[,;\\t\\s]+");
+
+                for (String regex : regexes) {
+                    patterns.add(Pattern.compile(regex));
+                }
             } catch (Exception e) {
                 displayArea.setText("Invalid regex");
                 continue;
@@ -167,14 +175,18 @@ public class KnowledgeRegexFilter {
             Iterator<String> iterator = variableNames.iterator();
             while (iterator.hasNext()) {
                 String varName = iterator.next();
-                if (pattern.matcher(varName).find()) {
-                    if (displayArea.getText().isBlank()) {
-                        displayArea.appendText(varName);
-                    } else {
-                        displayArea.appendText(", " + varName);
-                    }
 
-                    iterator.remove();
+                for (Pattern pattern : patterns) {
+                    if (pattern.matcher(varName).find()) {
+                        if (displayArea.getText().isBlank()) {
+                            displayArea.appendText(varName);
+                        } else {
+                            displayArea.appendText(", " + varName);
+                        }
+
+                        iterator.remove();
+                        break;
+                    }
                 }
             }
         }
