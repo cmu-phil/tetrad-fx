@@ -1,4 +1,4 @@
-This package contains the classes that make up the TetradFX UI.
+## This package contains the classes that make up the TetradFX UI.
 
 [A lot of the boilerplate code here was done by ChatGPT and GitHub's Copilot. Everything' been cross-checked.]
 
@@ -6,7 +6,7 @@ TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND D
 
 _This is basically done now, 2023-9-23, but I want to go thorugh and make things smoother and more robust._
 
-Goals of first draft. (These are not in any particular order.)
+## Goals of first draft. (These are not in any particular order.)
 
 * Allow the user to load datasets.
 * Allow the user to load graphs.
@@ -30,7 +30,7 @@ Goals of first draft. (These are not in any particular order.)
   themselves and recover easily readable text files defining the session.
 * Allow the user to close and re-open the Tetrad-FX app without losing content.
 
-Some goals suggested by GitHub's Copilot:
+## Some goals suggested by GitHub's Copilot:
 
 1. Make the UI more responsive.
 2. Make the UI more intuitive.
@@ -62,7 +62,7 @@ Some goals suggested by GitHub's Copilot:
 28. Make the UI more deployable.
 
  
-POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
+## POSTPONE FOR IF WE CONTINUE TO PURSUE THIS PROJECT:
 
 1. Make a proper Help menu.
     1. May make a ReadTheDocs.
