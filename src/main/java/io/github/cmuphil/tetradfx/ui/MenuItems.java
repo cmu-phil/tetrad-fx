@@ -8,9 +8,11 @@ import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.GraspFci;
 import edu.cmu.tetrad.algcomparison.independence.IndependenceWrapper;
 import edu.cmu.tetrad.algcomparison.score.ScoreWrapper;
+import edu.cmu.tetrad.algcomparison.utils.HasKnowledge;
 import edu.cmu.tetrad.algcomparison.utils.TakesIndependenceWrapper;
 import edu.cmu.tetrad.algcomparison.utils.UsesScoreWrapper;
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.for751lib.DataTransforms;
@@ -102,6 +104,14 @@ public class MenuItems {
                 }
 
                 new ParameterDialog(parameters, myParams, sessionDir).showDialog();
+
+                if (algorithm instanceof HasKnowledge && parameters.getBoolean("useKnowledge", false)) {
+                    Knowledge knowledge = Session.getInstance().getSelectedProject().getSelectedKnowledge();
+
+                    if (knowledge != null) {
+                        ((HasKnowledge) algorithm).setKnowledge(knowledge);
+                    }
+                }
 
                 Graph graph = algorithm.search(dataSet, parameters);
                 Project selected = Session.getInstance().getSelectedProject();

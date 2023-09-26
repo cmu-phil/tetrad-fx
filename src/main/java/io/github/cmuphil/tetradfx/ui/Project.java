@@ -54,6 +54,7 @@ public class Project {
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
 
     private final Map<TableView<DataView.DataRow>, DataSet> dataSetMap = new HashMap<>();
+    private final Map<Node, Knowledge> knowledgeMap = new HashMap<>();
     private boolean valenceAdded = false;
 
     /**
@@ -333,7 +334,9 @@ public class Project {
 
         File path = new File(knowledgeDir, name.replace(' ', '_') + ".txt");
 
-        Tab tab = new Tab(name, new KnowledgeRegexFilter(knowledge, path).makeRegexFilter());
+        Node editor = new KnowledgeRegexFilter(knowledge, path).getEditor();
+        knowledgeMap.put(editor, knowledge);
+        Tab tab = new Tab(name, editor);
         tab.setClosable(closable);
         this.knowledge.getTabs().add(tab);
         this.sessionTabPane.getSelectionModel().select(searchTab);
@@ -561,6 +564,21 @@ public class Project {
             if (content1 instanceof TableView content) {
                 return dataSetMap.get(content);
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the selected knowledge for this project.
+     *
+     * @return The selected knowledge.
+     */
+    public Knowledge getSelectedKnowledge() {
+        Tab selected = knowledge.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            Node content = selected.getContent();
+            return knowledgeMap.get(content);
         }
 
         return null;

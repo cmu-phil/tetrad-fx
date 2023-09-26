@@ -92,7 +92,7 @@ public class KnowledgeRegexFilter {
      * This node should be places in a ScrollPane.
      * @return A Node that allows the user to filter variable names into tiers based on regexes.
      */
-    public Node makeRegexFilter() {
+    public Node getEditor() {
         VBox root = new VBox(10);
 
         Label titleLabel = new Label("This component filters your variables names into tiers based on the regexes you provide.");
