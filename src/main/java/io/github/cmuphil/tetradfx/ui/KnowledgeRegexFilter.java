@@ -1,13 +1,18 @@
 package io.github.cmuphil.tetradfx.ui;
 
+import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.data.Knowledge;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -23,13 +28,15 @@ public class KnowledgeRegexFilter {
     private final TextArea unmatchedVarsArea = new TextArea();
     private final Map<Integer, String> rememberedRegexes = new HashMap<>();
     private final Knowledge knowledge;
+    private final File path;
 
     /**
      * Creates a new KnowledgeEditor for the given Knowledge object.
      * @param knowledge The Knowledge object to edit.
      */
-    public KnowledgeRegexFilter(Knowledge knowledge) {
+    public KnowledgeRegexFilter(Knowledge knowledge, File path) {
         this.knowledge = knowledge;
+        this.path = path;
     }
 
     /**
@@ -192,6 +199,16 @@ public class KnowledgeRegexFilter {
             for (String varName : displayAreas.get(i).getText().split("[,;\\t\\s]+")) {
                 knowledge.addToTier(i, varName);
             }
+        }
+
+        try {
+            DataWriter.saveKnowledge(knowledge, new FileWriter(path));
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error saving knowledge file.");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 }

@@ -334,7 +334,8 @@ public class Project {
 //        Tab tab = new Tab(name, new TextArea(knowledge.toString()));
 
 
-        Tab tab = new Tab(name, new KnowledgeRegexFilter(knowledge).makeRegexFilter());
+        File path = new File(knowledgeDir, name.replace(' ', '_') + ".txt");
+        Tab tab = new Tab(name, new KnowledgeRegexFilter(knowledge, path).makeRegexFilter());
         tab.setClosable(closable);
         this.knowledge.getTabs().add(tab);
         this.sessionTabPane.getSelectionModel().select(searchTab);
@@ -357,7 +358,7 @@ public class Project {
 
         tab.setOnClosed(event -> {
             displayNonemptyTabsOnly();
-            selectIfNonempty(searchTab);
+            selectIfNonempty(knowledgeTab);
 
             if (file.exists()) {
                 if (file.delete()) {

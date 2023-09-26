@@ -307,10 +307,13 @@ public class TetradFxMain {
         search.getItems().addAll(new SeparatorMenuItem());
 
         MenuItem knowledge = new MenuItem("Add Knowledge");
-        List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
-        Knowledge knowledge1 = new Knowledge(variableNames);
-        knowledge.setOnAction(e -> Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
-                true, true));
+//        List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
+//        Knowledge knowledge1 = new Knowledge(variableNames);
+        knowledge.setOnAction(e -> {
+            List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
+            Knowledge knowledge1 = new Knowledge(variableNames);
+            Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
+                true, true);});
         searchMenu.getItems().addAll(new SeparatorMenuItem());
         search.getItems().addAll(knowledge);
 

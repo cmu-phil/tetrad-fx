@@ -168,10 +168,10 @@ public class Session {
                         for (var file : knowledgeFiles) {
                             if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 try {
-                                    Knowledge knowledge = SimpleDataLoader.loadKnowledge(file, DelimiterType.TAB,
+                                    Knowledge knowledge = SimpleDataLoader.loadKnowledge(file, DelimiterType.WHITESPACE,
                                             "//");
                                     getSelectedProject().addKnowledge(file.getName().replace('_', ' ').replace(".txt", ""),
-                                            knowledge, false, false);
+                                            knowledge, true, false);
                                 } catch (IOException e) {
                                     Alert alert = new Alert(Alert.AlertType.ERROR);
                                     alert.setTitle("Error Dialog");
