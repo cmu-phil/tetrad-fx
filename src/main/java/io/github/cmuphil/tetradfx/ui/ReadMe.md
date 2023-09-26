@@ -4,8 +4,7 @@ This package contains the classes that make up the TetradFX UI.
 
 TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
 
-1. Make a Knowledge editor and persist knowledge.
-1. Write names of dataset/graphs/etc tabs used to generate new tabs in the Notes.
+_This is basically done now, but I want to go thorugh and make things smoother and more robust._
 
 Goals of first draft. (These are not in any particular order.)
 
