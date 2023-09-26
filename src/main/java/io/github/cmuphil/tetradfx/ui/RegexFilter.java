@@ -18,37 +18,33 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Returns a Node that allows the user to filter variable names into tiers based on regexes. These tiers can then be
- * used for search, to specify temporal tiers where viariable in later tiers cannot cause variables in earlier tiers,
+ * Returns a Knowledge editor node that allows the user to filter variable names into knwoledge tiers based
+ * on regexes. These tiers can then be used for search, to specify temporal tiers where variable in later
+ * tiers cannot cause variables in earlier tiers,
  *
  * @author josephramsey
  */
-public class KnowledgeRegexFilter {
+public class RegexFilter {
     private final VBox tierPanelContainer = new VBox(10);
     private final List<TextArea> displayAreas = new ArrayList<>();
     private final TextArea unmatchedVarsArea = new TextArea();
-//    private final Map<Integer, String> rememberedRegexes = new HashMap<>();
+    //    private final Map<Integer, String> rememberedRegexes = new HashMap<>();
     private final Knowledge knowledge;
     private final File path;
     private final SavedRegexesInfo savedRegexesInfo;
 
     /**
      * Creates a new KnowledgeEditor for the given Knowledge object.
+     *
      * @param knowledge The Knowledge object to edit.
      */
-    public KnowledgeRegexFilter(Knowledge knowledge, File path) {
-        System.out.println(path);
-
-
-        System.out.println(path);
-
+    public RegexFilter(Knowledge knowledge, File path) {
         this.knowledge = knowledge;
         this.path = path;
         File file = new File(path.toString() + ".regexes" + ".json");
 
         if (file.exists()) {
-            savedRegexesInfo = (SavedRegexesInfo) ChangedStuffINeed.javaFromJson(file,
-                    KnowledgeRegexFilter.SavedRegexesInfo.class);
+            savedRegexesInfo = (SavedRegexesInfo) ChangedStuffINeed.javaFromJson(file, RegexFilter.SavedRegexesInfo.class);
         } else {
             savedRegexesInfo = new SavedRegexesInfo(knowledge.getVariables(), 2, new HashMap<>());
         }
@@ -87,9 +83,10 @@ public class KnowledgeRegexFilter {
     }
 
     /**
-     * Returns a Node that allows the user to filter variable names into tiers based on regexes. These tiers can then be
-     * used for search, to specify temporal tiers where viariable in later tiers cannot cause variables in earlier tiers,
+     * Returns an editor Node that allows the user to filter variable names into tiers based on regexes. These tiers can then be
+     * used for search, to specify temporal tiers where variables in later tiers cannot cause variables in earlier tiers,
      * This node should be places in a ScrollPane.
+     *
      * @return A Node that allows the user to filter variable names into tiers based on regexes.
      */
     public Node getEditor() {
@@ -153,8 +150,9 @@ public class KnowledgeRegexFilter {
 
     /**
      * Creates the tier panels based on the given count. The panels are added to the tierPanelContainer.
-     * @param count The number of tier panels to create.
-     * @param inputArea The TextArea containing the variable names.
+     *
+     * @param count             The number of tier panels to create.
+     * @param inputArea         The TextArea containing the variable names.
      * @param rememberedRegexes A Map of tier index to remembered regexes.
      */
     private void createTierPanels(int count, TextArea inputArea, Map<Integer, String> rememberedRegexes) {
@@ -194,6 +192,7 @@ public class KnowledgeRegexFilter {
 
     /**
      * Updates the display areas based on the given inputArea.
+     *
      * @param inputArea The TextArea containing the variable names.
      */
     private void updateDisplays(TextArea inputArea) {

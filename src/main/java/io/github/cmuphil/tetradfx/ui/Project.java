@@ -341,7 +341,7 @@ public class Project {
 
         File path = new File(knowledgeDir, name.replace(' ', '_') + ".txt");
 
-        Node editor = new KnowledgeRegexFilter(knowledge, path).getEditor();
+        Node editor = new RegexFilter(knowledge, path).getEditor();
         knowledgeMap.put(editor, knowledge);
         Tab tab = new Tab(name, editor);
         tab.setClosable(closable);
