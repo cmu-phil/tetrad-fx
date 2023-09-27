@@ -137,14 +137,11 @@ public class Project {
         );
 
         button.setOnMousePressed(event -> {
-//            if (event.getButton() == MouseButton.SECONDARY ||
-//                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
             ContextMenu contextMenu = new ContextMenu();
             List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
                     Session.getInstance().getSessionDir());
             contextMenu.getItems().addAll(c);
             contextMenu.show(button, event.getScreenX(), event.getScreenY());
-//            }
         });
 
 

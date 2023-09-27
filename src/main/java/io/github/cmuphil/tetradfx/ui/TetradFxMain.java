@@ -360,7 +360,7 @@ public class TetradFxMain {
         help.getItems().addAll(new MenuItem("Tetrad Manual"));
         help.getItems().addAll(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, games);
+        menuBar.getMenus().addAll(fileMenu, search, games);
         return menuBar;
     }
 
