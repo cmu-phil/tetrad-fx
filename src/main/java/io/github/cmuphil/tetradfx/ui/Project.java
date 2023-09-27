@@ -10,13 +10,9 @@ import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -115,6 +111,16 @@ public class Project {
         plusTab.setClosable(false);
         this.search.getTabs().add(plusTab);
 
+//        search.getSelectionModel().select(plusTab);
+
+        if (this.search.getTabs().size() == 1) {
+            ObservableList<Tab> tabs = search.getTabs();
+            Tab newTab1 = new Tab("Do Search", node);
+            newTab1.setClosable(true);
+            tabs.add(0, newTab1);
+            search.getSelectionModel().select(newTab1);
+        }
+
         search.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<Tab>() {
                     @Override
@@ -203,12 +209,8 @@ public class Project {
         selectIfNonempty(dataTab);
     }
 
-    private Text findTextNodeForTab(Tab tab) {
-        Node node = tab.getTabPane().lookup(".tab:selected .text");
-        if (node instanceof Text) {
-            return (Text) node;
-        }
-        return null;
+    private Node getPlusTab(Tab tab) {
+        return tab.getTabPane().lookup("+");
     }
 
     /**
