@@ -257,10 +257,13 @@ public class RegexFilter {
         }
 
         knowledge.clear();
+        int j = -1;
 
         for (int i = 0; i < displayAreas.size(); i++) {
+            if (displayAreas.get(i).getText().isBlank()) continue;
+            j++;
             for (String varName : displayAreas.get(i).getText().split("[,;\\t\\s]+")) {
-                knowledge.addToTier(i, varName);
+                knowledge.addToTier(j, varName);
             }
         }
 
