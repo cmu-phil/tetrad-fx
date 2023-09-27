@@ -134,6 +134,8 @@ public class Session {
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
                                             "*", true, maxNumCategories, Delimiter.TAB, !file.getName().contains("Data"));
 
+                                    if (_dataSet == null) continue;;
+
                                     String name = _dataSet.getName();
 
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);

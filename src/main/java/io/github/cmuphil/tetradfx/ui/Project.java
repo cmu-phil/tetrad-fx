@@ -9,6 +9,7 @@ import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -16,6 +17,7 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.w3c.dom.Text;
@@ -104,22 +106,44 @@ public class Project {
         valenceTab = new Tab("Valence", valence);
 
         searchTab = new Tab("Search", search);
+
         VBox node = new VBox();
         Button button = new Button("New Search");
         node.getChildren().add(button);
 
-        Tab e = new Tab("+", node);
-        e.setClosable(false);
-        this.search.getTabs().add(e);
+        Tab plusTab = new Tab("+", new HBox());
+        plusTab.setClosable(false);
+        this.search.getTabs().add(plusTab);
+
+        search.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Tab>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                        // Here you can perform an action based on the tab that was clicked
+
+                        if (newTab == plusTab) {
+                            System.out.println("Selected tab: " + newTab.getText());
+
+                            ObservableList<Tab> tabs = search.getTabs();
+                            Tab lastTab = tabs.get(tabs.size() - 1);
+
+                            Tab newTab1 = new Tab("Do Search", node);
+                            newTab1.setClosable(true);
+                            tabs.add(tabs.indexOf(lastTab), newTab1);
+                            search.getSelectionModel().select(newTab1);
+                        }
+                    }
+                }
+        );
 
         button.setOnMousePressed(event -> {
 //            if (event.getButton() == MouseButton.SECONDARY ||
 //                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
-                ContextMenu contextMenu = new ContextMenu();
-                List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
-                        Session.getInstance().getSessionDir());
-                contextMenu.getItems().addAll(c);
-                contextMenu.show(button, event.getScreenX(), event.getScreenY());
+            ContextMenu contextMenu = new ContextMenu();
+            List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
+                    Session.getInstance().getSessionDir());
+            contextMenu.getItems().addAll(c);
+            contextMenu.show(button, event.getScreenX(), event.getScreenY());
 //            }
         });
 
@@ -333,10 +357,23 @@ public class Project {
             name = Utils.nextName(name, this.getSearchNames());
         }
 
-        Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
-        tab.setClosable(closable);
-        this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+//        Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
+//        tab.setClosable(closable);
+//        this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
 
+        Tab tab = getTabByName(search, "Do Search");
+
+        if (tab == null) {
+            tab = new Tab(name, GraphView.getGraphDisplay(graph));
+            this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+            tab.setClosable(closable);
+        } else {
+            tab.setText(name);
+            tab.setContent(GraphView.getGraphDisplay(graph));
+            tab.setClosable(closable);
+        }
+
+//        this.search.getTabs().remove(doSearch);
 
         this.sessionTabPane.getSelectionModel().select(searchTab);
         this.search.getSelectionModel().select(tab);
@@ -424,6 +461,15 @@ public class Project {
 
         displayNonemptyTabsOnly();
         selectIfNonempty(knowledgeTab);
+    }
+
+    private Tab getTabByName(TabPane tabPane, String name) {
+        for (Tab tab : tabPane.getTabs()) {
+            if (name.equals(tab.getText())) {
+                return tab;
+            }
+        }
+        return null;
     }
 
     /**

@@ -15,6 +15,7 @@ import edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
+import javafx.scene.control.Alert;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
@@ -299,7 +300,11 @@ public class ChangedStuffINeed {
         dataReader.setCommentMarker(commentMarker);
         dataReader.setMissingDataMarker(missingValueMarker);
         dataReader.setQuoteCharacter(quoteCharacter);
-        dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
+        try {
+            dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
 
         Data data;
 
