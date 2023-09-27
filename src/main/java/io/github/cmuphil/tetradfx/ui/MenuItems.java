@@ -116,7 +116,7 @@ public class MenuItems {
                 Graph graph = algorithm.search(dataSet, parameters);
                 Project selected = Session.getInstance().getSelectedProject();
                 selected.addSearchResult(algorithm.getClass().getSimpleName(),
-                        graph, true, true, new Parameters(), algorithm.getParameters());
+                        graph, true, true, parameters, myParams);
             });
 
             items.add(item);

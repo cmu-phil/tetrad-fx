@@ -153,11 +153,11 @@ public class Session {
                         for (File file : searchFiles) {
                             if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, new Parameters(), new ArrayList<>());
+                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, getParameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {
 //                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 var _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, new Parameters(), new ArrayList<>());
+                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, getParameters(), new ArrayList<>());
                             }
                         }
                     }

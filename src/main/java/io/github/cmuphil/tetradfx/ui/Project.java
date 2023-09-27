@@ -7,10 +7,18 @@ import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.utils.Utils;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -96,6 +104,26 @@ public class Project {
         valenceTab = new Tab("Valence", valence);
 
         searchTab = new Tab("Search", search);
+        VBox node = new VBox();
+        Button button = new Button("New Search");
+        node.getChildren().add(button);
+
+        Tab e = new Tab("+", node);
+        e.setClosable(false);
+        this.search.getTabs().add(e);
+
+        button.setOnMousePressed(event -> {
+//            if (event.getButton() == MouseButton.SECONDARY ||
+//                    (event.getButton() == MouseButton.PRIMARY && event.isControlDown())) {
+                ContextMenu contextMenu = new ContextMenu();
+                List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
+                        Session.getInstance().getSessionDir());
+                contextMenu.getItems().addAll(c);
+                contextMenu.show(button, event.getScreenX(), event.getScreenY());
+//            }
+        });
+
+
         searchDir = new File(dir, "search_graphs");
 
         if (!searchDir.exists()) {
@@ -107,7 +135,7 @@ public class Project {
         }
 
         knowledgeTab = new Tab("Knowledge", knowledge);
-         knowledgeDir = new File(dir, "knowledge");
+        knowledgeDir = new File(dir, "knowledge");
 
         if (!knowledgeDir.exists()) {
             boolean made = knowledgeDir.mkdir();
@@ -152,6 +180,14 @@ public class Project {
 
         displayNonemptyTabsOnly();
         selectIfNonempty(dataTab);
+    }
+
+    private Text findTextNodeForTab(Tab tab) {
+        Node node = tab.getTabPane().lookup(".tab:selected .text");
+        if (node instanceof Text) {
+            return (Text) node;
+        }
+        return null;
     }
 
     /**
@@ -230,8 +266,9 @@ public class Project {
 
     /**
      * Adds a graph to the graph tab.
-     * @param name The name of the graph.
-     * @param graph The graph.
+     *
+     * @param name     The name of the graph.
+     * @param graph    The graph.
      * @param nextName Whether to append a number to the name if it already exists.
      * @param closable Whether the tab should be closable.
      */
@@ -252,7 +289,7 @@ public class Project {
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
         var _name = name.replace(' ', '_') + ".txt";
         var file = new File(graphDir, _name);
-        GraphSaveLoadUtils.saveGraph(graph , file, false);
+        GraphSaveLoadUtils.saveGraph(graph, file, false);
 
         tab.setOnClosed(event -> {
             displayNonemptyTabsOnly();
@@ -278,11 +315,12 @@ public class Project {
 
     /**
      * Adds a search result to the search tab.
-     * @param name The name of the search result.
-     * @param graph The graph.
-     * @param closable Whether the tab should be closable.
-     * @param nextName Whether to append a number to the name if it already exists.
-     * @param parameters The parameters used to generate the search result.
+     *
+     * @param name           The name of the search result.
+     * @param graph          The graph.
+     * @param closable       Whether the tab should be closable.
+     * @param nextName       Whether to append a number to the name if it already exists.
+     * @param parameters     The parameters used to generate the search result.
      * @param usedParameters The parameters that were actually used to generate the search result.
      */
     public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters,
@@ -297,7 +335,9 @@ public class Project {
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
         tab.setClosable(closable);
-        this.search.getTabs().add(tab);
+        this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+
+
         this.sessionTabPane.getSelectionModel().select(searchTab);
         this.search.getSelectionModel().select(tab);
         tabsToParameters.put(tab, "");
@@ -305,7 +345,7 @@ public class Project {
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
         var _name = name.replace(' ', '_') + ".txt";
         var file = new File(searchDir, _name);
-        GraphSaveLoadUtils.saveGraph(graph , file, false);
+        GraphSaveLoadUtils.saveGraph(graph, file, false);
 
         tab.setOnClosed(event -> {
             displayNonemptyTabsOnly();
@@ -388,8 +428,9 @@ public class Project {
 
     /**
      * Adds a game to the games tab.
-     * @param name The name of the game.
-     * @param pane The pane containing the game.
+     *
+     * @param name     The name of the game.
+     * @param pane     The pane containing the game.
      * @param nextName Whether to append a number to the name if it already exists.
      */
     public void addGame(String name, Pane pane, boolean nextName) {
@@ -423,6 +464,7 @@ public class Project {
 
     /**
      * Returns the names of the datasets in this project.
+     *
      * @return The names of the datasets.
      */
     public Collection<String> getDataNames() {
@@ -479,6 +521,7 @@ public class Project {
 
     /**
      * Returns the names of the graphs in this project.
+     *
      * @return The names of the graphs.
      */
     public Collection<String> getGraphNames() {
@@ -493,6 +536,7 @@ public class Project {
 
     /**
      * Returns the names of the search results in this project.
+     *
      * @return The names of the search results.
      */
     public Collection<String> getSearchNames() {
@@ -507,6 +551,7 @@ public class Project {
 
     /**
      * Returns the names of the knowledge files in this project.
+     *
      * @return The names of the knowledge files.
      */
     public Collection<String> getKnowledgeNames() {
@@ -521,6 +566,7 @@ public class Project {
 
     /**
      * Returns the names of the games in this project.
+     *
      * @return The names of the games.
      */
     public Collection<String> getGameNames() {
@@ -534,8 +580,9 @@ public class Project {
     }
 
     /**
-     * Returns the tree item for this project. This is used to display the project in the project tree and
-     * is stored in the project so that it can be reacted to.
+     * Returns the tree item for this project. This is used to display the project in the project tree and is stored in
+     * the project so that it can be reacted to.
+     *
      * @return The tree item.
      */
     public TreeItem<String> getTreeItem() {
@@ -544,6 +591,7 @@ public class Project {
 
     /**
      * Returns the parameters area, which is stored in this project so that its text can be modified.
+     *
      * @return The parameters area.
      */
     public TextArea getParametersArea() {
@@ -561,6 +609,7 @@ public class Project {
 
     /**
      * Returns the selected dataset for this project.
+     *
      * @return The selected dataset.
      */
     public DataSet getSelectedDataSet() {
@@ -604,6 +653,7 @@ public class Project {
 
     /**
      * Sets the text of the parameters area.
+     *
      * @param parameters     The parameters.
      * @param usedParameters The parameter names that were actually used.
      */
@@ -659,23 +709,23 @@ public class Project {
     }
 
     private void displayNonemptyTabsOnly() {
-        sessionTabPane.getTabs().clear();
-
-        List<Tab> tabs = new ArrayList<>();
-        tabs.add(dataTab);
-        tabs.add(valenceTab);
-        tabs.add(searchTab);
-        tabs.add(knowledgeTab);
-        tabs.add(graphTab);
-        tabs.add(gamesTab);
-
-        for (Tab tab : tabs) {
-            if (tab.getContent() instanceof TabPane tabPane) {
-                if (!tabPane.getTabs().isEmpty()) {
-                    sessionTabPane.getTabs().add(tab);
-                }
-            }
-        }
+//        sessionTabPane.getTabs().clear();
+//
+//        List<Tab> tabs = new ArrayList<>();
+//        tabs.add(dataTab);
+//        tabs.add(valenceTab);
+//        tabs.add(searchTab);
+//        tabs.add(knowledgeTab);
+//        tabs.add(graphTab);
+//        tabs.add(gamesTab);
+//
+//        for (Tab tab : tabs) {
+//            if (tab.getContent() instanceof TabPane tabPane) {
+//                if (!tabPane.getTabs().isEmpty()) {
+//                    sessionTabPane.getTabs().add(tab);
+//                }
+//            }
+//        }
     }
 
     private void selectIfNonempty(Tab tab) {
