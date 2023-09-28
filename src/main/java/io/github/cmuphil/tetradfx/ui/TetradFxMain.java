@@ -77,8 +77,8 @@ public class TetradFxMain {
     }
 
     /**
-     * Creates the root pane. Passing primaryStage in here so that I can quit the application from a menu item
-     * and pop up dialogs.
+     * Creates the root pane. Passing primaryStage in here so that I can quit the application from a menu item and pop
+     * up dialogs.
      *
      * @param primaryStage The primary stage.
      * @return The root pane.
@@ -199,6 +199,7 @@ public class TetradFxMain {
 
     /**
      * Loads a graph from a file.
+     *
      * @param primaryStage The primary stage.
      */
     private void loadGraphAction(Stage primaryStage) {
@@ -222,6 +223,7 @@ public class TetradFxMain {
 
     /**
      * Creates the menu bar.
+     *
      * @param primaryStage The primary stage.
      * @return The menu bar.
      */
@@ -266,7 +268,7 @@ public class TetradFxMain {
             File selectedFile = fileChooser.showSaveDialog(primaryStage);
             String userHomeDirectory = System.getProperty("user.home");
 
-            saveSession(selectedFile, new File( userHomeDirectory, ".tetrad-fx-session"));
+            saveSession(selectedFile, new File(userHomeDirectory, ".tetrad-fx-session"));
         });
 
         MenuItem deleteSelectedProject = new MenuItem("Delete Selected Project");
@@ -313,7 +315,8 @@ public class TetradFxMain {
             List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
             Knowledge knowledge1 = new Knowledge(variableNames);
             Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
-                true, true);});
+                    true, true);
+        });
         searchMenu.getItems().addAll(new SeparatorMenuItem());
         search.getItems().addAll(knowledge);
 
@@ -332,13 +335,13 @@ public class TetradFxMain {
 
         Menu permutationGames = new Menu("Permutation Games");
 
-        MenuItem basedOnGraph_4_4 =  new MenuItem("Make a random game with 4 nodes and 4 edges");
-        MenuItem basedOnGraph_5_5 =  new MenuItem("Make a random game with 5 nodes and 5 edges");
-        MenuItem basedOnGraph_6_6 =  new MenuItem("Make a random game with 6 nodes and 6 edges");
-        MenuItem basedOnGraph_7_7 =  new MenuItem("Make a random game with 7 nodes and 7 edges");
-        MenuItem basedOnGraph_10_10 =  new MenuItem("Make a random game with 10 nodes and 10 edges");
-        MenuItem basedOnGraph_10_15 =  new MenuItem("Make a random game with 10 nodes and 15 edges");
-        MenuItem surpriseMe =  new MenuItem("Surprise me!");
+        MenuItem basedOnGraph_4_4 = new MenuItem("Make a random game with 4 nodes and 4 edges");
+        MenuItem basedOnGraph_5_5 = new MenuItem("Make a random game with 5 nodes and 5 edges");
+        MenuItem basedOnGraph_6_6 = new MenuItem("Make a random game with 6 nodes and 6 edges");
+        MenuItem basedOnGraph_7_7 = new MenuItem("Make a random game with 7 nodes and 7 edges");
+        MenuItem basedOnGraph_10_10 = new MenuItem("Make a random game with 10 nodes and 10 edges");
+        MenuItem basedOnGraph_10_15 = new MenuItem("Make a random game with 10 nodes and 15 edges");
+        MenuItem surpriseMe = new MenuItem("Surprise me!");
 
         basedOnGraph_4_4.setOnAction(e -> Games.baseGamesOnGraph(randomDag(4, 4)));
         basedOnGraph_5_5.setOnAction(e -> Games.baseGamesOnGraph(randomDag(5, 5)));
@@ -360,12 +363,13 @@ public class TetradFxMain {
         help.getItems().addAll(new MenuItem("Tetrad Manual"));
         help.getItems().addAll(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, search, games);
+        menuBar.getMenus().addAll(fileMenu, games);
         return menuBar;
     }
 
     /**
      * Creates a random DAG.
+     *
      * @param numNodes The number of nodes.
      * @param numEdges The number of edges.
      * @return The random DAG.
@@ -378,10 +382,11 @@ public class TetradFxMain {
 
     /**
      * Loads data from a file.
-     * @param selectedFile The selected file.
+     *
+     * @param selectedFile  The selected file.
      * @param continuousBtn The continuous button.
-     * @param discreteBtn The discrete button.
-     * @param textField The text field.
+     * @param discreteBtn   The discrete button.
+     * @param textField     The text field.
      */
     private void loadTheData(File selectedFile, RadioButton continuousBtn, RadioButton discreteBtn,
                              TextField textField, RadioButton hasHeaderBtnYes,
@@ -415,6 +420,7 @@ public class TetradFxMain {
 
     /**
      * Loads continuous data.
+     *
      * @param selectedFile The selected file.
      */
     private void loadContinuous(File selectedFile, boolean hasHeader, Delimiter delimiter) {
@@ -437,6 +443,7 @@ public class TetradFxMain {
 
     /**
      * Loads discrete data.
+     *
      * @param selectedFile The selected file.
      */
     private void loadDiscrete(File selectedFile, boolean hasHeader, Delimiter delimiter) {
@@ -457,8 +464,9 @@ public class TetradFxMain {
 
     /**
      * Loads mixed data.
+     *
      * @param selectedFile The selected file.
-     * @param textField The text field.
+     * @param textField    The text field.
      */
     private void loadMixed(File selectedFile, TextField textField, boolean hasHeader, Delimiter delimiter) {
         try {
@@ -479,6 +487,7 @@ public class TetradFxMain {
 
     /**
      * Adds a simulation to the session.
+     *
      * @param type The type of simulation.
      */
     private void addSimulation(SimulationType type) {
@@ -490,8 +499,9 @@ public class TetradFxMain {
 
     /**
      * Saves the session.
+     *
      * @param zipFile The zip file.
-     * @param dir The directory.
+     * @param dir     The directory.
      */
     private static void saveSession(File zipFile, File dir) {
         ChangedStuffINeed.zip(dir, zipFile);
@@ -499,7 +509,8 @@ public class TetradFxMain {
 
     /**
      * Loads the session.
-     * @param zipFile The zip file.
+     *
+     * @param zipFile      The zip file.
      * @param primaryStage The primary stage.
      */
     private void loadSession(File zipFile, Stage primaryStage) {
@@ -537,7 +548,8 @@ public class TetradFxMain {
 
     /**
      * The result of a simulation.
-     * @param graph The graph.
+     *
+     * @param graph   The graph.
      * @param dataSet The data set.
      */
     private record Result(Graph graph, DataSet dataSet) {

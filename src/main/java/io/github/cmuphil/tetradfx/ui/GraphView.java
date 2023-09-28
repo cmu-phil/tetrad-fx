@@ -174,28 +174,28 @@ public class GraphView extends Pane {
 
         dagToCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.cpdagForDag(graph);
-            Session.getInstance().getSelectedProject().addGraph("CPDAG from DAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("CPDAG from DAG", dag, true);
         });
 
         var dagToPag = new MenuItem("PAG from DAG");
 
         dagToPag.setOnAction(e -> {
             Graph dag = GraphTransforms.dagToPag(graph);
-            Session.getInstance().getSelectedProject().addGraph("PAG from DAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("PAG from DAG", dag, true);
         });
 
         var dagFromCPDAG = new MenuItem("DAG from CPDAG");
 
         dagFromCPDAG.setOnAction(e -> {
             Graph dag = GraphTransforms.dagFromCPDAG(graph);
-            Session.getInstance().getSelectedProject().addGraph("DAG from CPDAG", dag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("DAG from CPDAG", dag, true);
         });
 
         var magFromPag = new MenuItem("MAG from PAG");
 
         magFromPag.setOnAction(e -> {
             Graph mag = GraphTransforms.pagToMag(graph);
-            Session.getInstance().getSelectedProject().addGraph("MAG from PAG", mag, true, true);
+            Session.getInstance().getSelectedProject().addGraph("MAG from PAG", mag, true);
         });
 
         transform.getItems().addAll(dagToCPDAG, dagToPag, dagFromCPDAG, magFromPag);

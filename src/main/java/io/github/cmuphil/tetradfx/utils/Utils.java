@@ -1,5 +1,8 @@
 package io.github.cmuphil.tetradfx.utils;
 
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -49,4 +52,12 @@ public class Utils {
         }
     }
 
+    public static Tab getTabByName(TabPane tabPane, String name) {
+        for (Tab tab : tabPane.getTabs()) {
+            if (name.equals(tab.getText())) {
+                return tab;
+            }
+        }
+        return null;
+    }
 }

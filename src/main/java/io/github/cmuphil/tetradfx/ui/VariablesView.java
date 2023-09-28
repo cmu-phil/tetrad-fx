@@ -115,7 +115,7 @@ public class VariablesView {
         double mean = StatUtils.mean(values);
         double median = StatUtils.median(values);
         double skewness = StatUtils.skewness(values);
-        double kurtosis = StatUtils.kurtosis(values);
+        double kurtosis = StatUtils.kurtosis(values) + 3;
 
         NumberFormat nf = new DecimalFormat("#.####");
 

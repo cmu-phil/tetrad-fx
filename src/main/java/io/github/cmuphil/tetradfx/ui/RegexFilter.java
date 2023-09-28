@@ -259,13 +259,15 @@ public class RegexFilter {
         knowledge.clear();
         int j = -1;
 
-        for (int i = 0; i < displayAreas.size(); i++) {
-            if (displayAreas.get(i).getText().isBlank()) continue;
+        for (TextArea displayArea : displayAreas) {
+            if (displayArea.getText().isBlank()) continue;
             j++;
-            for (String varName : displayAreas.get(i).getText().split("[,;\\t\\s]+")) {
+            for (String varName : displayArea.getText().split("[,;\\t\\s]+")) {
                 knowledge.addToTier(j, varName);
             }
         }
+
+        System.out.println("knowledge: " + knowledge);
 
         try {
             DataWriter.saveKnowledge(knowledge, new FileWriter(path));

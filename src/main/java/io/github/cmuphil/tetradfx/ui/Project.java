@@ -7,8 +7,6 @@ import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.util.Parameters;
 import io.github.cmuphil.tetradfx.utils.Utils;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -16,7 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -62,10 +60,10 @@ public class Project {
     private final Map<Tab, String> tabsToParametersPrompts = new HashMap<>();
     private final Map<Tab, String> tabsToNotesPrompts = new HashMap<>();
 
-    private final Map<TableView<DataView.DataRow>, DataSet> dataSetMap = new HashMap<>();
-    private final Map<Node, Knowledge> knowledgeMap = new HashMap<>();
-    private DataSet constructedDataSet = null;
+    private final Map<Tab, DataSet> dataSetMap = new HashMap<>();
+    private final Map<Tab, Knowledge> knowledgeMap = new HashMap<>();
     private Graph constructedGraph = null;
+    private DataSet constructedDataSet = null;
     private boolean valenceAdded = false;
 
     /**
@@ -112,38 +110,32 @@ public class Project {
         Button button = new Button("New Search");
         node.getChildren().add(button);
 
-        Tab plusTab = new Tab(" + ", new HBox());
-        plusTab.setClosable(false);
-        this.search.getTabs().add(plusTab);
+        Tab plusTab = manageTabs0(search, node);
 
-        if (this.search.getTabs().size() == 1) {
-            ObservableList<Tab> tabs = search.getTabs();
-            Tab newTab1 = new Tab("New Tab", node);
-            newTab1.setClosable(true);
-            tabs.add(0, newTab1);
-            search.getSelectionModel().select(newTab1);
-        }
+        search.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == plusTab) {
+                System.out.println("Selected tab: " + newTab.getText());
 
-        search.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldTab, newTab) -> {
-                    if (newTab == plusTab) {
-                        System.out.println("Selected tab: " + newTab.getText());
+                Tab tab = Utils.getTabByName(search, "New Tab");
 
-                        ObservableList<Tab> tabs = search.getTabs();
-                        Tab lastTab = tabs.get(tabs.size() - 1);
-
-                        Tab newTab1 = new Tab("New Tab", node);
-                        newTab1.setClosable(true);
-                        tabs.add(tabs.indexOf(lastTab), newTab1);
-                        search.getSelectionModel().select(newTab1);
-                    }
+                if (tab != null) {
+                    search.getSelectionModel().select(tab);
+                    return;
                 }
-        );
+
+                ObservableList<Tab> tabs = search.getTabs();
+                Tab lastTab = tabs.get(tabs.size() - 1);
+
+                Tab newTab1 = new Tab("New Tab", node);
+                newTab1.setClosable(true);
+                tabs.add(tabs.indexOf(lastTab), newTab1);
+                search.getSelectionModel().select(newTab1);
+            }
+        });
 
         button.setOnMousePressed(event -> {
             ContextMenu contextMenu = new ContextMenu();
-            List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(),
-                    Session.getInstance().getSessionDir());
+            List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(), Session.getInstance().getSessionDir());
             contextMenu.getItems().addAll(c);
             contextMenu.show(button, event.getScreenX(), event.getScreenY());
         });
@@ -170,6 +162,40 @@ public class Project {
             }
         }
 
+        VBox nodeKnowledge = new VBox();
+        Button buttonKnowledge = new Button("New Knowledge");
+        nodeKnowledge.getChildren().add(buttonKnowledge);
+
+        Tab plusTabKnowledge = manageTabs0(knowledge, nodeKnowledge);
+
+        knowledge.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == plusTabKnowledge) {
+                System.out.println("Selected tab: " + newTab.getText());
+
+                Tab tab = Utils.getTabByName(knowledge, "New Tab");
+
+                if (tab != null) {
+                    knowledge.getSelectionModel().select(tab);
+                    return;
+                }
+
+                ObservableList<Tab> tabs = knowledge.getTabs();
+                Tab lastTab = tabs.get(tabs.size() - 1);
+
+                Tab newTab1 = new Tab("New Tab", nodeKnowledge);
+                newTab1.setClosable(true);
+                tabs.add(tabs.indexOf(lastTab), newTab1);
+                knowledge.getSelectionModel().select(newTab1);
+            }
+        });
+
+        buttonKnowledge.setOnAction(e -> {
+            List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
+            Knowledge knowledge1 = new Knowledge(variableNames);
+            Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
+                    true, true);
+        });
+
         graphTab = new Tab("Other Graphs", graphs);
         graphDir = new File(dir, "other_graphs");
 
@@ -186,15 +212,14 @@ public class Project {
         notesArea.setWrapText(true);
         parametersArea.setWrapText(true);
 
-
         if (dataSet != null) {
-            addDataSet(dataName, dataSet, false, !dataSet.equals(constructedDataSet));
             constructedDataSet = dataSet;
+            addDataSet(dataName, dataSet, false);
         }
 
         if (graph != null) {
-            addGraph(graphName, graph, true, !graph.equals(constructedGraph));
-            constructedGraph = graph;;
+            constructedGraph = graph;
+            addGraph(graphName, graph, true);
         }
 
         setUpTabPane(sessionTabPane, dataTab, data);
@@ -210,8 +235,22 @@ public class Project {
         selectIfNonempty(dataTab);
     }
 
-    private Node getPlusTab(Tab tab) {
-        return tab.getTabPane().lookup(" + ");
+    @NotNull
+    private static Tab manageTabs0(TabPane _tabPane, VBox node) {
+
+        Tab plusTab = new Tab(" + ", new HBox());
+        plusTab.setClosable(false);
+        _tabPane.getTabs().add(plusTab);
+
+        if (_tabPane.getTabs().size() == 1) {
+            ObservableList<Tab> tabs = _tabPane.getTabs();
+            Tab newTab1 = new Tab("New Tab", node);
+            newTab1.setClosable(true);
+            tabs.add(0, newTab1);
+            _tabPane.getSelectionModel().select(newTab1);
+        }
+
+        return plusTab;
     }
 
     /**
@@ -229,9 +268,8 @@ public class Project {
      * @param name     The name of the dataset.
      * @param dataSet  The dataset.
      * @param nextName Whether to append a number to the name if it already exists.
-     * @param closable Whether the tab should be closable.
      */
-    public void addDataSet(String name, DataSet dataSet, boolean nextName, boolean closable) {
+    public void addDataSet(String name, DataSet dataSet, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -241,9 +279,9 @@ public class Project {
         }
 
         TableView<DataView.DataRow> tableView = DataView.getTableView(dataSet);
-        dataSetMap.put(tableView, dataSet);
         Tab tab = new Tab(name, tableView);
-        tab.setClosable(closable);
+        dataSetMap.put(tab, dataSet);
+        tab.setClosable(!dataSet.equals(constructedDataSet));
         this.data.getTabs().add(tab);
         this.sessionTabPane.getSelectionModel().select(dataTab);
         this.data.getSelectionModel().select(tab);
@@ -262,7 +300,7 @@ public class Project {
 
         if (!valenceAdded) {
             Tab valence = new Tab("Variables", new VariablesView(dataSet).getTableView());
-            valence.setClosable(closable);
+            valence.setClosable(true);
             this.valence.getTabs().add(valence);
             valenceAdded = true;
         }
@@ -294,9 +332,8 @@ public class Project {
      * @param name     The name of the graph.
      * @param graph    The graph.
      * @param nextName Whether to append a number to the name if it already exists.
-     * @param closable Whether the tab should be closable.
      */
-    public void addGraph(String name, Graph graph, boolean nextName, boolean closable) {
+    public void addGraph(String name, Graph graph, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -306,7 +343,7 @@ public class Project {
         }
 
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
-        tab.setClosable(closable);
+        tab.setClosable(!graph.equals(constructedGraph));
         this.graphs.getTabs().add(tab);
         this.sessionTabPane.getSelectionModel().select(graphTab);
         this.graphs.getSelectionModel().select(tab);
@@ -347,8 +384,7 @@ public class Project {
      * @param parameters     The parameters used to generate the search result.
      * @param usedParameters The parameters that were actually used to generate the search result.
      */
-    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters,
-                                List<String> usedParameters) {
+    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters, List<String> usedParameters) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -357,11 +393,10 @@ public class Project {
             name = Utils.nextName(name, this.getSearchNames());
         }
 
-//        Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
-//        tab.setClosable(closable);
-//        this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+        GraphSaveLoadUtils.saveGraph(graph, new File(this.searchDir, name.replace(' ', '_') + ".txt"),
+                false);
 
-        Tab tab = getTabByName(search, "New Tab");
+        Tab tab = Utils.getTabByName(search, "New Tab");
 
         if (tab == null) {
             tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -373,23 +408,30 @@ public class Project {
             tab.setClosable(closable);
         }
 
-//        this.search.getTabs().remove(doSearch);
+        managePlusTab(this.sessionTabPane, this.search, this.searchTab, new File(this.searchDir,
+                name.replace(' ', '_') + ".txt"));
 
-        this.sessionTabPane.getSelectionModel().select(searchTab);
-        this.search.getSelectionModel().select(tab);
-        tabsToParameters.put(tab, "");
-        tabsToNotes.put(tab, "");
-        tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-        var _name = name.replace(' ', '_') + ".txt";
-        var file = new File(searchDir, _name);
-        GraphSaveLoadUtils.saveGraph(graph, file, false);
+        setParametersText(tab, parameters, usedParameters);
+        readNotes(tab, this.searchDir, name);
+        persistNotes(tab, this.searchDir, name);
 
-        tab.setOnClosed(event -> {
+        displayNonemptyTabsOnly();
+        selectIfNonempty(this.searchTab);
+    }
+
+    private void managePlusTab(TabPane _sessionTabPane, TabPane _search, Tab _tab, File _file) {
+        _sessionTabPane.getSelectionModel().select(_tab);
+        _search.getSelectionModel().select(_tab);
+        tabsToParameters.put(_tab, "");
+        tabsToNotes.put(_tab, "");
+        _tab.setOnSelectionChanged(event -> setParametersAndNotesText());
+
+        _tab.setOnClosed(event -> {
             displayNonemptyTabsOnly();
-            selectIfNonempty(searchTab);
+            selectIfNonempty(_tab);
 
-            if (file.exists()) {
-                if (file.delete()) {
+            if (_file.exists()) {
+                if (_file.delete()) {
                     System.out.println("File deleted successfully");
                 } else {
                     System.out.println("Failed to delete the file");
@@ -398,13 +440,6 @@ public class Project {
                 System.out.println("File does not exist");
             }
         });
-
-        setParametersText(tab, parameters, usedParameters);
-        readNotes(tab, searchDir, name);
-        persistNotes(tab, searchDir, name);
-
-        displayNonemptyTabsOnly();
-        selectIfNonempty(searchTab);
     }
 
     public void addKnowledge(String name, Knowledge knowledge, boolean closable, boolean nextName) {
@@ -419,11 +454,11 @@ public class Project {
         File path = new File(knowledgeDir, name.replace(' ', '_') + ".txt");
 
         Node editor = new RegexFilter(knowledge, path).getEditor();
-        knowledgeMap.put(editor, knowledge);
         Tab tab = new Tab(name, editor);
+        knowledgeMap.put(tab, knowledge);
         tab.setClosable(closable);
-        this.knowledge.getTabs().add(tab);
-        this.sessionTabPane.getSelectionModel().select(searchTab);
+//        this.knowledge.getTabs().add(tab);
+        this.sessionTabPane.getSelectionModel().select(knowledgeTab);
         this.knowledge.getSelectionModel().select(tab);
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
@@ -456,20 +491,28 @@ public class Project {
             }
         });
 
-        readNotes(tab, knowledgeDir, name);
-        persistNotes(tab, knowledgeDir, name);
+        Tab _tab = Utils.getTabByName(this.knowledge, "New Tab");
+
+        if (_tab == null) {
+            _tab = new Tab(name, new RegexFilter(knowledge, path).getEditor());
+            this.knowledge.getTabs().add(this.knowledge.getTabs().size() - 1, _tab);
+            _tab.setClosable(closable);
+            knowledgeMap.put(_tab, knowledge);
+        } else {
+            _tab.setText(name);
+            _tab.setContent(editor);
+            _tab.setClosable(closable);
+            knowledgeMap.put(_tab, knowledge);
+        }
+
+        managePlusTab(this.sessionTabPane, this.knowledge, this.knowledgeTab, new File(this.knowledgeDir,
+                name.replace(' ', '_') + ".txt"));
+
+        readNotes(_tab, knowledgeDir, name);
+        persistNotes(_tab, knowledgeDir, name);
 
         displayNonemptyTabsOnly();
         selectIfNonempty(knowledgeTab);
-    }
-
-    private Tab getTabByName(TabPane tabPane, String name) {
-        for (Tab tab : tabPane.getTabs()) {
-            if (name.equals(tab.getText())) {
-                return tab;
-            }
-        }
-        return null;
     }
 
     /**
@@ -664,11 +707,7 @@ public class Project {
     public DataSet getSelectedDataSet() {
         Tab selected = data.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            Node content1 = selected.getContent();
-
-            if (content1 instanceof TableView content) {
-                return dataSetMap.get(content);
-            }
+            return dataSetMap.get(selected);
         }
 
         return null;
@@ -682,8 +721,7 @@ public class Project {
     public Knowledge getSelectedKnowledge() {
         Tab selected = knowledge.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            Node content = selected.getContent();
-            return knowledgeMap.get(content);
+            return knowledgeMap.get(selected);
         }
 
         return null;
@@ -729,7 +767,7 @@ public class Project {
         notesArea.setText(getNoteString(selected));
 
         parametersArea.setPromptText(getParameterPromptString(selected));
-         notesArea.setPromptText(getNotePromptString(selected));
+        notesArea.setPromptText(getNotePromptString(selected));
 
         parametersArea.setOnKeyTyped(event -> tabsToParameters.put(selected, parametersArea.getText()));
 

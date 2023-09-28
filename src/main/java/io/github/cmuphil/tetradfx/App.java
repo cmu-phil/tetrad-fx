@@ -57,7 +57,7 @@ public class App extends Application {
         });
 
         Scene scene = new Scene(TetradFxMain.getInstance().getRoot(primaryStage));
-        String alwaysShowCloseButton = ".tab-close-button { -fx-visible: true; } .tab:hover .tab-close-button { -fx-visible: true; }";
+        String alwaysShowCloseButton = "-fx-visible: true";
         scene.getStylesheets().add(alwaysShowCloseButton);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Tetrad-FX");

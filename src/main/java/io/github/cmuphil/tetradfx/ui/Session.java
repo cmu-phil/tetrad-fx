@@ -137,7 +137,7 @@ public class Session {
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
 
                                     String replace = name.replace('_', ' ');
-                                    getSelectedProject().addDataSet(replace, _dataSet, false, true);
+                                    getSelectedProject().addDataSet(replace, _dataSet, false);
                                 } catch (IOException e) {
                                     Alert alert = new Alert(Alert.AlertType.ERROR);
                                     alert.setTitle("Error Dialog");
@@ -190,11 +190,11 @@ public class Session {
                         for (var file : graphFiles) {
                             if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false, !file.getName().contains("true_graph"));
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false);
                             } else if (file.getName().endsWith("json")) {
 //                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false, !file.getName().contains("true_graph"));
+                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false);
                             }
                         }
                     }
@@ -221,6 +221,7 @@ public class Session {
 
     /**
      * Selects a project in the session.
+     *
      * @param selectedName The name of the project to be selected.
      */
     public void selectProject(String selectedName) {
@@ -242,6 +243,7 @@ public class Session {
 
     /**
      * Sets the name of the selected project.
+     *
      * @param selectedName The name of the selected project.
      */
     private void setSelectedName(String selectedName) {
@@ -255,6 +257,7 @@ public class Session {
 
     /**
      * Returns the singleton instance of the session.
+     *
      * @return The singleton instance of the session.
      */
     public static Session getInstance() {
@@ -281,8 +284,7 @@ public class Session {
     }
 
     /**
-     * Causes a new session to be created. After this method is called, the singleton instance
-     * will be the new session.
+     * Causes a new session to be created. After this method is called, the singleton instance will be the new session.
      */
     public static void newInstance() {
         String userHomeDirectory = System.getProperty("user.home");
@@ -291,11 +293,12 @@ public class Session {
 
     /**
      * Adds a project to the session.
-     * @param dataSet The dataset to be analyzed. (This may be null.)
-     * @param graph The graph to be analyzed. (This may be null.)
+     *
+     * @param dataSet     The dataset to be analyzed. (This may be null.)
+     * @param graph       The graph to be analyzed. (This may be null.)
      * @param projectName The name of the project.
-     * @param dataName The name of the dataset. (This may be null.)
-     * @param graphName The name of the graph. (This may be null.)
+     * @param dataName    The name of the dataset. (This may be null.)
+     * @param graphName   The name of the graph. (This may be null.)
      */
     public void add(DataSet dataSet, Graph graph, String projectName, String dataName, String graphName) {
         var sessionDir = new File(this.sessionDir, projectName.replace(" ", "_"));
@@ -321,6 +324,7 @@ public class Session {
 
     /**
      * Returns the main component of the selected project.
+     *
      * @return The main component of the selected project.
      */
     public Node getSelectedMain() {
@@ -330,6 +334,7 @@ public class Session {
 
     /**
      * Returns the active pane.
+     *
      * @return The active pane.
      */
     public BorderPane getActivePane() {
@@ -338,6 +343,7 @@ public class Session {
 
     /**
      * Returns the selected project.
+     *
      * @return The selected project.
      */
     public Project getSelectedProject() {
@@ -354,6 +360,7 @@ public class Session {
 
     /**
      * Returns the tree view of the session. Users can click here to switch projects.
+     *
      * @return The tree view of the session.
      */
     public TreeView<String> getSessionTreeView() {
@@ -362,6 +369,7 @@ public class Session {
 
     /**
      * Returns the names of the projects in the session.
+     *
      * @return The names of the projects in the session.
      */
     public HashSet<String> getProjectNames() {
@@ -370,6 +378,7 @@ public class Session {
 
     /**
      * Returns the parameters pane.
+     *
      * @return The parameters pane.
      */
     public BorderPane getParametersPane() {
@@ -378,6 +387,7 @@ public class Session {
 
     /**
      * Returns the notes pane.
+     *
      * @return The notes pane.
      */
     public BorderPane getNotesPane() {

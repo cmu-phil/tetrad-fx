@@ -141,7 +141,7 @@ public class ChangedStuffINeed {
                 x += lastHalf + thisHalf + 5;
                 node.setCenterX(x);
                 node.setCenterY(y);
-//                lastHalf = thisHalf;
+                lastHalf = thisHalf;
             }
         }
     }
@@ -284,6 +284,7 @@ public class ChangedStuffINeed {
      * @throws IOException If an error occurred in reading the file.
      */
     // From SimpleDataLoader
+    @NotNull
     public static DataSet loadMixedData(File file, String commentMarker, char quoteCharacter,
                                         String missingValueMarker, boolean hasHeader, int maxNumCategories,
                                         Delimiter delimiter, boolean excludeFirstColumn)
@@ -300,27 +301,17 @@ public class ChangedStuffINeed {
         dataReader.setCommentMarker(commentMarker);
         dataReader.setMissingDataMarker(missingValueMarker);
         dataReader.setQuoteCharacter(quoteCharacter);
-        try {
-            dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IOException("Could not determine data columns.");
-        }
+        dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
 
-        Data data;
-
-        try {
-            data = dataReader.read(dataColumns, hasHeader);
-        } catch (DataReaderException e) {
-            throw new IOException(e);
-        }
+        Data data = dataReader.read(dataColumns, hasHeader);
 
         if (data != null){
-            var dataModel = DataConvertUtils.toDataModel(data);
+            DataModel dataModel = DataConvertUtils.toDataModel(data);
             dataModel.setName(file.getName());
             return (DataSet) dataModel;
-        } else {
-            throw new IOException("Data is null");
         }
+
+        return null;
     }
 
     public static void jsonFromJava(Object object, File file) {
