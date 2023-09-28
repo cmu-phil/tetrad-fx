@@ -410,15 +410,15 @@ public class Session {
     public void deleteSelectedProject() {
         Project selectedProject = Session.getInstance().getSelectedProject();
 
-        if (projects.getChildren().size() == 1) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Delete Project");
-            alert.setHeaderText("Delete Project");
-            alert.setContentText("You cannot delete the last project in the session.");
-
-            alert.showAndWait();
-            return;
-        }
+//        if (projects.getChildren().size() == 1) {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setTitle("Delete Project");
+//            alert.setHeaderText("Delete Project");
+//            alert.setContentText("You cannot delete the last project in the session.");
+//
+//            alert.showAndWait();
+//            return;
+//        }
 
         if (selectedProject != null) {
             ButtonType myYesButton = new ButtonType("Yes, go ahead and delete it");
