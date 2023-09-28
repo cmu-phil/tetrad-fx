@@ -1,10 +1,9 @@
 ## This package contains the classes that make up the TetradFX UI.
 
-[A lot of the boilerplate code here was done by ChatGPT and GitHub's Copilot. Everything's been cross-checked.]
-
-TODO FOR THE FIRST DRAFT BY THE END OF SEPTEMBER, AFTER WHICH WE WILL STOP AND DECIDE WHETHER TO CONTINUE:
-
-_This is done now, 2023-9-25, but I want to go through and make things smoother and more robust._
+_The first draft is done now, 2023-9-25, but I want to go 
+through and make things smoother and more robust. I'm responding
+to reviews. I don't plan to add any new features at the moment.
+Maybe later._
 
 ## Goals of the first draft. (These are not in any particular order.)
 
