@@ -54,8 +54,8 @@ public class TetradFxMain {
     @NotNull
     private static Result getSimulation(Parameters parameters, SimulationType type) {
         if (type == SimulationType.CONTINUOUS) {
-            Graph graph = RandomGraph.randomGraphRandomForwardEdges(100, 0,
-                    200, 500, 100, 1000, false);
+            Graph graph = RandomGraph.randomGraphRandomForwardEdges(20, 0,
+                    40, 500, 100, 1000, false);
             LargeScaleSimulation simulation = new LargeScaleSimulation(graph);
             simulation.setCoefRange(0, 0.5);
             simulation.setSelfLoopCoef(0.1);
