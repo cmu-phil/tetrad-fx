@@ -303,7 +303,7 @@ public class ChangedStuffINeed {
         try {
             dataReader.determineDiscreteDataColumns(dataColumns, maxNumCategories, hasHeader);
         } catch (ArrayIndexOutOfBoundsException e) {
-            return null;
+            throw new IOException("Could not determine data columns.");
         }
 
         Data data;

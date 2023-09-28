@@ -13,10 +13,7 @@ import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 
 import java.io.File;
@@ -51,13 +48,14 @@ public class Session {
 
     /**
      * Private constructor. Loads the session from the session directory.
+     *
      * @param sessionDir The directory where the session is stored.z
      */
     private Session(File sessionDir) {
         this.parametersPane = new BorderPane();
         this.notesPane = new BorderPane();
 
-        var root = new TreeItem<>("Session");
+        var root = new TreeItem<>("Session Projects");
         root.setExpanded(true);
 
         this.sessionDir = sessionDir;
@@ -71,7 +69,7 @@ public class Session {
                 System.out.println("Made directory: " + this.sessionDir.getPath());
             }
 
-            projects = new TreeItem<>("Session");
+            projects = new TreeItem<>("Session Projects");
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
 
@@ -92,7 +90,7 @@ public class Session {
                 throw new NullPointerException("There were no projects in the session directory");
             }
 
-            projects = new TreeItem<>("Session");
+            projects = new TreeItem<>("Session Projects");
             sessionTreeView = new TreeView<>(projects);
             projects.setExpanded(true);
 
@@ -134,16 +132,17 @@ public class Session {
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
                                             "*", true, maxNumCategories, Delimiter.TAB, !file.getName().contains("Data"));
 
-                                    if (_dataSet == null) continue;;
-
                                     String name = _dataSet.getName();
 
                                     if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
 
                                     String replace = name.replace('_', ' ');
-                                    getSelectedProject().addDataSet(replace, _dataSet, false, false);
+                                    getSelectedProject().addDataSet(replace, _dataSet, false, true);
                                 } catch (IOException e) {
-                                    throw new RuntimeException(e);
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error Dialog");
+                                    alert.setContentText(e.getMessage());
+                                    alert.showAndWait();
                                 }
                             }
                         }
@@ -208,7 +207,7 @@ public class Session {
         System.out.println("dir: " + this.sessionDir.getAbsolutePath());
 
         sessionTreeView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 1) {
                 var selectedItem = sessionTreeView.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
                     String selectedName = selectedItem.getValue();

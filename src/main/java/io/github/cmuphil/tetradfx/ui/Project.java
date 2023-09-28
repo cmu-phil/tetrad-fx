@@ -59,8 +59,13 @@ public class Project {
     private final Map<Tab, String> tabsToParameters = new HashMap<>();
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
 
+    private final Map<Tab, String> tabsToParametersPrompts = new HashMap<>();
+    private final Map<Tab, String> tabsToNotesPrompts = new HashMap<>();
+
     private final Map<TableView<DataView.DataRow>, DataSet> dataSetMap = new HashMap<>();
     private final Map<Node, Knowledge> knowledgeMap = new HashMap<>();
+    private DataSet constructedDataSet = null;
+    private Graph constructedGraph = null;
     private boolean valenceAdded = false;
 
     /**
@@ -107,37 +112,30 @@ public class Project {
         Button button = new Button("New Search");
         node.getChildren().add(button);
 
-        Tab plusTab = new Tab("+", new HBox());
+        Tab plusTab = new Tab(" + ", new HBox());
         plusTab.setClosable(false);
         this.search.getTabs().add(plusTab);
 
-//        search.getSelectionModel().select(plusTab);
-
         if (this.search.getTabs().size() == 1) {
             ObservableList<Tab> tabs = search.getTabs();
-            Tab newTab1 = new Tab("Do Search", node);
+            Tab newTab1 = new Tab("New Tab", node);
             newTab1.setClosable(true);
             tabs.add(0, newTab1);
             search.getSelectionModel().select(newTab1);
         }
 
         search.getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<Tab>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                        // Here you can perform an action based on the tab that was clicked
+                (observable, oldTab, newTab) -> {
+                    if (newTab == plusTab) {
+                        System.out.println("Selected tab: " + newTab.getText());
 
-                        if (newTab == plusTab) {
-                            System.out.println("Selected tab: " + newTab.getText());
+                        ObservableList<Tab> tabs = search.getTabs();
+                        Tab lastTab = tabs.get(tabs.size() - 1);
 
-                            ObservableList<Tab> tabs = search.getTabs();
-                            Tab lastTab = tabs.get(tabs.size() - 1);
-
-                            Tab newTab1 = new Tab("Do Search", node);
-                            newTab1.setClosable(true);
-                            tabs.add(tabs.indexOf(lastTab), newTab1);
-                            search.getSelectionModel().select(newTab1);
-                        }
+                        Tab newTab1 = new Tab("New Tab", node);
+                        newTab1.setClosable(true);
+                        tabs.add(tabs.indexOf(lastTab), newTab1);
+                        search.getSelectionModel().select(newTab1);
                     }
                 }
         );
@@ -188,12 +186,15 @@ public class Project {
         notesArea.setWrapText(true);
         parametersArea.setWrapText(true);
 
-        if (graph != null) {
-            addGraph(graphName, graph, true, false);
-        }
 
         if (dataSet != null) {
-            addDataSet(dataName, dataSet, false, false);
+            addDataSet(dataName, dataSet, false, !dataSet.equals(constructedDataSet));
+            constructedDataSet = dataSet;
+        }
+
+        if (graph != null) {
+            addGraph(graphName, graph, true, !graph.equals(constructedGraph));
+            constructedGraph = graph;;
         }
 
         setUpTabPane(sessionTabPane, dataTab, data);
@@ -210,7 +211,7 @@ public class Project {
     }
 
     private Node getPlusTab(Tab tab) {
-        return tab.getTabPane().lookup("+");
+        return tab.getTabPane().lookup(" + ");
     }
 
     /**
@@ -360,7 +361,7 @@ public class Project {
 //        tab.setClosable(closable);
 //        this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
 
-        Tab tab = getTabByName(search, "Do Search");
+        Tab tab = getTabByName(search, "New Tab");
 
         if (tab == null) {
             tab = new Tab(name, GraphView.getGraphDisplay(graph));
@@ -527,13 +528,16 @@ public class Project {
 
         tabsToNotes.putIfAbsent(tab, "");
         tabsToParameters.putIfAbsent(tab, "");
+        tabsToNotesPrompts.put(tab, "Notes for " + name + ":");
+        tabsToParametersPrompts.put(tab, "Parameters for " + name + ":");
 
         if (new File(_filename1).exists()) {
             tabsToNotes.put(tab, Utils.loadTextFromFile(new File(_filename1)));
             notesArea.setText(tabsToNotes.get(tab));
         } else {
-            tabsToNotes.put(tab, "Notes for " + name + ":");
+            tabsToNotes.put(tab, "");//""Notes for " + name + ":");
             notesArea.setText(tabsToNotes.get(tab));
+            notesArea.setPromptText(tabsToNotesPrompts.get(tab));
             Utils.saveTextToFile(new File(_filename1), tabsToNotes.get(tab));
         }
 
@@ -544,9 +548,9 @@ public class Project {
             parametersArea.setText(tabsToParameters.get(tab));
         } else {
             if (tabsToParameters.get(tab).isEmpty()) {
-                tabsToParameters.put(tab, "Parameters for " + name + ":");
+                tabsToParameters.put(tab, "");//""Parameters for " + name + ":");
             }
-            parametersArea.setText(tabsToParameters.get(tab));
+            parametersArea.setPromptText(tabsToParametersPrompts.get(tab));
             Utils.saveTextToFile(new File(_filename2), tabsToParameters.get(tab));
         }
     }
@@ -724,6 +728,9 @@ public class Project {
         parametersArea.setText(getParameterString(selected));
         notesArea.setText(getNoteString(selected));
 
+        parametersArea.setPromptText(getParameterPromptString(selected));
+         notesArea.setPromptText(getNotePromptString(selected));
+
         parametersArea.setOnKeyTyped(event -> tabsToParameters.put(selected, parametersArea.getText()));
 
         notesArea.setOnKeyTyped(event -> tabsToNotes.put(selected, notesArea.getText()));
@@ -737,6 +744,16 @@ public class Project {
     private String getNoteString(Tab selected) {
         tabsToNotes.putIfAbsent(selected, "");
         return tabsToNotes.get(selected);
+    }
+
+    private String getParameterPromptString(Tab tab) {
+        tabsToParametersPrompts.putIfAbsent(tab, "");
+        return tabsToParametersPrompts.get(tab);
+    }
+
+    private String getNotePromptString(Tab selected) {
+        tabsToNotesPrompts.putIfAbsent(selected, "");
+        return tabsToNotesPrompts.get(selected);
     }
 
     /**
