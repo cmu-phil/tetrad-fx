@@ -25,8 +25,8 @@ _This is done now, 2023-9-25, but I want to go through and make things smoother 
 * Allow transformations of data and graphs.
 * Allow some tutorial games to be played.
 * Allow the user to enter valence information per variable.
-* Allow the user to save sessions by zipping the session directory's contents and unzipping them (programmatically). The
-  user can unzip these
+* Allow the user to save sessions by zipping the session directory's contents
+  and unzipping them (programmatically). The user can unzip these
   and recover easily readable text files defining the session.
 * Allow the user to close and re-open the Tetrad-FX app without losing content.
 
