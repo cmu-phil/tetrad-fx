@@ -5,6 +5,17 @@ through and make things smoother and more robust. I'm responding
 to reviews. I don't plan to add any new features at the moment.
 Maybe later._
 
+There are a couple of things that seems to me could still be fixed for a first draft if 
+I have time:
+* The order of the tabs is not always the same after the UI is reloaded. These could easily
+be written to file, so I'll do it.
+* The (requested) Valence tab is not what's intended yet and is not persisted. I may do some
+more work on that before stopping.
+* There are a number of requests I've made to myself to adjustments to make in the underlying
+Tetrad library. These are all in the for751lib directory. I'll be updating the Tetrad lib
+code in the next two weeks, so I'll incorporate these changes and update the version of
+the Tetrad lib jar to 7.5.1 once that's released.
+
 ## Goals of the first draft. (These are not in any particular order.)
 
 * Allow the user to load datasets.
@@ -82,16 +93,16 @@ Maybe later._
     2. Save and load games to the directory. (As graphs, I guess.)
     3. Persist games.
 6. Add model estimation for linear and multinomial.
-7. Keep track of parents and children for each component in the session. 8\
+7. Keep track of parents and children for each component in the session.
 8. Adding in annotations to list all Tetrad algorithms, sort them by type, and display
    information about each algorithm.
 9. Simulations
     1. Currently, just a few stock simulation types are available, but Tetrad has a robust simulation
-       facility. We do not intend to make. This simulation facility is a centerpiece of this app, but
+       facility. We do not intend to make this simulation facility is a centerpiece of this app, but
        there's no reason not to allow the user to use it (or at least some of it) if they want to, so
        adding parameter editing here might be nice.
-10. Add oracle independence searches for graphs.
-    1 Persist valence tabs.
+1. Add oracle independence searches for graphs.
+    1. Persist valence tabs.
 1. Persist game tabs.
 1. The user may need to increase RAM, as large datasets stored and loaded in memory can take
    up a lot of space. So they need to be told how to do this and maybe given a friendly
