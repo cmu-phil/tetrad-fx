@@ -93,15 +93,15 @@ the Tetrad lib jar to 7.5.1 once that's released.
     2. Save and load games to the directory. (As graphs, I guess.)
     3. Persist games.
 6. Add model estimation for linear and multinomial.
-7. Keep track of parents and children for each component in the session. 8\
+7. Keep track of parents and children for each component in the session.
 8. Adding in annotations to list all Tetrad algorithms, sort them by type, and display
    information about each algorithm.
 9. Simulations
     1. Currently, just a few stock simulation types are available, but Tetrad has a robust simulation
-       facility. We do not intend to make. This simulation facility is a centerpiece of this app, but
+       facility. We do not intend to make this simulation facility is a centerpiece of this app, but
        there's no reason not to allow the user to use it (or at least some of it) if they want to, so
        adding parameter editing here might be nice.
-10. Add oracle independence searches for graphs.
+1. Add oracle independence searches for graphs.
     1 Persist valence tabs.
 1. Persist game tabs.
 1. The user may need to increase RAM, as large datasets stored and loaded in memory can take
