@@ -11,7 +11,7 @@ I have time:
 be written to file, so I'll do it.
 * The (requested) Valence tab is not what's intended yet and is not persisted. I may do some
 more work on that before stopping.
-* There are a nubmer of requests I've made to myself to adjustments to make in the underlying
+* There are a number of requests I've made to myself to adjustments to make in the underlying
 Tetrad library. These are all in the for751lib directory. I'll be updating the Tetrad lib
 code in the next two weeks, so I'll incorporate these changes and update the version of
 the Tetrad lib jar to 7.5.1 once that's released.
