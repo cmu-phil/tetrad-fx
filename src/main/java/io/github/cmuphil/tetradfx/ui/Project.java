@@ -104,11 +104,11 @@ public class Project {
 
         searchTab = new Tab("Search", search);
 
-        VBox node = new VBox();
-        Button button = new Button("New Search");
-        node.getChildren().add(button);
+        VBox nodeSearch = new VBox();
+        Button buttonSearch = new Button("New Search");
+        nodeSearch.getChildren().add(buttonSearch);
 
-        Tab plusTab = managePlusTabs1(search, node);
+        Tab plusTab = managePlusTabs1(search, nodeSearch);
 
         search.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == plusTab) {
@@ -124,18 +124,18 @@ public class Project {
                 ObservableList<Tab> tabs = search.getTabs();
                 Tab lastTab = tabs.get(tabs.size() - 1);
 
-                Tab newTab1 = new Tab("New Tab", node);
+                Tab newTab1 = new Tab("New Tab", nodeSearch);
                 newTab1.setClosable(true);
                 tabs.add(tabs.indexOf(lastTab), newTab1);
                 search.getSelectionModel().select(newTab1);
             }
         });
 
-        button.setOnMousePressed(event -> {
+        buttonSearch.setOnMousePressed(event -> {
             ContextMenu contextMenu = new ContextMenu();
             List<MenuItem> c = MenuItems.searchFromDataMenuItems(Session.getInstance().getParameters(), Session.getInstance().getSessionDir());
             contextMenu.getItems().addAll(c);
-            contextMenu.show(button, event.getScreenX(), event.getScreenY());
+            contextMenu.show(buttonSearch, event.getScreenX(), event.getScreenY());
         });
 
         searchDir = new File(dir, "search");
@@ -187,10 +187,9 @@ public class Project {
         });
 
         buttonKnowledge.setOnAction(e -> {
-            List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
+            List<String> variableNames = getSelectedDataSet().getVariableNames();
             Knowledge knowledge1 = new Knowledge(variableNames);
-            Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
-                    true);
+            addKnowledge("Knowledge", knowledge1,true);
         });
 
         graphTab = new Tab("Other Graphs", graphs);
@@ -206,6 +205,38 @@ public class Project {
 
         gamesTab = new Tab("Games", games);
         gamesDir = new File("games");
+
+        VBox nodeGames = new VBox();
+        Button buttonGames = new Button("New Game");
+        nodeGames.getChildren().add(buttonGames);
+
+        Tab plusTabGames = managePlusTabs1(games, nodeGames);
+
+        games.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab == plusTabGames) {
+                Tab tab = Utils.getTabByName(games, "New Tab");
+
+                if (tab != null) {
+                    games.getSelectionModel().select(tab);
+                    return;
+                }
+
+                ObservableList<Tab> tabs = games.getTabs();
+                Tab lastTab = tabs.get(tabs.size() - 1);
+
+                Tab newTab1 = new Tab("New Tab", nodeGames);
+                newTab1.setClosable(true);
+                tabs.add(tabs.indexOf(lastTab), newTab1);
+                games.getSelectionModel().select(newTab1);
+            }
+        });
+
+        buttonGames.setOnMousePressed(event -> {
+            ContextMenu contextMenu = new ContextMenu();
+            List<MenuItem> items = MenuItems.getGameMenuItems();
+            contextMenu.getItems().addAll(items);
+            contextMenu.show(buttonGames, event.getScreenX(), event.getScreenY());
+        });
 
         notesArea.setWrapText(true);
         parametersArea.setWrapText(true);
@@ -408,20 +439,52 @@ public class Project {
      * @param pane     The pane containing the game.
      * @param nextName Whether to append a number to the name if it already exists.
      */
+//    public void addGame(String name, Pane pane, boolean nextName) {
+//        if (name == null) {
+//            throw new NullPointerException("Name cannot be null");
+//        }
+//
+//        if (nextName) {
+//            name = Utils.nextName(name, this.getGameNames());
+//        }
+//
+//        String prefix = name.replace(' ', '_');
+//
+//        Tab tab = new Tab(name, pane);
+//        addHandling(name, this.games, gamesTab, null, gamesDir, tab, prefix);
+//    }
+
     public void addGame(String name, Pane pane, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getGameNames());
+            name = Utils.nextName(name, this.getSearchNames());
         }
 
         String prefix = name.replace(' ', '_');
 
-        Tab tab = new Tab(name, pane);
-        addHandling(name, this.games, gamesTab, null, gamesDir, tab, prefix);
+        this.sessionTabPane.getSelectionModel().select(gamesTab);
+
+//        GraphSaveLoadUtils.saveGraph(graph, new File(this.searchDir, prefix + ".txt"),
+//                false);
+
+        Tab tab = Utils.getTabByName(search, "New Tab");
+
+        if (tab == null) {
+            tab = new Tab(name, pane);
+            this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+        } else {
+            tab.setText(name);
+            tab.setContent(pane);
+        }
+
+        addHandling(name, games, gamesTab, null, graphDir, tab, prefix);
+        managePlusTab2(this.sessionTabPane, this.games, this.gamesTab, new File(this.gamesDir,
+                name.replace(' ', '_') + ".txt"));
     }
+
 
     private void addHandling(String name, TabPane typeTabPane, Tab typeTab, Map<Tab, Object> typeTabMap,
                              File typeDir, Tab tab, String prefix) {

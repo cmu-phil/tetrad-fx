@@ -10,7 +10,6 @@ import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
-import edu.cmu.tetrad.util.RandomUtil;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.Utils;
@@ -331,30 +330,7 @@ public class TetradFxMain {
         insights.getItems().addAll(new MenuItem("Check Markov and Faithfulness Assumptions"));
         insights.getItems().addAll(new MenuItem("Check for D-separation/M-separation"));
 
-        Menu games = new Menu("Games");
-
-        Menu permutationGames = new Menu("Permutation Games");
-
-        MenuItem basedOnGraph_4_4 = new MenuItem("Make a random game with 4 nodes and 4 edges");
-        MenuItem basedOnGraph_5_5 = new MenuItem("Make a random game with 5 nodes and 5 edges");
-        MenuItem basedOnGraph_6_6 = new MenuItem("Make a random game with 6 nodes and 6 edges");
-        MenuItem basedOnGraph_7_7 = new MenuItem("Make a random game with 7 nodes and 7 edges");
-        MenuItem basedOnGraph_10_10 = new MenuItem("Make a random game with 10 nodes and 10 edges");
-        MenuItem basedOnGraph_10_15 = new MenuItem("Make a random game with 10 nodes and 15 edges");
-        MenuItem surpriseMe = new MenuItem("Surprise me!");
-
-        basedOnGraph_4_4.setOnAction(e -> Games.baseGamesOnGraph(randomDag(4, 4)));
-        basedOnGraph_5_5.setOnAction(e -> Games.baseGamesOnGraph(randomDag(5, 5)));
-        basedOnGraph_6_6.setOnAction(e -> Games.baseGamesOnGraph(randomDag(6, 6)));
-        basedOnGraph_7_7.setOnAction(e -> Games.baseGamesOnGraph(randomDag(7, 7)));
-        basedOnGraph_10_10.setOnAction(e -> Games.baseGamesOnGraph(randomDag(10, 10)));
-        basedOnGraph_10_15.setOnAction(e -> Games.baseGamesOnGraph(randomDag(10, 15)));
-        surpriseMe.setOnAction(e -> Games.baseGamesOnGraph(randomDag(RandomUtil.getInstance().nextInt(6) + 5,
-                RandomUtil.getInstance().nextInt(10) + 3)));
-
-        permutationGames.getItems().addAll(basedOnGraph_4_4, basedOnGraph_5_5, basedOnGraph_6_6, basedOnGraph_7_7,
-                basedOnGraph_10_10, basedOnGraph_10_15, surpriseMe);
-        games.getItems().addAll(permutationGames);
+        Menu games = MenuItems.getGameMenu();
 
         Menu help = new Menu("Help");
         help.getItems().addAll(new MenuItem("About"));
@@ -363,21 +339,8 @@ public class TetradFxMain {
         help.getItems().addAll(new MenuItem("Tetrad Manual"));
         help.getItems().addAll(new MenuItem("Tetrad Forum"));
 
-        menuBar.getMenus().addAll(fileMenu, games);
+        menuBar.getMenus().addAll(fileMenu);
         return menuBar;
-    }
-
-    /**
-     * Creates a random DAG.
-     *
-     * @param numNodes The number of nodes.
-     * @param numEdges The number of edges.
-     * @return The random DAG.
-     */
-    @NotNull
-    private static Graph randomDag(int numNodes, int numEdges) {
-        return RandomGraph.randomGraph(numNodes, 0, numEdges, 100, 100,
-                100, false);
     }
 
     /**

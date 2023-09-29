@@ -15,7 +15,9 @@ import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
+import edu.cmu.tetrad.util.RandomUtil;
 import io.github.cmuphil.tetradfx.for751lib.DataTransforms;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
@@ -224,5 +226,42 @@ public class MenuItems {
         transformData.getItems().add(shuffleColumns);
 
         return contextMenu;
+    }
+
+    @NotNull
+    public static Menu getGameMenu() {
+        Menu games = new Menu("Games");
+        games.getItems().addAll(getGameMenuItems());
+        return games;
+    }
+
+    @NotNull
+    public static List<MenuItem> getGameMenuItems() {
+        List<MenuItem> items = new ArrayList<>();
+
+        Menu permutationGames = new Menu("Permutation Games");
+
+        MenuItem basedOnGraph_4_4 = new MenuItem("Make a random game with 4 nodes and 4 edges");
+        MenuItem basedOnGraph_5_5 = new MenuItem("Make a random game with 5 nodes and 5 edges");
+        MenuItem basedOnGraph_6_6 = new MenuItem("Make a random game with 6 nodes and 6 edges");
+        MenuItem basedOnGraph_7_7 = new MenuItem("Make a random game with 7 nodes and 7 edges");
+        MenuItem basedOnGraph_10_10 = new MenuItem("Make a random game with 10 nodes and 10 edges");
+        MenuItem basedOnGraph_10_15 = new MenuItem("Make a random game with 10 nodes and 15 edges");
+        MenuItem surpriseMe = new MenuItem("Surprise me!");
+
+        basedOnGraph_4_4.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(4, 4)));
+        basedOnGraph_5_5.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(5, 5)));
+        basedOnGraph_6_6.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(6, 6)));
+        basedOnGraph_7_7.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(7, 7)));
+        basedOnGraph_10_10.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(10, 10)));
+        basedOnGraph_10_15.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(10, 15)));
+        surpriseMe.setOnAction(e -> Games.baseGamesOnGraph(Utils.randomDag(RandomUtil.getInstance().nextInt(6) + 5,
+                RandomUtil.getInstance().nextInt(10) + 3)));
+
+        permutationGames.getItems().addAll(basedOnGraph_4_4, basedOnGraph_5_5, basedOnGraph_6_6, basedOnGraph_7_7,
+                basedOnGraph_10_10, basedOnGraph_10_15, surpriseMe);
+
+        items.add(permutationGames);
+        return items;
     }
 }
