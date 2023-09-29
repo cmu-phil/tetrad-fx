@@ -310,6 +310,7 @@ public class Project {
             System.out.println("Could not write data set to file");
         }
 
+        data.getTabs().add(tab);
         addHandling(name, data, dataTab, dataSetMap, dataDir, tab, prefix);
     }
 
@@ -347,7 +348,8 @@ public class Project {
             }
         });
 
-        addHandling(name, this.graphs, graphTab, null, graphDir, tab, prefix);
+        graphs.getTabs().add(tab);
+        addHandling(name, graphs, graphTab, null, graphDir, tab, prefix);
         GraphSaveLoadUtils.saveGraph(graph, new File(graphDir, prefix + ".txt"), false);
     }
 
@@ -439,28 +441,13 @@ public class Project {
      * @param pane     The pane containing the game.
      * @param nextName Whether to append a number to the name if it already exists.
      */
-//    public void addGame(String name, Pane pane, boolean nextName) {
-//        if (name == null) {
-//            throw new NullPointerException("Name cannot be null");
-//        }
-//
-//        if (nextName) {
-//            name = Utils.nextName(name, this.getGameNames());
-//        }
-//
-//        String prefix = name.replace(' ', '_');
-//
-//        Tab tab = new Tab(name, pane);
-//        addHandling(name, this.games, gamesTab, null, gamesDir, tab, prefix);
-//    }
-
     public void addGame(String name, Pane pane, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
 
         if (nextName) {
-            name = Utils.nextName(name, this.getSearchNames());
+            name = Utils.nextName(name, this.getGameNames());
         }
 
         String prefix = name.replace(' ', '_');
@@ -480,6 +467,7 @@ public class Project {
             tab.setContent(pane);
         }
 
+        games.getTabs().add(tab);
         addHandling(name, games, gamesTab, null, graphDir, tab, prefix);
         managePlusTab2(this.sessionTabPane, this.games, this.gamesTab, new File(this.gamesDir,
                 name.replace(' ', '_') + ".txt"));
@@ -488,7 +476,6 @@ public class Project {
 
     private void addHandling(String name, TabPane typeTabPane, Tab typeTab, Map<Tab, Object> typeTabMap,
                              File typeDir, Tab tab, String prefix) {
-        typeTabPane.getTabs().add(tab);
         this.sessionTabPane.getSelectionModel().select(typeTab);
         typeTabPane.getSelectionModel().select(tab);
         tabClosedAction(typeTab, typeTabMap, typeDir, tab, prefix);
