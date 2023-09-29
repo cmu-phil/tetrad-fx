@@ -5,9 +5,16 @@ through and make things smoother and more robust. I'm responding
 to reviews. I don't plan to add any new features at the moment.
 Maybe later._
 
-There are a couple of things that seems to me could still be fixed for a first draft if I have time:
-* The order of the tabs is not always the same after the UI is reloaded. These could easily be written to file, so I'll do it.
-* The (requested) Valence tab is not what's intended yet and is not persisted. I may do some more work on that before stopping.
+There are a couple of things that seems to me could still be fixed for a first draft if 
+I have time:
+* The order of the tabs is not always the same after the UI is reloaded. These could easily
+be written to file, so I'll do it.
+* The (requested) Valence tab is not what's intended yet and is not persisted. I may do some
+more work on that before stopping.
+* There are a nubmer of requests I've made to myself to adjustments to make in the underlying
+Tetrad library. These are all in the for751lib directory. I'll be updating the Tetrad lib
+code in the next two weeks, so I'll incorporate these changes and update the version of
+the Tetrad lib jar to 7.5.1 once that's released.
 
 ## Goals of the first draft. (These are not in any particular order.)
 
