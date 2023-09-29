@@ -108,7 +108,7 @@ public class Project {
         Button button = new Button("New Search");
         node.getChildren().add(button);
 
-        Tab plusTab = manageTabs0(search, node);
+        Tab plusTab = managePlusTabs1(search, node);
 
         search.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == plusTab) {
@@ -163,7 +163,7 @@ public class Project {
         Button buttonKnowledge = new Button("New Knowledge");
         nodeKnowledge.getChildren().add(buttonKnowledge);
 
-        Tab plusTabKnowledge = manageTabs0(knowledge, nodeKnowledge);
+        Tab plusTabKnowledge = managePlusTabs1(knowledge, nodeKnowledge);
 
         knowledge.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == plusTabKnowledge) {
@@ -230,23 +230,6 @@ public class Project {
         selectIfNonempty(dataTab);
     }
 
-    @NotNull
-    private static Tab manageTabs0(TabPane _tabPane, VBox node) {
-
-        Tab plusTab = new Tab(" + ", new HBox());
-        plusTab.setClosable(false);
-        _tabPane.getTabs().add(plusTab);
-
-        if (_tabPane.getTabs().size() == 1) {
-            ObservableList<Tab> tabs = _tabPane.getTabs();
-            Tab newTab1 = new Tab("New Tab", node);
-            newTab1.setClosable(true);
-            tabs.add(0, newTab1);
-            _tabPane.getSelectionModel().select(newTab1);
-        }
-
-        return plusTab;
-    }
 
     /**
      * Returns the main tab pane for this project.
@@ -374,7 +357,7 @@ public class Project {
 
         addHandling(name, search, searchTab, null, searchDir, tab, prefix);
         setParametersText(tab, parameters, usedParameters);
-        managePlusTab(this.sessionTabPane, this.search, this.searchTab, new File(this.searchDir,
+        managePlusTab2(this.sessionTabPane, this.search, this.searchTab, new File(this.searchDir,
                 name.replace(' ', '_') + ".txt"));
     }
 
@@ -414,7 +397,7 @@ public class Project {
 
         knowledgeMap.put(tab, knowledge);
         addHandling(name, this.knowledge, knowledgeTab, knowledgeMap, knowledgeDir, tab, prefix);
-        managePlusTab(this.sessionTabPane, this.knowledge, this.knowledgeTab, new File(this.knowledgeDir,
+        managePlusTab2(this.sessionTabPane, this.knowledge, this.knowledgeTab, new File(this.knowledgeDir,
                 name.replace(' ', '_') + ".txt"));
     }
 
@@ -487,7 +470,25 @@ public class Project {
         return names;
     }
 
-    private void managePlusTab(TabPane _sessionTabPane, TabPane _search, Tab _tab, File _file) {
+    @NotNull
+    private static Tab managePlusTabs1(TabPane _tabPane, VBox node) {
+
+        Tab plusTab = new Tab(" + ", new HBox());
+        plusTab.setClosable(false);
+        _tabPane.getTabs().add(plusTab);
+
+        if (_tabPane.getTabs().size() == 1) {
+            ObservableList<Tab> tabs = _tabPane.getTabs();
+            Tab newTab1 = new Tab("New Tab", node);
+            newTab1.setClosable(true);
+            tabs.add(0, newTab1);
+            _tabPane.getSelectionModel().select(newTab1);
+        }
+
+        return plusTab;
+    }
+
+    private void managePlusTab2(TabPane _sessionTabPane, TabPane _search, Tab _tab, File _file) {
         _sessionTabPane.getSelectionModel().select(_tab);
         _search.getSelectionModel().select(_tab);
         tabsToParameters.put(_tab, "");
