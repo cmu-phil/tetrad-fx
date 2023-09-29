@@ -133,7 +133,7 @@ public class Session {
                                 try {
                                     int maxNumCategories = 5;
                                     DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
-                                            "*", true, maxNumCategories, Delimiter.TAB, !file.getName().contains("Data"));
+                                            "*", true, maxNumCategories, Delimiter.TAB, false);
 
                                     String name = _dataSet.getName();
 

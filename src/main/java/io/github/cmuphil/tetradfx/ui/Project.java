@@ -295,7 +295,7 @@ public class Project {
 
         if (!valenceAdded) {
             Tab valence = new Tab("Variables", new VariablesView(dataSet).getTableView());
-            valence.setClosable(true);
+            valence.setClosable(false);
             this.valence.getTabs().add(valence);
             valenceAdded = true;
         }
@@ -311,7 +311,7 @@ public class Project {
         }
 
         data.getTabs().add(tab);
-        addHandling(name, data, dataTab, dataSetMap, dataDir, tab, prefix);
+        addHandling(name, data, dataTab, dataSetMap, dataDir, tab, prefix, !"Data".equals(name));
     }
 
     /**
@@ -349,7 +349,7 @@ public class Project {
         });
 
         graphs.getTabs().add(tab);
-        addHandling(name, graphs, graphTab, null, graphDir, tab, prefix);
+        addHandling(name, graphs, graphTab, null, graphDir, tab, prefix, !"True Graph".equals(name));
         GraphSaveLoadUtils.saveGraph(graph, new File(graphDir, prefix + ".txt"), false);
     }
 
@@ -388,7 +388,7 @@ public class Project {
             tab.setContent(GraphView.getGraphDisplay(graph));
         }
 
-        addHandling(name, search, searchTab, null, searchDir, tab, prefix);
+        addHandling(name, search, searchTab, null, searchDir, tab, prefix, true);
         setParametersText(tab, parameters, usedParameters);
         managePlusTab2(this.sessionTabPane, this.search, this.searchTab, new File(this.searchDir,
                 name.replace(' ', '_') + ".txt"));
@@ -429,7 +429,7 @@ public class Project {
         }
 
         knowledgeMap.put(tab, knowledge);
-        addHandling(name, this.knowledge, knowledgeTab, knowledgeMap, knowledgeDir, tab, prefix);
+        addHandling(name, this.knowledge, knowledgeTab, knowledgeMap, knowledgeDir, tab, prefix, true);
         managePlusTab2(this.sessionTabPane, this.knowledge, this.knowledgeTab, new File(this.knowledgeDir,
                 name.replace(' ', '_') + ".txt"));
     }
@@ -468,21 +468,21 @@ public class Project {
         }
 
         games.getTabs().add(tab);
-        addHandling(name, games, gamesTab, null, graphDir, tab, prefix);
+        addHandling(name, games, gamesTab, null, graphDir, tab, prefix, true);
         managePlusTab2(this.sessionTabPane, this.games, this.gamesTab, new File(this.gamesDir,
                 name.replace(' ', '_') + ".txt"));
     }
 
 
     private void addHandling(String name, TabPane typeTabPane, Tab typeTab, Map<Tab, Object> typeTabMap,
-                             File typeDir, Tab tab, String prefix) {
+                             File typeDir, Tab tab, String prefix, boolean closable) {
         this.sessionTabPane.getSelectionModel().select(typeTab);
         typeTabPane.getSelectionModel().select(tab);
         tabClosedAction(typeTab, typeTabMap, typeDir, tab, prefix);
         selectIfNonempty(typeTab);
         persistNotes(tab, typeDir, name);
         readNotes(tab, typeDir, name);
-        tab.setClosable(!name.equals("True Graph"));
+        tab.setClosable(closable);
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
         this.search.getSelectionModel().select(tab);
