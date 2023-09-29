@@ -5,6 +5,10 @@ through and make things smoother and more robust. I'm responding
 to reviews. I don't plan to add any new features at the moment.
 Maybe later._
 
+There are a couple of things that seems to me could still be fixed for a first draft if I have time:
+* The order of the tabs is not always the same after the UI is reloaded. These could easily be written to file, so I'll do it.
+* The (requested) Valence tab is not what's intended yet and is not persisted. I may do some more work on that before stopping.
+
 ## Goals of the first draft. (These are not in any particular order.)
 
 * Allow the user to load datasets.
