@@ -102,7 +102,7 @@ the Tetrad lib jar to 7.5.1 once that's released.
        there's no reason not to allow the user to use it (or at least some of it) if they want to, so
        adding parameter editing here might be nice.
 1. Add oracle independence searches for graphs.
-    1 Persist valence tabs.
+    1. Persist valence tabs.
 1. Persist game tabs.
 1. The user may need to increase RAM, as large datasets stored and loaded in memory can take
    up a lot of space. So they need to be told how to do this and maybe given a friendly
