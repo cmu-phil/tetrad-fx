@@ -13,7 +13,10 @@ import edu.pitt.dbmi.data.reader.Delimiter;
 import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
 import java.io.File;
@@ -118,7 +121,7 @@ public class Session {
                     }
 
                     File dataDir = new File(dir, "data");
-                    File searchDir = new File(dir, "search_graphs");
+                    File searchDir = new File(dir, "search");
                     File knowledgeDir = new File(dir, "knowledge");
                     File graphDir = new File(dir, "other_graphs");
 
@@ -154,11 +157,15 @@ public class Session {
                         for (File file : searchFiles) {
                             if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
                                 var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".txt", ""), _graph, true, false, getParameters(), new ArrayList<>());
+                                getSelectedProject().addSearchResult(
+                                        file.getName().replace('_', ' ').replace(".txt",
+                                                ""), _graph, false, getParameters(), new ArrayList<>());
                             } else if (file.getName().endsWith("json")) {
 //                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
                                 var _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addSearchResult(file.getName().replace('_', ' ').replace(".json", ""), _graph, true, false, getParameters(), new ArrayList<>());
+                                getSelectedProject().addSearchResult(
+                                        file.getName().replace('_', ' ').replace(".json",
+                                                ""), _graph , false, getParameters(), new ArrayList<>());
                             }
                         }
                     }
@@ -172,7 +179,7 @@ public class Session {
                                     Knowledge knowledge = SimpleDataLoader.loadKnowledge(file, DelimiterType.WHITESPACE,
                                             "//");
                                     getSelectedProject().addKnowledge(file.getName().replace('_', ' ').replace(".txt", ""),
-                                            knowledge, true, false);
+                                            knowledge, false);
                                 } catch (IOException e) {
                                     Alert alert = new Alert(Alert.AlertType.ERROR);
                                     alert.setTitle("Error Dialog");

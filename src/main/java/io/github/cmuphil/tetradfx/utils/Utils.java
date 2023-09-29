@@ -46,6 +46,8 @@ public class Utils {
                 }
             }
 
+            in1.close();
+
             return sb.toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -59,5 +61,21 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static void removeAllFilesWithPrefix(File dir, String __name) {
+        for (File _file : dir.listFiles()) {
+            if (_file.getName().startsWith(__name)) {
+                if (_file.exists()) {
+                    if (_file.delete()) {
+                        System.out.println("File deleted successfully");
+                    } else {
+                        System.out.println("Failed to delete the file");
+                    }
+                } else {
+                    System.out.println("File does not exist");
+                }
+            }
+        }
     }
 }

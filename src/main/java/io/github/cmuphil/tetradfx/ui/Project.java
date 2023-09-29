@@ -30,7 +30,6 @@ import java.util.*;
 public class Project {
 
     private final Tab dataTab;
-    private final Tab valenceTab;
     private final Tab graphTab;
     private final Tab searchTab;
     private final Tab knowledgeTab;
@@ -53,6 +52,7 @@ public class Project {
     private final File graphDir;
     private final File searchDir;
     private final File knowledgeDir;
+    private final File gamesDir;
 
     private final Map<Tab, String> tabsToParameters = new HashMap<>();
     private final Map<Tab, String> tabsToNotes = new HashMap<>();
@@ -60,10 +60,8 @@ public class Project {
     private final Map<Tab, String> tabsToParametersPrompts = new HashMap<>();
     private final Map<Tab, String> tabsToNotesPrompts = new HashMap<>();
 
-    private final Map<Tab, DataSet> dataSetMap = new HashMap<>();
-    private final Map<Tab, Knowledge> knowledgeMap = new HashMap<>();
-    private Graph constructedGraph = null;
-    private DataSet constructedDataSet = null;
+    private final Map<Tab, Object> dataSetMap = new HashMap<>();
+    private final Map<Tab, Object> knowledgeMap = new HashMap<>();
     private boolean valenceAdded = false;
 
     /**
@@ -102,7 +100,7 @@ public class Project {
             }
         }
 
-        valenceTab = new Tab("Valence", valence);
+        Tab valenceTab = new Tab("Valence", valence);
 
         searchTab = new Tab("Search", search);
 
@@ -140,8 +138,7 @@ public class Project {
             contextMenu.show(button, event.getScreenX(), event.getScreenY());
         });
 
-
-        searchDir = new File(dir, "search_graphs");
+        searchDir = new File(dir, "search");
 
         if (!searchDir.exists()) {
             boolean made = searchDir.mkdir();
@@ -193,7 +190,7 @@ public class Project {
             List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
             Knowledge knowledge1 = new Knowledge(variableNames);
             Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
-                    true, true);
+                    true);
         });
 
         graphTab = new Tab("Other Graphs", graphs);
@@ -208,18 +205,17 @@ public class Project {
         }
 
         gamesTab = new Tab("Games", games);
+        gamesDir = new File("games");
 
         notesArea.setWrapText(true);
         parametersArea.setWrapText(true);
 
         if (dataSet != null) {
-            constructedDataSet = dataSet;
             addDataSet(dataName, dataSet, false);
         }
 
         if (graph != null) {
-            constructedGraph = graph;
-            addGraph(graphName, graph, true);
+            addGraph(graphName, graph, false);
         }
 
         setUpTabPane(sessionTabPane, dataTab, data);
@@ -231,7 +227,6 @@ public class Project {
 
         setParametersAndNotesText();
 
-        displayNonemptyTabsOnly();
         selectIfNonempty(dataTab);
     }
 
@@ -278,17 +273,20 @@ public class Project {
             name = Utils.nextName(name, this.getDataNames());
         }
 
-        TableView<DataView.DataRow> tableView = DataView.getTableView(dataSet);
-        Tab tab = new Tab(name, tableView);
+        String prefix = name.replace(' ', '_');
+
+        TableView<DataView.DataRow> editor = DataView.getTableView(dataSet);
+        Tab tab = new Tab(name, editor);
         dataSetMap.put(tab, dataSet);
-        tab.setClosable(!dataSet.equals(constructedDataSet));
-        this.data.getTabs().add(tab);
-        this.sessionTabPane.getSelectionModel().select(dataTab);
-        this.data.getSelectionModel().select(tab);
-        tabsToParameters.put(tab, "");
-        tabsToNotes.put(tab, "");
-        tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-        File file = new File(dataDir, name.replace(' ', '_') + ".txt");
+
+        if (!valenceAdded) {
+            Tab valence = new Tab("Variables", new VariablesView(dataSet).getTableView());
+            valence.setClosable(true);
+            this.valence.getTabs().add(valence);
+            valenceAdded = true;
+        }
+
+        File file = new File(dataDir, prefix + ".txt");
 
         try {
             try (PrintWriter writer = new PrintWriter(file)) {
@@ -298,32 +296,7 @@ public class Project {
             System.out.println("Could not write data set to file");
         }
 
-        if (!valenceAdded) {
-            Tab valence = new Tab("Variables", new VariablesView(dataSet).getTableView());
-            valence.setClosable(true);
-            this.valence.getTabs().add(valence);
-            valenceAdded = true;
-        }
-
-        tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly();
-
-            if (file.exists()) {
-                if (file.delete()) {
-                    System.out.println("File deleted successfully");
-                } else {
-                    System.out.println("Failed to delete the file");
-                }
-            } else {
-                System.out.println("File does not exist");
-            }
-        });
-
-        readNotes(tab, dataDir, name);
-        persistNotes(tab, dataDir, name);
-
-        displayNonemptyTabsOnly();
-        selectIfNonempty(dataTab);
+        addHandling(name, data, dataTab, dataSetMap, dataDir, tab, prefix);
     }
 
     /**
@@ -342,22 +315,15 @@ public class Project {
             name = Utils.nextName(name, this.getGraphNames());
         }
 
+        String prefix = name.replace(' ', '_');
+
         Tab tab = new Tab(name, GraphView.getGraphDisplay(graph));
-        tab.setClosable(!graph.equals(constructedGraph));
-        this.graphs.getTabs().add(tab);
-        this.sessionTabPane.getSelectionModel().select(graphTab);
-        this.graphs.getSelectionModel().select(tab);
-        tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-        var _name = name.replace(' ', '_') + ".txt";
-        var file = new File(graphDir, _name);
-        GraphSaveLoadUtils.saveGraph(graph, file, false);
 
         tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly();
             selectIfNonempty(graphTab);
 
-            if (file.exists()) {
-                if (file.delete()) {
+            if (new File(graphDir, prefix + ".txt").exists()) {
+                if (new File(graphDir, prefix + ".txt").delete()) {
                     System.out.println("File deleted successfully");
                 } else {
                     System.out.println("Failed to delete the file");
@@ -367,24 +333,20 @@ public class Project {
             }
         });
 
-        readNotes(tab, graphDir, name);
-        persistNotes(tab, graphDir, name);
-
-        displayNonemptyTabsOnly();
-        selectIfNonempty(graphTab);
+        addHandling(name, this.graphs, graphTab, null, graphDir, tab, prefix);
+        GraphSaveLoadUtils.saveGraph(graph, new File(graphDir, prefix + ".txt"), false);
     }
 
     /**
      * Adds a search result to the search tab.
      *
-     * @param name           The name of the search result.
+     * @param name        The name of the tab.
      * @param graph          The graph.
-     * @param closable       Whether the tab should be closable.
      * @param nextName       Whether to append a number to the name if it already exists.
      * @param parameters     The parameters used to generate the search result.
      * @param usedParameters The parameters that were actually used to generate the search result.
      */
-    public void addSearchResult(String name, Graph graph, boolean closable, boolean nextName, Parameters parameters, List<String> usedParameters) {
+    public void addSearchResult(String name, Graph graph, boolean nextName, Parameters parameters, List<String> usedParameters) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -393,7 +355,11 @@ public class Project {
             name = Utils.nextName(name, this.getSearchNames());
         }
 
-        GraphSaveLoadUtils.saveGraph(graph, new File(this.searchDir, name.replace(' ', '_') + ".txt"),
+        String prefix = name.replace(' ', '_');
+
+        this.sessionTabPane.getSelectionModel().select(dataTab);
+
+        GraphSaveLoadUtils.saveGraph(graph, new File(this.searchDir, prefix + ".txt"),
                 false);
 
         Tab tab = Utils.getTabByName(search, "New Tab");
@@ -401,48 +367,18 @@ public class Project {
         if (tab == null) {
             tab = new Tab(name, GraphView.getGraphDisplay(graph));
             this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
-            tab.setClosable(closable);
         } else {
             tab.setText(name);
             tab.setContent(GraphView.getGraphDisplay(graph));
-            tab.setClosable(closable);
         }
 
+        addHandling(name, search, searchTab, null, searchDir, tab, prefix);
+        setParametersText(tab, parameters, usedParameters);
         managePlusTab(this.sessionTabPane, this.search, this.searchTab, new File(this.searchDir,
                 name.replace(' ', '_') + ".txt"));
-
-        setParametersText(tab, parameters, usedParameters);
-        readNotes(tab, this.searchDir, name);
-        persistNotes(tab, this.searchDir, name);
-
-        displayNonemptyTabsOnly();
-        selectIfNonempty(this.searchTab);
     }
 
-    private void managePlusTab(TabPane _sessionTabPane, TabPane _search, Tab _tab, File _file) {
-        _sessionTabPane.getSelectionModel().select(_tab);
-        _search.getSelectionModel().select(_tab);
-        tabsToParameters.put(_tab, "");
-        tabsToNotes.put(_tab, "");
-        _tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-
-        _tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly();
-            selectIfNonempty(_tab);
-
-            if (_file.exists()) {
-                if (_file.delete()) {
-                    System.out.println("File deleted successfully");
-                } else {
-                    System.out.println("Failed to delete the file");
-                }
-            } else {
-                System.out.println("File does not exist");
-            }
-        });
-    }
-
-    public void addKnowledge(String name, Knowledge knowledge, boolean closable, boolean nextName) {
+    public void addKnowledge(String name, Knowledge knowledge, boolean nextName) {
         if (name == null) {
             throw new NullPointerException("Name cannot be null");
         }
@@ -451,20 +387,10 @@ public class Project {
             name = Utils.nextName(name, this.getKnowledgeNames());
         }
 
-        File path = new File(knowledgeDir, name.replace(' ', '_') + ".txt");
+        String prefix = name.replace(' ', '_');
+        var file = new File(knowledgeDir, prefix + ".txt");
 
-        Node editor = new RegexFilter(knowledge, path).getEditor();
-        Tab tab = new Tab(name, editor);
-        knowledgeMap.put(tab, knowledge);
-        tab.setClosable(closable);
-//        this.knowledge.getTabs().add(tab);
-        this.sessionTabPane.getSelectionModel().select(knowledgeTab);
-        this.knowledge.getSelectionModel().select(tab);
-        tabsToParameters.put(tab, "");
-        tabsToNotes.put(tab, "");
-        tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-        var _name = name.replace(' ', '_') + ".txt";
-        var file = new File(knowledgeDir, _name);
+        Node editor = new RegexFilter(knowledge, prefix).getEditor();
 
         try {
             DataWriter.saveKnowledge(knowledge, new FileWriter(file));
@@ -476,43 +402,20 @@ public class Project {
             alert.showAndWait();
         }
 
-        tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly();
-            selectIfNonempty(knowledgeTab);
+        Tab tab = Utils.getTabByName(this.knowledge, "New Tab");
 
-            if (file.exists()) {
-                if (file.delete()) {
-                    System.out.println("File deleted successfully");
-                } else {
-                    System.out.println("Failed to delete the file");
-                }
-            } else {
-                System.out.println("File does not exist");
-            }
-        });
-
-        Tab _tab = Utils.getTabByName(this.knowledge, "New Tab");
-
-        if (_tab == null) {
-            _tab = new Tab(name, new RegexFilter(knowledge, path).getEditor());
-            this.knowledge.getTabs().add(this.knowledge.getTabs().size() - 1, _tab);
-            _tab.setClosable(closable);
-            knowledgeMap.put(_tab, knowledge);
+        if (tab == null) {
+            tab = new Tab(name, editor);
+            this.knowledge.getTabs().add(this.knowledge.getTabs().size() - 1, tab);
         } else {
-            _tab.setText(name);
-            _tab.setContent(editor);
-            _tab.setClosable(closable);
-            knowledgeMap.put(_tab, knowledge);
+            tab.setText(name);
+            tab.setContent(editor);
         }
 
+        knowledgeMap.put(tab, knowledge);
+        addHandling(name, this.knowledge, knowledgeTab, knowledgeMap, knowledgeDir, tab, prefix);
         managePlusTab(this.sessionTabPane, this.knowledge, this.knowledgeTab, new File(this.knowledgeDir,
                 name.replace(' ', '_') + ".txt"));
-
-        readNotes(_tab, knowledgeDir, name);
-        persistNotes(_tab, knowledgeDir, name);
-
-        displayNonemptyTabsOnly();
-        selectIfNonempty(knowledgeTab);
     }
 
     /**
@@ -531,25 +434,43 @@ public class Project {
             name = Utils.nextName(name, this.getGameNames());
         }
 
+        String prefix = name.replace(' ', '_');
+
         Tab tab = new Tab(name, pane);
-        this.games.getTabs().add(tab);
-        this.sessionTabPane.getSelectionModel().select(gamesTab);
-        this.games.getSelectionModel().select(tab);
+        addHandling(name, this.games, gamesTab, null, gamesDir, tab, prefix);
+    }
+
+    private void addHandling(String name, TabPane typeTabPane, Tab typeTab, Map<Tab, Object> typeTabMap,
+                             File typeDir, Tab tab, String prefix) {
+        typeTabPane.getTabs().add(tab);
+        this.sessionTabPane.getSelectionModel().select(typeTab);
+        typeTabPane.getSelectionModel().select(tab);
+        tabClosedAction(typeTab, typeTabMap, typeDir, tab, prefix);
+        selectIfNonempty(typeTab);
+        persistNotes(tab, typeDir, name);
+        readNotes(tab, typeDir, name);
+        tab.setClosable(!name.equals("True Graph"));
         tabsToParameters.put(tab, "");
         tabsToNotes.put(tab, "");
+        this.search.getSelectionModel().select(tab);
         tab.setOnSelectionChanged(event -> setParametersAndNotesText());
-
-        tab.setOnClosed(event -> {
-            displayNonemptyTabsOnly();
-            selectIfNonempty(gamesTab);
-        });
-
-        readNotes(tab, dataDir, name);
-        persistNotes(tab, dataDir, name);
-
-        displayNonemptyTabsOnly();
-        selectIfNonempty(gamesTab);
+        readNotes(tab, typeDir, name);
+        persistNotes(tab, typeDir, name);
     }
+
+    private void tabClosedAction(Tab typeTab, Map<Tab, Object> typeTabMap, File typeDir, Tab thisTab, String prefix) {
+        thisTab.setOnClosed(event -> {
+            if (typeTabMap != null) {
+                typeTabMap.remove(thisTab);
+            }
+
+            tabsToNotes.remove(thisTab);
+            tabsToParameters.remove(thisTab);
+            Utils.removeAllFilesWithPrefix(typeDir, prefix);
+            selectIfNonempty(typeTab);
+        });
+    }
+
 
     /**
      * Returns the names of the datasets in this project.
@@ -564,6 +485,28 @@ public class Project {
         }
 
         return names;
+    }
+
+    private void managePlusTab(TabPane _sessionTabPane, TabPane _search, Tab _tab, File _file) {
+        _sessionTabPane.getSelectionModel().select(_tab);
+        _search.getSelectionModel().select(_tab);
+        tabsToParameters.put(_tab, "");
+        tabsToNotes.put(_tab, "");
+        _tab.setOnSelectionChanged(event -> setParametersAndNotesText());
+
+        _tab.setOnClosed(event -> {
+            selectIfNonempty(_tab);
+
+            if (_file.exists()) {
+                if (_file.delete()) {
+                    System.out.println("File deleted successfully");
+                } else {
+                    System.out.println("Failed to delete the file");
+                }
+            } else {
+                System.out.println("File does not exist");
+            }
+        });
     }
 
     private void readNotes(Tab tab, File dir, String name) {
@@ -707,7 +650,7 @@ public class Project {
     public DataSet getSelectedDataSet() {
         Tab selected = data.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            return dataSetMap.get(selected);
+            return (DataSet) dataSetMap.get(selected);
         }
 
         return null;
@@ -721,7 +664,7 @@ public class Project {
     public Knowledge getSelectedKnowledge() {
         Tab selected = knowledge.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            return knowledgeMap.get(selected);
+            return (Knowledge) knowledgeMap.get(selected);
         }
 
         return null;
@@ -806,26 +749,6 @@ public class Project {
         _dataTab.setClosable(false);
         _dataTab.setOnSelectionChanged(event -> setParametersAndNotesText(_data));
         _data.setSide(Side.TOP);
-    }
-
-    private void displayNonemptyTabsOnly() {
-//        sessionTabPane.getTabs().clear();
-//
-//        List<Tab> tabs = new ArrayList<>();
-//        tabs.add(dataTab);
-//        tabs.add(valenceTab);
-//        tabs.add(searchTab);
-//        tabs.add(knowledgeTab);
-//        tabs.add(graphTab);
-//        tabs.add(gamesTab);
-//
-//        for (Tab tab : tabs) {
-//            if (tab.getContent() instanceof TabPane tabPane) {
-//                if (!tabPane.getTabs().isEmpty()) {
-//                    sessionTabPane.getTabs().add(tab);
-//                }
-//            }
-//        }
     }
 
     private void selectIfNonempty(Tab tab) {

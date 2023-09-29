@@ -315,7 +315,7 @@ public class TetradFxMain {
             List<String> variableNames = Session.getInstance().getSelectedProject().getSelectedDataSet().getVariableNames();
             Knowledge knowledge1 = new Knowledge(variableNames);
             Session.getInstance().getSelectedProject().addKnowledge("Knowledge", knowledge1,
-                    true, true);
+                    true);
         });
         searchMenu.getItems().addAll(new SeparatorMenuItem());
         search.getItems().addAll(knowledge);
@@ -494,7 +494,7 @@ public class TetradFxMain {
         Result result = getSimulation(new Parameters(), type);
         String newName = Utils.nextName("Simulation", Session.getInstance().getProjectNames());
         Session.getInstance().add(result.dataSet(), result.graph(), newName,
-                "simulated_data", "true_graph");
+                "Data", "True Graph");
     }
 
     /**
