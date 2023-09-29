@@ -1,6 +1,6 @@
 ## This package contains the classes that make up the TetradFX UI.
 
-_The first draft is done now, 2023-9-25, but I want to go 
+_The first draft is basically done now, 2023-9-29, but I want to go 
 through and make things smoother and more robust. I'm responding
 to reviews. I don't plan to add any new features at the moment.
 Maybe later._
