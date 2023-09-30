@@ -64,6 +64,9 @@ When searches are done, parameter settings are saved to the Parameters
 tab as well, and can be further annotation by the user. These are also
 persisted.
 
+If we continue with the project, we will turn these and other notes into a
+ReadTheDocs.
+
 # Install
 
 It's easy to install this if you're familiar with Java. You need a fairly
