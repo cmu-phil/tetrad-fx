@@ -55,3 +55,6 @@ app in the usual way.
 These instructions have been tested on Intel and M1-Max Macs but not other platforms yet.
 On a Mac, it makes a DMG installer file.
 
+If we continue with the project, we will make downloadable signed installer files available for various
+platforms.
+
