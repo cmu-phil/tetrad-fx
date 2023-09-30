@@ -22,12 +22,42 @@ We are keeping a running overview of the work here:
 
 https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/tetradfx/ui/ReadMe.md
 
-# Picture
+# Some Documentation
 
 Here is a screenshot of the current state of the project. I guess I could have done the borders better.
-The little green G is Grammarly correcting my text, sorry.
+The little green G is Grammarly correcting my text, sorry. Though honestly it is kind of nice to have
+available.
 
 ![Picture of the current state of the project.](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)
+
+Currently the idea is you start a project by loading a dataset or making one of a stock set of simulations.
+The dataset currently cannot have discrete variables with more than 3 categories. The simulation function will
+be elaborated eventually if we continue the project.
+
+The Valence tab contains some information about variable and eventually will allow the user to enter
+information about each varaible. Currently this is not persisted.
+
+The search tab is limited to a restricted set of search algroithms in Tetrad; thsi will be 
+expanded if we continue to allow all search algrothms.
+
+The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
+from the variables in dataset using regex filtering. This needs to be expanded and possibly
+another type of knowledge editor added as well for those who find regex difficult.
+
+The other graphs will contain the true graph if this is a simulation.
+
+Datasets can be transformed using right click context menus, as can graphs.
+
+We plan to implement a number of games people can play to learn the concepts. Currently
+there is only one game, to help users learn how permutation searches work. Have fun
+with it. If you discover a new permutation algorithm let us know. (We also plan a
+constraint-based bame and a d-separation game, if we continue.)
+
+Saving and loading is just zipping or unzipping the hidden project directory.
+All dataset, knowledge files, and graph are stored in text files for which
+parsers can easily be written if not already available. To get access to these,
+simply save the session and unzip it elsewhere. It has a ".tfx" suffix just so
+you know it was generated from Tetrad-FX.
 
 # Install
 
