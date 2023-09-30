@@ -24,7 +24,7 @@ https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/
 
 # Some Documentation
 
-Here is a screenshot of the current state of the project. I guess I could have done the borders better.
+Here is a screenshot of the first draft of the project. I guess I could have done the borders better.
 The little green G is Grammarly correcting my text, sorry. Though honestly it is kind of nice to have
 that available.
 
