@@ -1,21 +1,14 @@
 ## This package contains the classes that make up the TetradFX UI.
 
-_The first draft is basically done now, 2023-9-29, but I want to go 
-through and make things smoother and more robust. I'm responding
-to reviews. I don't plan to add any new features at the moment.
-Maybe later._
+The first draft is done now, 2023-9-30. I don't plan to add any new features 
+until I have time and until there's concensus that I should continue with the
+project. There are lots of features that could sensibly be added of course.
+A partial list is given below.
 
-There are a couple of things that seems to me could still be fixed for a first draft if 
-I have time:
-* The order of the tabs is not always the same after the UI is reloaded. These could easily
-written to file, so I'll do it.
-    * This is fixed, though I should probably do the same for the project tree.
-* The (requested) Valence tab is not what's intended yet and is not persisted. I may do some
-more work on that before stopping.
-* There are a number of requests I've made to myself to adjustments to make in the underlying
-Tetrad library. These are all in the for751lib directory. I'll be updating the Tetrad lib
-code in the next two weeks, so I'll incorporate these changes and update the version of
-the Tetrad lib jar to 7.5.1 once that's released.
+Code in the for751lib package is meant to be moved in the Tetrad libraray 
+and published with version 7.5.1. Once this is done, the version of Tetrad
+used in the app will be increased to 7.5.1 and this code will be deleted
+(with adjustments made in the code to point to the Tetrad library).
 
 ## Goals of the first draft. (These are not in any particular order.)
 
