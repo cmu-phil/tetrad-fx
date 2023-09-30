@@ -4,6 +4,11 @@ The first draft is done now, 2023-9-30. I don't plan to add any new features
 until I have time and until there's concensus that I should continue with the
 project. There are lots of features that could sensibly be added of course.
 
+Code in the for751lib package is meant to be moved in the Tetrad libraray 
+and published with version 7.5.1. Once this is done, the version of Tetrad
+used in the app will be increased to 7.5.1 and this code will be deleted
+(with adjustments made in the code to point to the Tetrad library.)
+
 ## Goals of the first draft. (These are not in any particular order.)
 
 * Allow the user to load datasets.
