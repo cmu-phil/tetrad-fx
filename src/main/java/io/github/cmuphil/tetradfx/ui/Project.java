@@ -108,7 +108,7 @@ public class Project {
         Button buttonSearch = new Button("New Search");
         nodeSearch.getChildren().add(buttonSearch);
 
-        Tab plusTab = managePlusTabs1(search, nodeSearch);
+        Tab plusTab = managePlusTab1(search, nodeSearch);
 
         search.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == plusTab) {
@@ -163,7 +163,7 @@ public class Project {
         Button buttonKnowledge = new Button("New Knowledge");
         nodeKnowledge.getChildren().add(buttonKnowledge);
 
-        Tab plusTabKnowledge = managePlusTabs1(knowledge, nodeKnowledge);
+        Tab plusTabKnowledge = managePlusTab1(knowledge, nodeKnowledge);
 
         knowledge.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == plusTabKnowledge) {
@@ -210,7 +210,7 @@ public class Project {
         Button buttonGames = new Button("New Game");
         nodeGames.getChildren().add(buttonGames);
 
-        Tab plusTabGames = managePlusTabs1(games, nodeGames);
+        Tab plusTabGames = managePlusTab1(games, nodeGames);
 
         games.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab == plusTabGames) {
@@ -384,7 +384,6 @@ public class Project {
         if (tab == null) {
             tab = new Tab(name, GraphView.getGraphDisplay(graph));
             search.getTabs().add(search.getTabs().size() - 1, tab);
-//            addTab(this.search, tab, searchDir, true);
         } else {
             tab.setText(name);
             tab.setContent(GraphView.getGraphDisplay(graph));
@@ -461,7 +460,7 @@ public class Project {
 //        GraphSaveLoadUtils.saveGraph(graph, new File(this.gameDir, prefix + ".txt"),
 //                false);
 
-        Tab tab = Utils.getTabByName(search, "New Tab");
+        Tab tab = Utils.getTabByName(games, "New Tab");
 
         if (tab == null) {
             tab = new Tab(name, pane);
@@ -469,7 +468,7 @@ public class Project {
         } else {
             tab.setText(name);
             tab.setContent(pane);
-            writeTabOrder(games, gamesDir);
+            writeTabOrder(this.games, knowledgeDir);
         }
 
         addHandling(name, games, gamesTab, null, graphDir, tab, prefix, true);
@@ -557,7 +556,7 @@ public class Project {
     }
 
     @NotNull
-    private static Tab managePlusTabs1(TabPane _tabPane, VBox node) {
+    private static Tab managePlusTab1(TabPane _tabPane, VBox node) {
 
         Tab plusTab = new Tab(" + ", new HBox());
         plusTab.setClosable(false);
