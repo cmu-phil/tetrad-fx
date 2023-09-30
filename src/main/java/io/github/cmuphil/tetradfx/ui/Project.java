@@ -468,7 +468,7 @@ public class Project {
         } else {
             tab.setText(name);
             tab.setContent(pane);
-            writeTabOrder(this.games, knowledgeDir);
+            writeTabOrder(this.games, gamesDir);
         }
 
         addHandling(name, games, gamesTab, null, graphDir, tab, prefix, true);
