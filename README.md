@@ -67,7 +67,8 @@ If we continue with the project, we will turn these and other notes into a
 ReadTheDocs. Also, if we continue with the project we will add an Insignts
 tab to help the user understand the results (compare graphs, Markov checker,
 etc.) and a Models tab to let the user to estimations (linear and
-multinomial) of data for given DAG models.
+multinomial) of data for given DAG models. All of this is functionality
+that is currently in the Tetrad library; we just have to build UIs for it.
 
 # Install
 
