@@ -71,8 +71,8 @@ multinomial) of data for given DAG models.
 
 # Install
 
-It's easy to install this if you're familiar with Java. You need a fairly
-recent version version of Java to run the JavaFX, but if you have one installed,
+It's easy to install this if you're familiar with Java, and it's easily cross-platform. 
+You need a fairly recent version version of Java to run the JavaFX, but if you have one installed,
 you simply need to clone the project and run the app.
 
 To clone it, you need Git installed. Then you type:
