@@ -26,7 +26,7 @@ https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/
 
 Here is a screenshot of the current state of the project. I guess I could have done the borders better.
 The little green G is Grammarly correcting my text, sorry. Though honestly it is kind of nice to have
-available.
+that available.
 
 ![Picture of the current state of the project.](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)
 
