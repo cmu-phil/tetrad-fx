@@ -24,7 +24,9 @@ https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/
 
 # Picture
 
-Here is a ![picture of the current state of the project](https://example.com/myimage.pn](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)g).
+Here is a picture of the current state of the project. 
+
+![Picture of the current state of the project.](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)
 
 # Install
 
