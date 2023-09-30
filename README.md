@@ -59,6 +59,11 @@ parsers can easily be written if not already available. To get access to these,
 simply save the session and unzip it elsewhere. It has a ".tfx" suffix just so
 you know it was generated from Tetrad-FX.
 
+The user can take notes on any component, and these notes are persisted.
+When searches are done, parameter settings are saved to the Parameters
+tab as well, and can be further annotation by the user. These are also
+persisted.
+
 # Install
 
 It's easy to install this if you're familiar with Java. You need a fairly
