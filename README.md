@@ -22,6 +22,11 @@ We are keeping a running overview of the work here:
 
 https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/tetradfx/ui/ReadMe.md
 
+# Picture
+
+![Here is a picture of the current state of the project][(https://example.com/myimage.pn](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)g)
+
+
 # Install
 
 It's easy to install this if you're familiar with Java. You need a fairly
