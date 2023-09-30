@@ -50,7 +50,7 @@ Datasets can be transformed using right click context menus, as can graphs.
 We plan to implement a number of games people can play to learn the concepts. Currently
 there is only one game, to help users learn how permutation searches work. Have fun
 with it. If you discover a new permutation algorithm let us know. (We also plan a
-constraint-based bame and a d-separation game, if we continue.)
+constraint-based game and a d-separation game, if we continue.)
 
 Saving and loading is just zipping or unzipping the hidden project directory.
 All dataset, knowledge files, and graph are stored in text files for which
