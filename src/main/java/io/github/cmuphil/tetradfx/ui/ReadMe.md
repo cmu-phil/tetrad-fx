@@ -9,6 +9,7 @@ There are a couple of things that seems to me could still be fixed for a first d
 I have time:
 * The order of the tabs is not always the same after the UI is reloaded. These could easily
 be written to file, so I'll do it.
+  This is fix, though I should probably do the same for the project tree.
 * The (requested) Valence tab is not what's intended yet and is not persisted. I may do some
 more work on that before stopping.
 * There are a number of requests I've made to myself to adjustments to make in the underlying
