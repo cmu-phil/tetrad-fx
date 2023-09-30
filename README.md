@@ -9,7 +9,7 @@ of what's available in JavaFX.
 
 A first draft is done for this a few days ahead of schedule, so as
 time permits for the next few days, I will be going through and making
-things smoother and more robust.Commenbts re swelcome.
+things smoother and more robust. Comments are welcome.
 
 The idea we have been pursuing is to shift the focus of
 Tetrad away from simulation studies and more toward analysis of particular 
