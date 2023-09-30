@@ -3,6 +3,7 @@
 The first draft is done now, 2023-9-30. I don't plan to add any new features 
 until I have time and until there's concensus that I should continue with the
 project. There are lots of features that could sensibly be added of course.
+A partial list is given below.
 
 Code in the for751lib package is meant to be moved in the Tetrad libraray 
 and published with version 7.5.1. Once this is done, the version of Tetrad
