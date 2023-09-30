@@ -189,7 +189,7 @@ public class Project {
         buttonKnowledge.setOnAction(e -> {
             List<String> variableNames = getSelectedDataSet().getVariableNames();
             Knowledge knowledge1 = new Knowledge(variableNames);
-            addKnowledge("Knowledge", knowledge1,true);
+            addKnowledge("Knowledge", knowledge1, true);
         });
 
         graphTab = new Tab("Other Graphs", graphs);
@@ -310,7 +310,7 @@ public class Project {
             System.out.println("Could not write data set to file");
         }
 
-        data.getTabs().add(tab);
+        addTab(this.data, tab, dataDir, false);
         addHandling(name, data, dataTab, dataSetMap, dataDir, tab, prefix, !"Data".equals(name));
     }
 
@@ -348,7 +348,8 @@ public class Project {
             }
         });
 
-        graphs.getTabs().add(tab);
+        addTab(this.graphs, tab,graphDir, false);
+//        graphs.getTabs().add(tab);
         addHandling(name, graphs, graphTab, null, graphDir, tab, prefix, !"True Graph".equals(name));
         GraphSaveLoadUtils.saveGraph(graph, new File(graphDir, prefix + ".txt"), false);
     }
@@ -356,7 +357,7 @@ public class Project {
     /**
      * Adds a search result to the search tab.
      *
-     * @param name        The name of the tab.
+     * @param name           The name of the tab.
      * @param graph          The graph.
      * @param nextName       Whether to append a number to the name if it already exists.
      * @param parameters     The parameters used to generate the search result.
@@ -382,10 +383,12 @@ public class Project {
 
         if (tab == null) {
             tab = new Tab(name, GraphView.getGraphDisplay(graph));
-            this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+            search.getTabs().add(search.getTabs().size() - 1, tab);
+//            addTab(this.search, tab, searchDir, true);
         } else {
             tab.setText(name);
             tab.setContent(GraphView.getGraphDisplay(graph));
+            writeTabOrder(search, searchDir);
         }
 
         addHandling(name, search, searchTab, null, searchDir, tab, prefix, true);
@@ -406,7 +409,7 @@ public class Project {
         String prefix = name.replace(' ', '_');
         var file = new File(knowledgeDir, prefix + ".txt");
 
-        Node editor = new RegexFilter(knowledge, prefix).getEditor();
+        Node editor = new RegexFilter(knowledge, file).getEditor();
 
         try {
             DataWriter.saveKnowledge(knowledge, new FileWriter(file));
@@ -422,10 +425,11 @@ public class Project {
 
         if (tab == null) {
             tab = new Tab(name, editor);
-            this.knowledge.getTabs().add(this.knowledge.getTabs().size() - 1, tab);
+            addTab(this.knowledge, tab, knowledgeDir, true);
         } else {
             tab.setText(name);
             tab.setContent(editor);
+            writeTabOrder(this.knowledge, knowledgeDir);
         }
 
         knowledgeMap.put(tab, knowledge);
@@ -454,17 +458,18 @@ public class Project {
 
         this.sessionTabPane.getSelectionModel().select(gamesTab);
 
-//        GraphSaveLoadUtils.saveGraph(graph, new File(this.searchDir, prefix + ".txt"),
+//        GraphSaveLoadUtils.saveGraph(graph, new File(this.gameDir, prefix + ".txt"),
 //                false);
 
         Tab tab = Utils.getTabByName(search, "New Tab");
 
         if (tab == null) {
             tab = new Tab(name, pane);
-            this.games.getTabs().add(this.games.getTabs().size() - 1, tab);
+            addTab(this.games, tab, gamesDir, true);
         } else {
             tab.setText(name);
             tab.setContent(pane);
+            writeTabOrder(games, gamesDir);
         }
 
         addHandling(name, games, gamesTab, null, graphDir, tab, prefix, true);
@@ -472,12 +477,40 @@ public class Project {
                 name.replace(' ', '_') + ".txt"));
     }
 
+    private static void addTab(TabPane typeTabPane, Tab tab, File typeDir, boolean plugTabConfighuration) {
+        if (plugTabConfighuration) {
+            typeTabPane.getTabs().add(typeTabPane.getTabs().size() - 1, tab);
+        } else {
+            typeTabPane.getTabs().add(tab);
+        }
+
+        // Need to write out the order of the tabs to a file.
+        // This is so that the tabs can be restored in the same order
+        writeTabOrder(typeTabPane, typeDir);
+    }
+
+    private static void writeTabOrder(TabPane typeTabPane, File typeDir) {
+        try {
+            File file = new File(typeDir, "taborder.txt");
+            FileWriter fileWriter = new FileWriter(file);
+
+            for (Tab tab1 : typeTabPane.getTabs()) {
+                if (!tab1.getText().equals(" + ")) {
+                    fileWriter.write(tab1.getText() + "\n");
+                }
+            }
+
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private void addHandling(String name, TabPane typeTabPane, Tab typeTab, Map<Tab, Object> typeTabMap,
                              File typeDir, Tab tab, String prefix, boolean closable) {
         this.sessionTabPane.getSelectionModel().select(typeTab);
         typeTabPane.getSelectionModel().select(tab);
-        tabClosedAction(typeTab, typeTabMap, typeDir, tab, prefix);
+        tabClosedAction(typeTabPane, typeTab, typeTabMap, typeDir, tab, prefix);
         selectIfNonempty(typeTab);
         persistNotes(tab, typeDir, name);
         readNotes(tab, typeDir, name);
@@ -490,7 +523,8 @@ public class Project {
         persistNotes(tab, typeDir, name);
     }
 
-    private void tabClosedAction(Tab typeTab, Map<Tab, Object> typeTabMap, File typeDir, Tab thisTab, String prefix) {
+    private void tabClosedAction(TabPane typeTabPane, Tab typeTab, Map<Tab, Object> typeTabMap, File typeDir, Tab thisTab,
+                                 String prefix) {
         thisTab.setOnClosed(event -> {
             if (typeTabMap != null) {
                 typeTabMap.remove(thisTab);
@@ -500,9 +534,12 @@ public class Project {
             tabsToParameters.remove(thisTab);
             Utils.removeAllFilesWithPrefix(typeDir, prefix);
             selectIfNonempty(typeTab);
+
+            // Need to write out the order of the tabs to a file.
+            // This is so that the tabs can be restored in the same order
+            writeTabOrder(typeTabPane, typeDir);
         });
     }
-
 
     /**
      * Returns the names of the datasets in this project.

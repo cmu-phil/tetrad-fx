@@ -32,7 +32,7 @@ public class RegexFilter {
     private final TextArea unmatchedVarsArea = new TextArea();
     //    private final Map<Integer, String> rememberedRegexes = new HashMap<>();
     private final Knowledge knowledge;
-    private final String prefix;
+    private final File path;
     private final SavedRegexesInfo savedRegexesInfo;
 
     /**
@@ -40,10 +40,10 @@ public class RegexFilter {
      *
      * @param knowledge The Knowledge object to edit.
      */
-    public RegexFilter(Knowledge knowledge, String prefix) {
+    public RegexFilter(Knowledge knowledge, File path) {
         this.knowledge = knowledge;
-        this.prefix = prefix;
-        File file = new File(prefix + ".regexes" + ".json");
+        this.path = path;
+        File file = new File(path.toString() + ".regexes" + ".json");
 
         if (file.exists()) {
             savedRegexesInfo = (SavedRegexesInfo) ChangedStuffINeed.javaFromJson(file, RegexFilter.SavedRegexesInfo.class);
@@ -257,11 +257,6 @@ public class RegexFilter {
         }
 
         knowledge.clear();
-
-        for (String var : variableNames) {
-            knowledge.addVariable(var);
-        }
-
         int j = -1;
 
         for (TextArea displayArea : displayAreas) {
@@ -275,10 +270,10 @@ public class RegexFilter {
         System.out.println("knowledge: " + knowledge);
 
         try {
-            DataWriter.saveKnowledge(knowledge, new FileWriter(prefix));
+            DataWriter.saveKnowledge(knowledge, new FileWriter(path));
             savedRegexesInfo.setTierCount(displayAreas.size());
             savedRegexesInfo.setRememberedRegexes(savedRegexesInfo.getRememberedRegexes());
-            File file = new File( prefix + ".regexes" + ".json");
+            File file = new File(path.getAbsolutePath() + ".regexes" + ".json");
             ChangedStuffINeed.jsonFromJava(savedRegexesInfo, file);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

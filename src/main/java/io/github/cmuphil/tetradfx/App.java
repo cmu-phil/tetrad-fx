@@ -61,6 +61,8 @@ public class App extends Application {
             primaryStage.setTitle("Tetrad-FX");
             primaryStage.show();
         } catch (Exception ex) {
+            ex.printStackTrace();
+
             // If another instance is running, focus on that instance
             if (mainStage != null) {
                 Platform.runLater(() -> {

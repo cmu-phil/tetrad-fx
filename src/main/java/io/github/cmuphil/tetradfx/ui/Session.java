@@ -19,7 +19,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -125,83 +127,79 @@ public class Session {
                     File knowledgeDir = new File(dir, "knowledge");
                     File graphDir = new File(dir, "other_graphs");
 
+                    File orderFile = new File(dataDir, "taborder.txt");
+                    List<String> dataOrder = readTabOrder(orderFile);
+
                     File[] dataFiles = dataDir.listFiles();
 
                     if (dataFiles != null) {
-                        for (File file : dataFiles) {
-                            if (file.getName().endsWith(".txt") && !file.getName().toLowerCase().contains("note")) {
-                                try {
-                                    int maxNumCategories = 5;
-                                    DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
-                                            "*", true, maxNumCategories, Delimiter.TAB, false);
 
-                                    String name = _dataSet.getName();
+                        NAME:
+                        for (String name : new ArrayList<>(dataOrder)) {
+                            String filename = name.replace(" ", "_") + ".txt";
 
-                                    if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
-
-                                    String replace = name.replace('_', ' ');
-                                    getSelectedProject().addDataSet(replace, _dataSet, false);
-                                } catch (IOException e) {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                                    alert.setTitle("Error Dialog");
-                                    alert.setContentText(e.getMessage());
-                                    alert.showAndWait();
+                            for (File file : dataFiles) {
+                                if (file.getName().equals(filename)) {
+                                    loadDataFile(file);
+                                    continue NAME;
                                 }
                             }
                         }
                     }
+
+                    List<String> searchOrder = readTabOrder(new File(searchDir, "taborder.txt"));
 
                     var searchFiles = searchDir.listFiles();
 
                     if (searchFiles != null) {
-                        for (File file : searchFiles) {
-                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
-                                var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addSearchResult(
-                                        file.getName().replace('_', ' ').replace(".txt",
-                                                ""), _graph, false, getParameters(), new ArrayList<>());
-                            } else if (file.getName().endsWith("json")) {
-//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
-                                var _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addSearchResult(
-                                        file.getName().replace('_', ' ').replace(".json",
-                                                ""), _graph , false, getParameters(), new ArrayList<>());
-                            }
-                        }
-                    }
 
-                    var knowledgeFiles = knowledgeDir.listFiles();
+                        NAME:
+                        for (String name : new ArrayList<>(searchOrder)) {
+                            String filename = name.replace(" ", "_");
 
-                    if (knowledgeFiles != null) {
-                        for (var file : knowledgeFiles) {
-                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
-                                try {
-                                    Knowledge knowledge = SimpleDataLoader.loadKnowledge(file, DelimiterType.WHITESPACE,
-                                            "//");
-                                    getSelectedProject().addKnowledge(file.getName().replace('_', ' ').replace(".txt", ""),
-                                            knowledge, false);
-                                } catch (IOException e) {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                                    alert.setTitle("Error Dialog");
-                                    alert.setHeaderText(null); // You can set a header text or keep it null
-                                    alert.setContentText("Could not load knowledge file: " + e.getMessage());
-                                    alert.showAndWait();
+                            for (File file : searchFiles) {
+                                if (file.getName().equals(filename + ".txt")) {
+                                    loadSearchFile(file);
+                                    continue NAME;
                                 }
                             }
                         }
                     }
 
+                    List<String> knowledgeOrder = readTabOrder(new File(knowledgeDir, "taborder.txt"));
+
+                    var knowledgeFiles = knowledgeDir.listFiles();
+
+                    if (knowledgeFiles != null) {
+
+                        NAME:
+                        for (String name : new ArrayList<>(knowledgeOrder)) {
+                            String filename = name.replace(" ", "_") + ".txt";
+
+                            for (File file : knowledgeFiles) {
+                                 if (file.getName().equals(filename)) {
+                                    loadKnowledgeFile(file);
+                                    continue NAME;
+                                }
+                            }
+                        }
+                    }
+
+                    List<String> graphOrder = readTabOrder(new File(graphDir, "taborder.txt"));
+
                     var graphFiles = graphDir.listFiles();
 
                     if (graphFiles != null) {
-                        for (var file : graphFiles) {
-                            if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
-                                Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false);
-                            } else if (file.getName().endsWith("json")) {
-//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
-                                Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
-                                getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false);
+
+                        NAME:
+                        for (String name : new ArrayList<>(graphOrder)) {
+                            String filename = name.replace(" ", "_") + ".txt";
+
+                            for (File file : graphFiles) {
+                                   if (file.getName().equals(filename)) {
+                                    loadGraphFile(file);
+                                    continue NAME;
+                                }
                             }
                         }
                     }
@@ -224,6 +222,71 @@ public class Session {
         });
 
         this.parameters = ChangedStuffINeed.loadParameters(new File(sessionDir, "parameters.json"));
+    }
+
+    private void loadGraphFile(File file) {
+        if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
+            Graph _graph = GraphSaveLoadUtils.loadGraphTxt(file);
+            getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".txt", ""), _graph, false);
+        } else if (file.getName().endsWith("json")) {
+//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
+            Graph _graph = GraphSaveLoadUtils.loadGraphJson(file);
+            getSelectedProject().addGraph(file.getName().replace('_', ' ').replace(".json", ""), _graph, false);
+        }
+    }
+
+    private void loadKnowledgeFile(File file) {
+        if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
+            try {
+                Knowledge knowledge = SimpleDataLoader.loadKnowledge(file, DelimiterType.WHITESPACE,
+                        "//");
+                getSelectedProject().addKnowledge(file.getName().replace('_', ' ').replace(".txt", ""),
+                        knowledge, false);
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setHeaderText(null); // You can set a header text or keep it null
+                alert.setContentText("Could not load knowledge file: " + e.getMessage());
+                alert.showAndWait();
+            }
+        }
+    }
+
+    private void loadSearchFile(File file) {
+        if (file.getName().endsWith("txt") && !file.getName().toLowerCase().contains("note")) {
+            var _graph = GraphSaveLoadUtils.loadGraphTxt(file);
+            getSelectedProject().addSearchResult(
+                    file.getName().replace('_', ' ').replace(".txt",
+                            ""), _graph, false, getParameters(), new ArrayList<>());
+        } else if (file.getName().endsWith("json")) {
+//                                Graph _graph = (Graph) ChangedStuffINeed.javaFromJson(file, EdgeListGraph.class);
+            var _graph = GraphSaveLoadUtils.loadGraphJson(file);
+            getSelectedProject().addSearchResult(
+                    file.getName().replace('_', ' ').replace(".json",
+                            ""), _graph , false, getParameters(), new ArrayList<>());
+        }
+    }
+
+    private void loadDataFile(File file) {
+        if (file.getName().endsWith(".txt") && !file.getName().toLowerCase().contains("note")) {
+            try {
+                int maxNumCategories = 5;
+                DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
+                        "*", true, maxNumCategories, Delimiter.TAB, false);
+
+                String name = _dataSet.getName();
+
+                if (name.endsWith(".txt")) name = name.substring(0, name.length() - 4);
+
+                String replace = name.replace('_', ' ');
+                getSelectedProject().addDataSet(replace, _dataSet, false);
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error Dialog");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
+        }
     }
 
     /**
@@ -471,5 +534,21 @@ public class Session {
 
     public File getSessionDir() {
         return sessionDir;
+    }
+
+    private List<String> readTabOrder(File file) {
+        try {
+            BufferedReader buf = new BufferedReader(new FileReader(file));
+            String line;
+            List<String> tabOrder = new ArrayList<>();
+
+            while ((line = buf.readLine()) != null) {
+                tabOrder.add(line);
+            }
+
+            return tabOrder;
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 }
