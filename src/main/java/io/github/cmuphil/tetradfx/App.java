@@ -54,26 +54,20 @@ public class App extends Application {
 
         try {
             socket = new ServerSocket(PORT);
+            mainStage = primaryStage;
 
             Scene scene = new Scene(TetradFxMain.getInstance().getRoot(primaryStage));
             primaryStage.setScene(scene);
             primaryStage.setTitle("Tetrad-FX");
             primaryStage.show();
         } catch (Exception ex) {
+            // If another instance is running, focus on that instance
             if (mainStage != null) {
                 Platform.runLater(() -> {
                     mainStage.toFront();
                 });
             }
-
-            // If another instance is running, focus on that instance
-            Platform.runLater(primaryStage::toFront);
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText(null); // You can set a header text or keep it null
-            alert.setContentText("Application is already running.");
-            alert.showAndWait();
+            System.out.println("Application is already running.");
             Platform.exit();
         }
 

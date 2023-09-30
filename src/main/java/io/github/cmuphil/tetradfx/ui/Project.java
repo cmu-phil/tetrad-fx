@@ -461,13 +461,12 @@ public class Project {
 
         if (tab == null) {
             tab = new Tab(name, pane);
-            this.search.getTabs().add(this.search.getTabs().size() - 1, tab);
+            this.games.getTabs().add(this.games.getTabs().size() - 1, tab);
         } else {
             tab.setText(name);
             tab.setContent(pane);
         }
 
-        games.getTabs().add(tab);
         addHandling(name, games, gamesTab, null, graphDir, tab, prefix, true);
         managePlusTab2(this.sessionTabPane, this.games, this.gamesTab, new File(this.gamesDir,
                 name.replace(' ', '_') + ".txt"));
