@@ -65,7 +65,10 @@ tab as well, and can be further annotation by the user. These are also
 persisted.
 
 If we continue with the project, we will turn these and other notes into a
-ReadTheDocs.
+ReadTheDocs. Also, if we continus with the project we will add an Insignts
+tab to help the user understand the results (compare graphs, Markov checker,
+etc.) and a Models tab to let the user to estimations (linear and
+multinomial) of data for given DAG models.
 
 # Install
 
