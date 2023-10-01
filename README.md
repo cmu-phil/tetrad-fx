@@ -89,7 +89,7 @@ that is currently in the Tetrad library; we just have to build UIs for it.
 
 1. Tetrad has a bootstrapping API; we plan to include this as well.
 
-1. As a note to self: If someone has gone to the trouble to tyep out notes for a
+1. As a note to self: If someone has gone to the trouble to type out notes for a
 particular component, that component should not be deleted without putting up a warning
 dialog. Also, if other components depend on it, the other components shoudl be deelted
 along with it--again with a stern warning. Similarly, if a search has taken a particularly
