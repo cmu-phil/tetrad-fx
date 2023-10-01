@@ -93,7 +93,7 @@ particular component, that component should not be deleted without putting up a 
 dialog. Also, if other components depend on it, the other components shoudl be deelted
 along with it--again with a stern warning. Similarly, if a search has taken a particularly
 long time to run, the result should not be deleted withut a warning. Basically,
-anything the user has "mixed their labot with" should not be deleted without
+anything the user has "mixed their labor with" should not be deleted without
 a fight.
 
 1. We plan to turn these and other comments into a ReadTheDocs. 
