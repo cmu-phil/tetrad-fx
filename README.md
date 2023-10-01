@@ -111,12 +111,13 @@ https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/downloads-list.html
 To clone Tetrad-FX, you need Git installed. Then you type:
 
 ```
-git clone https://github.com/cmu-phil/tetrad-fx
+git clone https://github.com/cmu-phil/tetrad-fx [mydir]
 ```
 
 To build it, you need to have Maven installed and the JavaFX code installed and type (in the project directory):
 
 ```
+cd [mydir]
 mvn clean package
 ```
 
