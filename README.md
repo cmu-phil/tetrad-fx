@@ -95,12 +95,18 @@ To clone it, you need Git installed. Then you type:
 git clone https://github.com/cmu-phil/tetrad-fx
 ```
 
-To build it, you need to have Maven installed, and type (in the project directory):
+To build it, you need to have Maven installed and the JavaFX code installed and type (in the project directory):
 
 ```
 mvn clean package
 cd target
-jpackage --input . --name Tetrad-FX --main-jar tetrad-fx-0.1-SNAPSHOT.jar 
+java -jar target/tetrad-fx-0.1-SNAPSHOT.jar --add-modules javafx.controls,javafx.fxml MyJavaFXApp
+```
+
+Alternatively you could package the jar as an app:
+
+```
+jpackage --input . --name Tetrad-FX --main-jar tetrad-fx-0.1-SNAPSHOT.jar
 ```
 
 This should make an installer for you on your machine, which you can then install. Then launch the 
