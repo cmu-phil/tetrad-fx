@@ -35,12 +35,14 @@ Some advice follows.
 1. The idea is that you start a project by loading a dataset or making one of a stock set of simulations.
 The dataset currently cannot have discrete variables with more than 3 categories.
 
-1. The Valence tab contains some information about variable. Currently this is not persisted.
+1. The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
+from the variables in dataset using regex filtering.
+
+1. The Insights tab contains some information about variable. Currently this contains a Valence
+tool that lets gives the user some information about the variables in the dataset, which is not
+currently persisted.
 
 1. The search tab is limited to a restricted set of search algroithms in Tetrad.
-
-1. The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
-from the variables in dataset using regex filtering. 
 
 1. The "other graphs" tab will contain the true graph if this is a simulation.
 
