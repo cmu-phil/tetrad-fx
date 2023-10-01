@@ -40,7 +40,7 @@ public class Project {
 
     private final TabPane sessionTabPane;
     private final TabPane data = new TabPane();
-    private final TabPane valence = new TabPane();
+    private final TabPane insights = new TabPane();
     private final TabPane graphs = new TabPane();
     private final TabPane search = new TabPane();
     private final TabPane knowledge = new TabPane();
@@ -80,9 +80,10 @@ public class Project {
         this.sessionTabPane = new TabPane();
         this.sessionTabPane.setPrefSize(1000, 800);
         this.sessionTabPane.setSide(Side.LEFT);
+        this.sessionTabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
 
         data.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-        valence.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+        insights.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
         search.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
         knowledge.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
         graphs.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
@@ -100,7 +101,7 @@ public class Project {
             }
         }
 
-        Tab valenceTab = new Tab("Valence", valence);
+        Tab insightsTab = new Tab("Insignts", insights);
 
         searchTab = new Tab("Search", search);
 
@@ -250,9 +251,9 @@ public class Project {
         }
 
         setUpTabPane(sessionTabPane, dataTab, data);
-        setUpTabPane(sessionTabPane, valenceTab, valence);
-        setUpTabPane(sessionTabPane, searchTab, search);
+        setUpTabPane(sessionTabPane, insightsTab, insights);
         setUpTabPane(sessionTabPane, knowledgeTab, knowledge);
+        setUpTabPane(sessionTabPane, searchTab, search);
         setUpTabPane(sessionTabPane, graphTab, graphs);
         setUpTabPane(sessionTabPane, gamesTab, games);
 
@@ -296,7 +297,7 @@ public class Project {
         if (!valenceAdded) {
             Tab valence = new Tab("Variables", new VariablesView(dataSet).getTableView());
             valence.setClosable(false);
-            this.valence.getTabs().add(valence);
+            this.insights.getTabs().add(valence);
             valenceAdded = true;
         }
 
