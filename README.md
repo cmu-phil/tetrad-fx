@@ -29,15 +29,14 @@ sorry. Though honestly it is kind of nice to have that available.
 
 ![Picture of the current state of the project.](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)
 
-1. You start a project by loading a dataset or making one of a stock set of simulations.
-The dataset currently cannot have discrete variables with more than 3 categories. The simulation function will
-be elaborated eventually if we continue the project.
+Some specific advice follows.
 
-1. The Valence tab contains some information about variable and eventually will allow the user to enter
-information about each varaible. Currently this is not persisted.
+1. The idea is that you start a project by loading a dataset or making one of a stock set of simulations.
+The dataset currently cannot have discrete variables with more than 3 categories.
 
-1. The search tab is limited to a restricted set of search algroithms in Tetrad; thsi will be 
-expanded if we continue to allow all search algrothms.
+1. The Valence tab contains some information about variable. Currently this is not persisted.
+
+1. The search tab is limited to a restricted set of search algroithms in Tetrad.
 
 1. The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
 from the variables in dataset using regex filtering. 
@@ -62,22 +61,27 @@ persisted.
 
 # Future Plans if we Continue
 
-1. We plan to implement a number of games people can play to learn the concepts. . (We also plan a
-constraint-based game and a d-separation game, if we continue.)
+1. We plan to implement a number of games people can play to learn the concepts. . (We plan a
+constraint-based game and a d-separation game, if we continue--perhaps others.
 
-1. Knowledge needs to be expanded and possibly
-another type of knowledge editor added as well for those who find regex difficult.
+1. We plan to exans the simulation options.
 
-1. Also, if we continue with the project we will add an Insignts
-tab to help the user understand the results (compare graphs, Markov checker,
-etc.).
+1. We plan to make the Valence tab much more detailed, so that the use can enter
+specific information about each variable. This will be persisted.
+
+1. We plkan to expand the search options.
+
+1. Knowledge needs to be expanded to allow specific required or forbidden edges, and possibly
+another type of knowledge editor needs to be added as well for those who find regexes difficult.
+
+1. We plan to add an Insignts tab to help the user understand the results (compare
+2. graphs, Markov checker, etc.).
 
 1. We will also add a Models tab to let the user to estimations (linear and
 multinomial) of data for given DAG models. All of this is functionality
 that is currently in the Tetrad library; we just have to build UIs for it.
 
-1. If we continue with the project, we will turn these and other comments into a
-ReadTheDocs. 
+1.We plan to turn these and other comments into a ReadTheDocs. 
 
 # Install
 
