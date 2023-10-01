@@ -86,6 +86,8 @@ another type of knowledge editor needs to be added as well for those who find re
 multinomial) of data for given DAG models. All of this is functionality
 that is currently in the Tetrad library; we just have to build UIs for it.
 
+1. Tetrad has a bootstrapping API; we plan to include this as well.
+
 1. We plan to turn these and other comments into a ReadTheDocs. 
 
 More plans are given at the above link.
