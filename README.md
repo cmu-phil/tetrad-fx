@@ -114,6 +114,8 @@ To clone Tetrad-FX, you need Git installed. Then you type:
 git clone https://github.com/cmu-phil/tetrad-fx [mydir]
 ```
 
+"[mydir]" here indicates the name of the directory you would like the cloned project to be put into. 
+
 To build it, you need to have Maven installed and the JavaFX code installed and type (in the project directory):
 
 ```
