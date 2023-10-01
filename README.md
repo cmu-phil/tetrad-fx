@@ -44,10 +44,10 @@ temporal information.
 tool that lets gives the user some information about the variables in the dataset, which is not
 currently persisted.
 
-1. The search tab is limited to a restricted set of search algroithms in Tetrad.
+1. The Search tab is limited to a restricted set of search algroithms in Tetrad.
 
-1. The Other Graphs tab will contain the true graph if this is a simulation which cannot
-be deleted.
+1. The Other Graphs tab will contain the true graph if this is a simulation. If there is a true
+graph, it cannot be deleted.
 
 1. Datasets can be transformed using right click context menus, as can graphs.
 
