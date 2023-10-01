@@ -34,9 +34,11 @@ Some advice follows.
 
 1. The idea is that you start a project by loading a dataset or making one of a stock set of simulations.
 The dataset currently cannot have discrete variables with more than 3 categories.
+This data is placed in the Data tab and cannot be removed inside the project.
 
-1. The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
-from the variables in dataset using regex filtering.
+1. The Knowledge tab currently lets you indicate tiered background knowledge only. The tiers are selected
+from the variables in dataset using regex filtering. The tiers can be interpreted as giveing
+temporal information.
 
 1. The Insights tab contains some information about variable. Currently this contains a Valence
 tool that lets gives the user some information about the variables in the dataset, which is not
@@ -44,12 +46,12 @@ currently persisted.
 
 1. The search tab is limited to a restricted set of search algroithms in Tetrad.
 
-1. The "other graphs" tab will contain the true graph if this is a simulation.
+1. The Other Graphs tab will contain the true graph if this is a simulation.
 
 1. Datasets can be transformed using right click context menus, as can graphs.
 
-1. Currently there is only one game, to help users learn how permutation searches work. Have fun
-with it. If you discover a new permutation algorithm let us know.
+1. Currently there is only one game in the Games tab, to help users learn how permutation
+searches work. Have fun with it. If you discover a new permutation algorithm let us know.
 
 1. Saving and loading of the session is just zipping or unzipping the hidden project directory.
 All dataset, knowledge files, and graph are stored in text files for which
