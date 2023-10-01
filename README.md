@@ -16,7 +16,7 @@ An idea we have been pursuing is to shift the focus of
 Tetrad away from simulation studies and more toward analysis of particular 
 datasets. What we're doing at the moment is making an app that allows 
 you to load a dataset, transform the data in various ways, search on
-data with tiered knowledge, yielding a graph, and transforming that graph in various ways.
+data with tiered knowledge, yielding a graph, and transform that graph in various ways.
 
 We are keeping a running overview of the work here:
 
