@@ -126,7 +126,7 @@ This should download and install all the necessary libraries, including the Tetr
 Then to run Tetrad-FX at the command line:
 
 ```
-java -jar target/tetrad-fx-0.1-SNAPSHOT.jar --add-modules javafx.controls,javafx.fxml MyJavaFXApp
+java -jar target/tetrad-fx-0.1-SNAPSHOT.jar --add-modules javafx.controls,javafx.fxml
 ```
 
 Alternatively you could package the jar as an application:
