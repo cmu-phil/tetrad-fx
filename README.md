@@ -30,7 +30,7 @@ Here is a screenshot of the first draft of the project.
 
 # Some Documentation
 
-Some advice follows.
+Some documentation follows.
 
 1. The idea is that you start a project by loading a dataset or making one of a stock set of simulations.
 The dataset currently cannot have discrete variables with more than 3 categories.
