@@ -251,8 +251,8 @@ public class Project {
         }
 
         setUpTabPane(sessionTabPane, dataTab, data);
-        setUpTabPane(sessionTabPane, insightsTab, insights);
         setUpTabPane(sessionTabPane, knowledgeTab, knowledge);
+        setUpTabPane(sessionTabPane, insightsTab, insights);
         setUpTabPane(sessionTabPane, searchTab, search);
         setUpTabPane(sessionTabPane, graphTab, graphs);
         setUpTabPane(sessionTabPane, gamesTab, games);
