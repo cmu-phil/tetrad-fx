@@ -24,8 +24,7 @@ https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/java/io/github/cmuphil/
 
 # Screenshot
 
-Here is a screenshot of the first draft of the project. The little green G is Grammarly correcting my text,
-sorry. Though honestly it is kind of nice to have that available.
+Here is a screenshot of the first draft of the project.
 
 ![Picture of the current state of the project.](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)
 
