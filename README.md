@@ -29,46 +29,55 @@ sorry. Though honestly it is kind of nice to have that available.
 
 ![Picture of the current state of the project.](https://github.com/cmu-phil/tetrad-fx/blob/main/src/main/resources/App.Screenshot.2023-9.30.png)
 
-Currently the idea is you start a project by loading a dataset or making one of a stock set of simulations.
+1. You start a project by loading a dataset or making one of a stock set of simulations.
 The dataset currently cannot have discrete variables with more than 3 categories. The simulation function will
 be elaborated eventually if we continue the project.
 
-The Valence tab contains some information about variable and eventually will allow the user to enter
+1. The Valence tab contains some information about variable and eventually will allow the user to enter
 information about each varaible. Currently this is not persisted.
 
-The search tab is limited to a restricted set of search algroithms in Tetrad; thsi will be 
+1. The search tab is limited to a restricted set of search algroithms in Tetrad; thsi will be 
 expanded if we continue to allow all search algrothms.
 
-The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
-from the variables in dataset using regex filtering. This needs to be expanded and possibly
-another type of knowledge editor added as well for those who find regex difficult.
+1. The knowledge tab currently lets you indicate tiered knowledge only. The tiers are selected
+from the variables in dataset using regex filtering. 
 
-The other graphs will contain the true graph if this is a simulation.
+1. The "other graphs" tab will contain the true graph if this is a simulation.
 
-Datasets can be transformed using right click context menus, as can graphs.
+1. Datasets can be transformed using right click context menus, as can graphs.
 
-We plan to implement a number of games people can play to learn the concepts. Currently
-there is only one game, to help users learn how permutation searches work. Have fun
-with it. If you discover a new permutation algorithm let us know. (We also plan a
-constraint-based game and a d-separation game, if we continue.)
+1. Currently there is only one game, to help users learn how permutation searches work. Have fun
+with it. If you discover a new permutation algorithm let us know.
 
-Saving and loading is just zipping or unzipping the hidden project directory.
+1. Saving and loading of the session is just zipping or unzipping the hidden project directory.
 All dataset, knowledge files, and graph are stored in text files for which
 parsers can easily be written if not already available. To get access to these,
 simply save the session and unzip it elsewhere. It has a ".tfx" suffix just so
 you know it was generated from Tetrad-FX.
 
-The user can take notes on any component, and these notes are persisted.
+1. The user can take notes on any component in tabs, and these notes are persisted.
 When searches are done, parameter settings are saved to the Parameters
 tab as well, and can be further annotation by the user. These are also
 persisted.
 
-If we continue with the project, we will turn these and other notes into a
-ReadTheDocs. Also, if we continue with the project we will add an Insignts
+# Future Plans if we Continue
+
+1. We plan to implement a number of games people can play to learn the concepts. . (We also plan a
+constraint-based game and a d-separation game, if we continue.)
+
+1. Knowledge needs to be expanded and possibly
+another type of knowledge editor added as well for those who find regex difficult.
+
+1. Also, if we continue with the project we will add an Insignts
 tab to help the user understand the results (compare graphs, Markov checker,
-etc.) and a Models tab to let the user to estimations (linear and
+etc.).
+
+1. We will also add a Models tab to let the user to estimations (linear and
 multinomial) of data for given DAG models. All of this is functionality
 that is currently in the Tetrad library; we just have to build UIs for it.
+
+1. If we continue with the project, we will turn these and other comments into a
+ReadTheDocs. 
 
 # Install
 
