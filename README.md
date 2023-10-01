@@ -66,21 +66,21 @@ persisted.
 
 # Future Plans if we Continue
 
-1. We plan to implement a number of games people can play to learn the concepts. . (We plan a
-constraint-based game and a d-separation game, if we continue--perhaps others.
+1. We plan to implement a number of games people can play to learn the concepts. (We plan a
+constraint-based game and a d-separation game, if we continue--perhaps others.)
 
-1. We plan to exans the simulation options.
+1. We plan to expand the simulation options.
 
-1. We plan to make the Valence tab much more detailed, so that the use can enter
+1. We plan to make the valence tab much more detailed, so that the use can enter
 specific information about each variable. This will be persisted.
 
-1. We plkan to expand the search options.
+1. Also in the Insights tab we plan to add more tools to help the user understand the data
+and the search results.
+
+1. We plan to expand the search options.
 
 1. Knowledge needs to be expanded to allow specific required or forbidden edges, and possibly
 another type of knowledge editor needs to be added as well for those who find regexes difficult.
-
-1. We plan to add an Insignts tab to help the user understand the results (compare
-2. graphs, Markov checker, etc.).
 
 1. We will also add a Models tab to let the user to estimations (linear and
 multinomial) of data for given DAG models. All of this is functionality
@@ -92,7 +92,7 @@ More plans are given at the above link.
 
 # Install
 
-It's easy to install this if you're familiar with Java, and it's easily cross-platform. 
+It's easy to install this if you're familiar with JavaFX, and it's easily cross-platform. 
 You need a fairly recent version version of Java to run the JavaFX, but if you have one installed,
 you simply need to clone the project and run the app.
 
