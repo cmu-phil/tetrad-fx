@@ -116,18 +116,18 @@ Then to run Tetrad-FX at the command line:
 java -jar target/tetrad-fx-0.1-SNAPSHOT.jar --add-modules javafx.controls,javafx.fxml MyJavaFXApp
 ```
 
-Alternatively you could package the jar as an app:
+Alternatively you could package the jar as an application:
 
 ```'
 cd target
 jpackage --input . --name Tetrad-FX --main-jar tetrad-fx-0.1-SNAPSHOT.jar
 ```
 
-This should make an installer for you on your machine, which you can then install. Then launch the 
-app in the usual way.
+This should make an app installer for you on your machine, which you can then install. Then launch the 
+app in the usual way for your machine.
 
 These instructions have been tested on Intel and M1-Max Macs but not other platforms yet.
-On a Mac, it makes a DMG installer file.
+On a Mac, it makes a DMG app installer file; the JDK used will be packaged inside the app installer.
 
 If we continue with the project, we will make downloadable signed installer files available for various
 platforms.
