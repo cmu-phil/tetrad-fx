@@ -66,8 +66,8 @@ persisted.
 
 # Future Plans if we Continue
 
-1. We plan to implement a number of games people can play to learn the concepts. (We plan a
-constraint-based game and a d-separation game, if we continue--perhaps others.)
+1. We plan to implement a number of games people can play to learn the concepts. We plan a
+constraint-based game and a d-separation game, if we continue--perhaps others.
 
 1. We plan to expand the simulation options.
 
