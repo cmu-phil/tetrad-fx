@@ -99,13 +99,20 @@ To build it, you need to have Maven installed and the JavaFX code installed and 
 
 ```
 mvn clean package
-cd target
+```
+
+This should download and install all the necessary libraries, including the Tetrad 7.5.0 library.
+
+Then to run Tetrad-FX at the command line:
+
+```
 java -jar target/tetrad-fx-0.1-SNAPSHOT.jar --add-modules javafx.controls,javafx.fxml MyJavaFXApp
 ```
 
 Alternatively you could package the jar as an app:
 
-```
+```'
+cd target
 jpackage --input . --name Tetrad-FX --main-jar tetrad-fx-0.1-SNAPSHOT.jar
 ```
 
