@@ -104,12 +104,13 @@ More plans are given at the above link.
 # Install
 
 It's easy to install this if you're familiar with JavaFX, and it's easily cross-platform. 
-You need a fairly recent version version of Java to run the JavaFX, but if you have one installed,
-you simply need to clone the project and run the app. I use Corretto 21, availalbe here:
+You need a pretty recent version version of Java to run the JavaFX and an even more recent version
+if you plan to use jpackage to amke an installer, below. I use Corretto 21, available here:
 
 https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/downloads-list.html
 
-To clone Tetrad-FX, you need Git installed. Then you type:
+If you have one installed you simply need to clone the project and run the app.To clone 
+Tetrad-FX, you need Git installed. Then you type:
 
 ```
 git clone https://github.com/cmu-phil/tetrad-fx [mydir]
