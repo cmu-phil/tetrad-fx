@@ -104,7 +104,7 @@ More plans are given at the above link.
 # Install
 
 It's easy to install this if you're familiar with JavaFX, and it's easily cross-platform. 
-You need a pretty recent version version of Java to run the JavaFX and an even more recent version
+You need a pretty recent version version of Java to run JavaFX and an even more recent version
 if you plan to use jpackage to amke an installer, below. I use Corretto 21, available here:
 
 https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/downloads-list.html
