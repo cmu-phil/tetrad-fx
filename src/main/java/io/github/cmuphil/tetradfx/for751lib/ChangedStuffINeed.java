@@ -1,31 +1,22 @@
 package io.github.cmuphil.tetradfx.for751lib;
 
-import com.google.gson.Gson;
 import edu.cmu.tetrad.data.DataModel;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.Node;
 import edu.cmu.tetrad.util.DataConvertUtils;
-import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Data;
 import edu.pitt.dbmi.data.reader.DataColumn;
-import edu.pitt.dbmi.data.reader.DataReaderException;
 import edu.pitt.dbmi.data.reader.Delimiter;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularColumnReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataFileReader;
 import edu.pitt.dbmi.data.reader.tabular.TabularDataReader;
-import javafx.scene.control.Alert;
 import org.apache.commons.math3.util.FastMath;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 public class ChangedStuffINeed {
     /**
@@ -314,131 +305,4 @@ public class ChangedStuffINeed {
         return null;
     }
 
-    public static void jsonFromJava(Object object, File file) {
-        Gson gson = new Gson();
-
-        try (FileWriter writer = new FileWriter(file)) {
-            gson.toJson(object, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Object javaFromJson(File file, Class clazz) {
-        Gson gson = new Gson();
-
-        try (FileReader reader = new FileReader(file)) {
-            return gson.fromJson(reader, clazz);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void zip(File dir, File zipFile) {
-        Path sourceDir = dir.toPath(); // Replace with the path to your directory
-
-        try (FileOutputStream fos = new FileOutputStream(zipFile);
-             ZipOutputStream zos = new ZipOutputStream(fos)) {
-
-            Files.walkFileTree(sourceDir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE,
-                    new SimpleFileVisitor<>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                            // Only regular files should be added to the zip
-                            if (attrs.isRegularFile()) {
-                                // Get the relative path to the source directory
-                                Path relativePath = sourceDir.relativize(file);
-                                zos.putNextEntry(new ZipEntry(relativePath.toString()));
-                                byte[] bytes = Files.readAllBytes(file);
-                                zos.write(bytes, 0, bytes.length);
-                                zos.closeEntry();
-                            }
-                            return FileVisitResult.CONTINUE;
-                        }
-                    });
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void unzipDirectory(String zipFilePath, String destDirectory) throws IOException {
-        File destDir = new File(destDirectory);
-        if (!destDir.exists()) {
-            destDir.mkdir();
-        }
-        try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
-            ZipEntry entry = zipIn.getNextEntry();
-            while (entry != null) {
-                String filePath = destDirectory + File.separator + entry.getName();
-                File newFile = new File(filePath);
-                if (entry.isDirectory()) {
-                    // If the ZipEntry is a directory, create the directory.
-                    newFile.mkdirs();
-                } else {
-                    // For files, ensure parent directory exists before extracting
-                    File parentDir = newFile.getParentFile();
-                    if (!parentDir.exists()) {
-                        parentDir.mkdirs();
-                    }
-                    extractFile(zipIn, filePath);
-                }
-                zipIn.closeEntry();
-                entry = zipIn.getNextEntry();
-            }
-        }
-    }
-
-    private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
-            byte[] bytesIn = new byte[4096];
-            int read;
-            while ((read = zipIn.read(bytesIn)) != -1) {
-                bos.write(bytesIn, 0, read);
-            }
-        }
-    }
-
-    public static void deleteDirectory(Path dir) throws IOException {
-        Files.walkFileTree(dir, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE, new FileVisitor<Path>() {
-
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);  // Delete the file
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                return FileVisitResult.TERMINATE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                if (exc == null) {
-                    Files.delete(dir);  // Delete the directory
-                    return FileVisitResult.CONTINUE;
-                } else {
-                    throw exc;
-                }
-            }
-        });
-    }
-
-    public static void saveParameters(File file, Parameters parameters) {
-        jsonFromJava(parameters, file);
-    }
-
-    public static Parameters loadParameters(File file) {
-        if (file.exists()) {
-            return (Parameters) javaFromJson(file, Parameters.class);
-        } else {
-            return new Parameters();
-        }
-    }
 }

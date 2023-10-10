@@ -2,7 +2,7 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.data.DataWriter;
 import edu.cmu.tetrad.data.Knowledge;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -46,7 +46,7 @@ public class RegexFilter {
         File file = new File(path.toString() + ".regexes" + ".json");
 
         if (file.exists()) {
-            savedRegexesInfo = (SavedRegexesInfo) ChangedStuffINeed.javaFromJson(file, RegexFilter.SavedRegexesInfo.class);
+            savedRegexesInfo = (SavedRegexesInfo) Utils.javaFromJson(file, RegexFilter.SavedRegexesInfo.class);
         } else {
             savedRegexesInfo = new SavedRegexesInfo(knowledge.getVariables(), 2, new HashMap<>());
         }
@@ -274,7 +274,7 @@ public class RegexFilter {
             savedRegexesInfo.setTierCount(displayAreas.size());
             savedRegexesInfo.setRememberedRegexes(savedRegexesInfo.getRememberedRegexes());
             File file = new File(path.getAbsolutePath() + ".regexes" + ".json");
-            ChangedStuffINeed.jsonFromJava(savedRegexesInfo, file);
+            Utils.jsonFromJava(savedRegexesInfo, file);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");

@@ -3,13 +3,12 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.util.ParamDescriptions;
 import edu.cmu.tetrad.util.Parameters;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +143,7 @@ public class ParameterDialog {
             }
 
             if (!myParams.isEmpty()) {
-                ChangedStuffINeed.saveParameters(new File(sessionDir, "parameters.json"), parameters);
+                Utils.saveParameters(new File(sessionDir, "parameters.json"), parameters);
             }
         });
     }

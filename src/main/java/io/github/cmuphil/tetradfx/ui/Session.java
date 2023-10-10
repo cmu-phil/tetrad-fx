@@ -221,7 +221,7 @@ public class Session {
             }
         });
 
-        this.parameters = ChangedStuffINeed.loadParameters(new File(sessionDir, "parameters.json"));
+        this.parameters = Utils.loadParameters(new File(sessionDir, "parameters.json"));
     }
 
     private void loadGraphFile(File file) {
@@ -336,7 +336,7 @@ public class Session {
 
             // Temp, delete the old directory.
             try {
-                ChangedStuffINeed.deleteDirectory(new File(userHomeDirectory, ".tetrad-fx-docs").toPath());
+                Utils.deleteDirectory(new File(userHomeDirectory, ".tetrad-fx-docs").toPath());
             } catch (IOException e) {
                 // Ignore.
             }

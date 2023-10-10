@@ -3,7 +3,7 @@ package io.github.cmuphil.tetradfx.ui;
 import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.util.ParamDescriptions;
 import edu.cmu.tetrad.util.Parameters;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
+import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -111,7 +111,7 @@ public class ParameterPanel {
                 tf.setText(newValue.replaceAll("[^a-zA-Z0-9]", ""));
             } else {
                 parameters.set(param, newValue);
-                ChangedStuffINeed.saveParameters(new File(sessionDir, "parameters.json"), parameters);
+                Utils.saveParameters(new File(sessionDir, "parameters.json"), parameters);
             }
         });
 
@@ -227,7 +227,7 @@ public class ParameterPanel {
 
         yesButton.setOnAction(e -> parameters.set(param, true));
         noButton.setOnAction(e -> parameters.set(param, false));
-        ChangedStuffINeed.saveParameters(new File(sessionDir, "parameters.json"), parameters);
+        Utils.saveParameters(new File(sessionDir, "parameters.json"), parameters);
     }
 
     /**
@@ -247,7 +247,7 @@ public class ParameterPanel {
                 tf.setText(String.valueOf(defaultValue));
             } else {
                 parameters.set(param, value);
-                ChangedStuffINeed.saveParameters(new File(sessionDir, "parameters.json"), parameters);
+                Utils.saveParameters(new File(sessionDir, "parameters.json"), parameters);
             }
         } catch (NumberFormatException e) {
             tf.setText(String.valueOf(defaultValue));
@@ -271,7 +271,7 @@ public class ParameterPanel {
                 tf.setText(String.valueOf(defaultValue));
             } else {
                 parameters.set(param, value);
-                ChangedStuffINeed.saveParameters(new File(sessionDir, "parameters.json"), parameters);
+                Utils.saveParameters(new File(sessionDir, "parameters.json"), parameters);
             }
         } catch (NumberFormatException e) {
             tf.setText(String.valueOf(defaultValue));

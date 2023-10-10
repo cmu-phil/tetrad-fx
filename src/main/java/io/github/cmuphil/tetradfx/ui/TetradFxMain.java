@@ -467,7 +467,7 @@ public class TetradFxMain {
      * @param dir     The directory.
      */
     private static void saveSession(File zipFile, File dir) {
-        ChangedStuffINeed.zip(dir, zipFile);
+        Utils.zip(dir, zipFile);
     }
 
     /**
@@ -481,14 +481,14 @@ public class TetradFxMain {
         File dir = new File(userHomeDirectory, ".tetrad-fx-session").getAbsoluteFile();
 
         try {
-            ChangedStuffINeed.deleteDirectory(dir.toPath());
+            Utils.deleteDirectory(dir.toPath());
             boolean created = dir.mkdir();
 
             if (!created) {
                 throw new RuntimeException("Could not create directory: " + dir.getAbsolutePath());
             }
 
-            ChangedStuffINeed.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
+            Utils.unzipDirectory(zipFile.getAbsolutePath(), dir.getAbsolutePath());
 
             Session.newInstance();
 
