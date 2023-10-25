@@ -62,14 +62,14 @@ public class AudioCaptureApp extends Application {
 
     public void captureAudio() {
         try {
-//            AudioFormat format = new AudioFormat(16000.0f, 16, 1, true, true);
-            AudioFormat format = new AudioFormat(44100.0f, 16, 1, true, true);
+            AudioFormat format = new AudioFormat(48000.0f, 16, 1, true, true);
+//            AudioFormat format = new AudioFormat(44100.0f, 16, 1, true, true);
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 
-            if (!AudioSystem.isLineSupported(info)) {
-                System.out.println("Line not supported");
-                return;
-            }
+//            if (!AudioSystem.isLineSupported(info)) {
+//                System.out.println("Line not supported");
+//                return;
+//            }
 
             microphone = (TargetDataLine) AudioSystem.getLine(info);
             microphone.open(format);
