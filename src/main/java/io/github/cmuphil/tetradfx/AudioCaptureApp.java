@@ -15,6 +15,31 @@ public class AudioCaptureApp extends Application {
     private File audioFile = new File("recorded.wav");
 
     public static void main(String[] args) {
+        // Get all available mixers
+        Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
+
+        for (Mixer.Info mixerInfo : mixerInfos) {
+            Mixer mixer = AudioSystem.getMixer(mixerInfo);
+
+            // Get target lines supported by this mixer
+            Line.Info[] targetLineInfos = mixer.getTargetLineInfo();
+
+            for (Line.Info lineInfo : targetLineInfos) {
+                if (lineInfo instanceof DataLine.Info) {
+                    DataLine.Info dataLineInfo = (DataLine.Info) lineInfo;
+                    AudioFormat[] supportedFormats = dataLineInfo.getFormats();
+
+                    System.out.println("Mixer: " + mixerInfo.getName());
+                    System.out.println("Supported Audio Formats:");
+
+                    for (AudioFormat format : supportedFormats) {
+                        System.out.println(format);
+                    }
+                    System.out.println("------------------------------");
+                }
+            }
+        }
+
         launch(args);
     }
 
