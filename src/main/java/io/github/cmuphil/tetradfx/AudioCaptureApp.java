@@ -9,7 +9,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
-public class AudioCaptureApp extends Application {
+public class AudioCaptureApp extends            Application {
 
     private TargetDataLine microphone;
     private File audioFile = new File("recorded.wav");
