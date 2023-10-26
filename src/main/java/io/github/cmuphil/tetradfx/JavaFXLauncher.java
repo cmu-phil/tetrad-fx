@@ -8,7 +8,7 @@ package io.github.cmuphil.tetradfx;
  */
 public class JavaFXLauncher {
     public static void main(String[] args) {
-        AudioCaptureApp.main(args);
+        App.main(args);
     }
 //    public static void main(String[] args) {
 //        Example.main(args);
