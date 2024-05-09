@@ -33,8 +33,32 @@ public class ParameterDialog {
      */
     public ParameterDialog(Parameters parameters, List<String> params, File sessionDir) {
         this.parameters = parameters;
-        this.myParams = params;
+        this.myParams = new ArrayList<>(params);
         this.sessionDir = sessionDir;
+    }
+
+    /**
+     * Adds a field for an string parameter.
+     *
+     * @param description  The description of the parameter.
+     * @param defaultValue The default value of the parameter.
+     * @param grid         The grid to add the field to.
+     * @param row          The row to add the field to.
+     * @param editables    The list of editable fields.
+     */
+    private static void addAlphanumericField(String description, String defaultValue, GridPane grid, int row,
+                                             List<Object> editables) {
+        TextField tf = new TextField(defaultValue);
+
+        tf.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[a-zA-Z0-9]*")) {
+                tf.setText(newValue.replaceAll("[^a-zA-Z0-9]", ""));
+            }
+        });
+
+        grid.add(new Label(description), 0, row);
+        grid.add(tf, 1, row);
+        editables.add(tf);
     }
 
     /**
@@ -85,6 +109,10 @@ public class ParameterDialog {
                 int min = paramDescs.get(myParam).getLowerBoundInt();
                 int max = paramDescs.get(myParam).getUpperBoundInt();
                 addIntegerField(myParam, description, min, max, grid, row, editables);
+            } else if (o instanceof Long) {
+                int min = paramDescs.get(myParam).getLowerBoundInt();
+                int max = paramDescs.get(myParam).getUpperBoundInt();
+                addLongField(myParam, description, min, max, grid, row, editables);
             } else if (o instanceof Double) {
                 double min = paramDescs.get(myParam).getLowerBoundDouble();
                 double max = paramDescs.get(myParam).getUpperBoundDouble();
@@ -93,7 +121,11 @@ public class ParameterDialog {
                 addAlphanumericField(description, (String) o, grid, row, editables);
             } else if (o instanceof Boolean) {
                 addChoiceField(myParam, description, grid, row, editables);
+            } else {
+                throw new IllegalArgumentException("Unsupported parameter type: " + o.getClass());
             }
+
+            System.out.println(myParam + " " + o + " " + parameters.get(myParam) + " " + editables.get(row));
         }
 
         dialog.setResizable(true);
@@ -108,15 +140,21 @@ public class ParameterDialog {
                 for (int i = 0; i < myParams.size(); i++) {
                     Object o = paramDescs.get(myParams.get(i)).getDefaultValue();
 
+                    System.out.println(myParams.get(i) + " " + o + " " + editables.get(i));
+
                     if (o instanceof String) {
                         results[i] = ((TextField) editables.get(i)).getText();
                     } else if (o instanceof Integer) {
                         results[i] = Integer.parseInt(((TextField) editables.get(i)).getText());
+                    } else if (o instanceof Long) {
+                        results[i] = Long.parseLong(((TextField) editables.get(i)).getText());
                     } else if (o instanceof Double) {
                         results[i] = Double.parseDouble(((TextField) editables.get(i)).getText());
                     } else if (o instanceof Boolean) {
                         RadioButton selected = (RadioButton) ((ToggleGroup) editables.get(i)).getSelectedToggle();
                         results[i] = selected.getText().equals("Yes");
+                    } else {
+                        throw new IllegalArgumentException("Unsupported parameter type: " + o.getClass());
                     }
                 }
 
@@ -135,10 +173,14 @@ public class ParameterDialog {
                     parameters.set(param, (String) result[i]);
                 } else if (o instanceof Integer) {
                     parameters.set(param, result[i]);
+                } else if (o instanceof Long) {
+                    parameters.set(param, result[i]);
                 } else if (o instanceof Double) {
                     parameters.set(param, result[i]);
                 } else if (o instanceof Boolean) {
                     parameters.set(param, result[i]);
+                } else {
+                    throw new IllegalArgumentException("Unsupported parameter type: " + o.getClass());
                 }
             }
 
@@ -147,31 +189,6 @@ public class ParameterDialog {
             }
         });
     }
-
-    /**
-     * Adds a field for an string parameter.
-     * @param description The description of the parameter.
-     * @param defaultValue The default value of the parameter.
-     * @param grid The grid to add the field to.
-     * @param row The row to add the field to.
-     * @param editables The list of editable fields.
-     */
-    private static void addAlphanumericField(String description, String defaultValue, GridPane grid, int row,
-                                             List<Object> editables) {
-        TextField tf = new TextField(defaultValue);
-
-        tf.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("[a-zA-Z0-9]*")) {
-                tf.setText(newValue.replaceAll("[^a-zA-Z0-9]", ""));
-            }
-        });
-
-        grid.add(new Label(description), 0, row);
-        grid.add(tf, 1, row);
-        editables.add(tf);
-    }
-
-
 
     /**
      * Adds a field for an integer. The field is validated to ensure that the value is an integer and within the
@@ -211,18 +228,57 @@ public class ParameterDialog {
         editables.add(tf);
     }
 
+
+    /**
+     * Adds a field for an long. The field is validated to ensure that the value is an integer and within the specified
+     * range. If the value is outside the range, the default value is used. The user may enter or click in another field
+     * to validate the input.
+     *
+     * @param param       The parameter to edit.
+     * @param description The description of the parameter.
+     * @param min         The minimum value of the parameter.
+     * @param max         The maximum value of the parameter.
+     * @param grid        The grid to add the field to.
+     * @param row         The row to add the field to.
+     * @param editables   The list of editable fields.
+     */
+    private void addLongField(String param, String description, long min, long max, GridPane grid, int row, List<Object> editables) {
+        TextField tf = new TextField(String.valueOf(parameters.getInt(param)));
+
+        tf.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("-?\\d*")) {
+                tf.setText(oldValue);
+            }
+        });
+
+        tf.focusedProperty().addListener((observable, hadFocus, hasFocus) -> {
+            if (hadFocus && !hasFocus) {
+                validateLongInput(tf, min, max, parameters.getInt(param));
+            }
+        });
+
+        tf.setOnAction(e -> validateLongInput(tf, min, max, parameters.getInt(param)));
+
+        String minString = Integer.MIN_VALUE == min ? "-∞" : String.valueOf(min);
+        String maxString = Integer.MAX_VALUE == max ? "∞" : String.valueOf(max);
+
+        grid.add(new Label(description + " (" + minString + "-" + maxString + "):"), 0, row);
+        grid.add(tf, 1, row);
+        editables.add(tf);
+    }
+
     /**
      * Adds a field for a real number. The field is validated to ensure that the value is a real number and within the
      * specified range. If the value is outside the range, the default value is used. The user may enter or click in
      * another field to validate the input.
      *
-     * @param param        The parameter to edit.
-     * @param description  The description of the parameter.
-     * @param min          The minimum value of the parameter.
-     * @param max          The maximum value of the parameter.
-     * @param grid         The grid to add the field to.
-     * @param row          The row to add the field to.
-     * @param editables    The list of editable fields.
+     * @param param       The parameter to edit.
+     * @param description The description of the parameter.
+     * @param min         The minimum value of the parameter.
+     * @param max         The maximum value of the parameter.
+     * @param grid        The grid to add the field to.
+     * @param row         The row to add the field to.
+     * @param editables   The list of editable fields.
      */
     private void addRealField(String param, String description, double min, double max, GridPane grid, int row, List<Object> editables) {
         TextField tf = new TextField(String.valueOf(parameters.getDouble(param)));
@@ -254,7 +310,7 @@ public class ParameterDialog {
     /**
      * Adds a field for a binary Yes/No choice.
      *
-     * @param param      The parameter to edit.
+     * @param param       The parameter to edit.
      * @param description The description of the parameter.
      * @param grid        The grid to add the field to.
      * @param row         The row to add the field to.
@@ -282,9 +338,10 @@ public class ParameterDialog {
     /**
      * Validates the input of an integer field. If the input is not an integer or is outside the specified range, the
      * default value is used.
-     * @param tf The text field to validate.
-     * @param min The minimum value of the parameter.
-     * @param max The maximum value of the parameter.
+     *
+     * @param tf           The text field to validate.
+     * @param min          The minimum value of the parameter.
+     * @param max          The maximum value of the parameter.
      * @param defaultValue The default value of the parameter.
      */
     private void validateIntegerInput(TextField tf, int min, int max, int defaultValue) {
@@ -299,11 +356,32 @@ public class ParameterDialog {
     }
 
     /**
+     * Validates the input of an integer field. If the input is not an integer or is outside the specified range, the
+     * default value is used.
+     *
+     * @param tf           The text field to validate.
+     * @param min          The minimum value of the parameter.
+     * @param max          The maximum value of the parameter.
+     * @param defaultValue The default value of the parameter.
+     */
+    private void validateLongInput(TextField tf, long min, long max, int defaultValue) {
+        try {
+            long value = Long.parseLong(tf.getText());
+            if (value < min || value > max) {
+                tf.setText(String.valueOf(defaultValue));
+            }
+        } catch (NumberFormatException e) {
+            tf.setText(String.valueOf(defaultValue));
+        }
+    }
+
+    /**
      * Validates the input of a real number field. If the input is not a real number or is outside the specified range,
      * the default value is used.
-     * @param tf The text field to validate.
-     * @param min The minimum value of the parameter.
-     * @param max The maximum value of the parameter.
+     *
+     * @param tf           The text field to validate.
+     * @param min          The minimum value of the parameter.
+     * @param max          The maximum value of the parameter.
      * @param defaultValue The default value of the parameter.
      */
     private void validateRealInput(TextField tf, double min, double max, double defaultValue) {

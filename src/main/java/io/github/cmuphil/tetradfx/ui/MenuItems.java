@@ -2,25 +2,21 @@ package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.algcomparison.algorithm.Algorithm;
 import edu.cmu.tetrad.algcomparison.algorithm.oracle.cpdag.*;
-import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Bfci;
-import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Fci;
-import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.Gfci;
-import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.GraspFci;
+import edu.cmu.tetrad.algcomparison.algorithm.oracle.pag.*;
 import edu.cmu.tetrad.algcomparison.independence.IndependenceWrapper;
 import edu.cmu.tetrad.algcomparison.score.ScoreWrapper;
 import edu.cmu.tetrad.algcomparison.utils.HasKnowledge;
 import edu.cmu.tetrad.algcomparison.utils.TakesIndependenceWrapper;
 import edu.cmu.tetrad.algcomparison.utils.UsesScoreWrapper;
 import edu.cmu.tetrad.data.DataSet;
+import edu.cmu.tetrad.data.DataTransforms;
 import edu.cmu.tetrad.data.Knowledge;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.util.Parameters;
 import edu.cmu.tetrad.util.RandomUtil;
-import io.github.cmuphil.tetradfx.for751lib.DataTransforms;
 import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,6 +53,7 @@ public class MenuItems {
         algorithms.add(Gfci.class);
         algorithms.add(Bfci.class);
         algorithms.add(GraspFci.class);
+        algorithms.add(LvLite.class);
 
         List<MenuItem> items = new ArrayList<>();
 
@@ -127,7 +124,6 @@ public class MenuItems {
         return items;
     }
 
-    @NotNull
     public static ContextMenu getDataContextMenu(TableView<DataView.DataRow> dataTable, DataSet dataSet) {
         var contextMenu = new ContextMenu();
 
@@ -228,14 +224,12 @@ public class MenuItems {
         return contextMenu;
     }
 
-    @NotNull
     public static Menu getGameMenu() {
         Menu games = new Menu("Games");
         games.getItems().addAll(getGameMenuItems());
         return games;
     }
 
-    @NotNull
     public static List<MenuItem> getGameMenuItems() {
         List<MenuItem> items = new ArrayList<>();
 

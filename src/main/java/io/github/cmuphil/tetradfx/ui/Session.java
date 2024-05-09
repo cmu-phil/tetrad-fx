@@ -10,7 +10,6 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -271,7 +270,7 @@ public class Session {
         if (file.getName().endsWith(".txt") && !file.getName().toLowerCase().contains("note")) {
             try {
                 int maxNumCategories = 5;
-                DataSet _dataSet = ChangedStuffINeed.loadMixedData(file, "//", '\"',
+                DataSet _dataSet = SimpleDataLoader.loadMixedData(file, "//", '\"',
                         "*", true, maxNumCategories, Delimiter.TAB, false);
 
                 String name = _dataSet.getName();

@@ -6,7 +6,6 @@ import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.util.Parameters;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.file.*;
@@ -96,7 +95,6 @@ public class Utils {
      * @param numEdges The number of edges.
      * @return The random DAG.
      */
-    @NotNull
     public static Graph randomDag(int numNodes, int numEdges) {
         return RandomGraph.randomGraph(numNodes, 0, numEdges, 100, 100,
                 100, false);

@@ -1,8 +1,6 @@
 package io.github.cmuphil.tetradfx.ui;
 
 import edu.cmu.tetrad.graph.*;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
-import io.github.cmuphil.tetradfx.for751lib.GraphTransforms;
 import io.github.cmuphil.tetradfx.utils.CenteredShape;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,7 +17,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -87,7 +84,6 @@ public class GraphView extends Pane {
      * @param graph The graph to display.
      * @return A ScrollPane with the graph display.
      */
-    @NotNull
     public static ScrollPane getGraphDisplay(Graph graph) {
         var markdownArea = new TextArea();
         markdownArea.setPromptText("Notes:");
@@ -99,7 +95,7 @@ public class GraphView extends Pane {
 
         var pane = new SplitPane();
 
-        ChangedStuffINeed.circleLayout(graph);
+        LayoutUtil.circleLayout(graph);
         Pane graphView = new GraphView(graph);
 
         var scrollPane = new ScrollPane();
@@ -147,7 +143,6 @@ public class GraphView extends Pane {
         Session.getInstance().getSelectedProject().addGame(name, vBox, true);
     }
 
-    @NotNull
     private ContextMenu getContextMenu(Pane pane, Graph graph) {
         var contextMenu = new ContextMenu();
 
@@ -173,7 +168,7 @@ public class GraphView extends Pane {
         var dagToCPDAG = new MenuItem("CPDAG from DAG");
 
         dagToCPDAG.setOnAction(e -> {
-            Graph dag = GraphTransforms.cpdagForDag(graph);
+            Graph dag = GraphTransforms.dagToCpdag(graph);
             Session.getInstance().getSelectedProject().addGraph("CPDAG from DAG", dag, true);
         });
 
@@ -187,14 +182,14 @@ public class GraphView extends Pane {
         var dagFromCPDAG = new MenuItem("DAG from CPDAG");
 
         dagFromCPDAG.setOnAction(e -> {
-            Graph dag = GraphTransforms.dagFromCPDAG(graph);
+            Graph dag = GraphTransforms.dagFromCpdag(graph);
             Session.getInstance().getSelectedProject().addGraph("DAG from CPDAG", dag, true);
         });
 
         var magFromPag = new MenuItem("MAG from PAG");
 
         magFromPag.setOnAction(e -> {
-            Graph mag = GraphTransforms.pagToMag(graph);
+            Graph mag = GraphTransforms.magFromPag(graph);
             Session.getInstance().getSelectedProject().addGraph("MAG from PAG", mag, true);
         });
 
@@ -218,10 +213,10 @@ public class GraphView extends Pane {
 
     private void layout(Graph graph, int layoutType) {
         switch (layoutType) {
-            case 1 -> ChangedStuffINeed.circleLayout(graph);
-            case 2 -> ChangedStuffINeed.squareLayout(graph);
+            case 1 -> LayoutUtil.circleLayout(graph);
+            case 2 -> LayoutUtil.squareLayout(graph);
             case 3 -> LayoutUtil.fruchtermanReingoldLayout(graph);
-            case 4 -> ChangedStuffINeed.layoutByCausalOrder(graph);
+            case 4 -> LayoutUtil.layoutByCausalOrder(graph);
             default -> throw new IllegalArgumentException("That layout type is not configured: " + layoutType);
         }
 
@@ -310,7 +305,6 @@ public class GraphView extends Pane {
         return new DisplayNode(shape, text);
     }
 
-    @NotNull
     private static Shape getShape(Node node, Text text) {
         Shape shape;
         if (node.getNodeType() == NodeType.MEASURED) {

@@ -20,7 +20,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.util.Duration;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,14 +53,15 @@ public class Games {
                 "Permutation Game", getPermutationGamePane(graph));
     }
 
-    @NotNull
     private static BorderPane getPermutationGamePane(Graph _graph) {
         List<Node> nodes = _graph.getNodes();
         Graph graph1 = new EdgeListGraph(_graph);
         int numEdges;
 
         do {
-            TeyssierScorer scorer = new TeyssierScorer(new MsepTest(graph1), new GraphScore(graph1));
+            MsepTest test = new MsepTest(graph1);
+            GraphScore score = new GraphScore(graph1);
+            TeyssierScorer scorer = new TeyssierScorer(test, score);
             Collections.shuffle(nodes);
             scorer.score(nodes);
             numEdges = scorer.getNumEdges();

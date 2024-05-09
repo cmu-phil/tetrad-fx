@@ -5,13 +5,13 @@ import edu.cmu.tetrad.algcomparison.simulation.BayesNetSimulation;
 import edu.cmu.tetrad.algcomparison.simulation.LeeHastieSimulation;
 import edu.cmu.tetrad.data.DataSet;
 import edu.cmu.tetrad.data.Knowledge;
+import edu.cmu.tetrad.data.SimpleDataLoader;
 import edu.cmu.tetrad.graph.Graph;
 import edu.cmu.tetrad.graph.GraphSaveLoadUtils;
 import edu.cmu.tetrad.graph.RandomGraph;
 import edu.cmu.tetrad.sem.LargeScaleSimulation;
 import edu.cmu.tetrad.util.Parameters;
 import edu.pitt.dbmi.data.reader.Delimiter;
-import io.github.cmuphil.tetradfx.for751lib.ChangedStuffINeed;
 import io.github.cmuphil.tetradfx.utils.Utils;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -21,7 +21,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,6 @@ public class TetradFxMain {
      * @return The result of the simulation.
      */
     // This will eventually be replaced by some flexible UI for making simulations (or eliminated).
-    @NotNull
     private static Result getSimulation(Parameters parameters, SimulationType type) {
         if (type == SimulationType.CONTINUOUS) {
             Graph graph = RandomGraph.randomGraphRandomForwardEdges(20, 0,
@@ -226,7 +224,6 @@ public class TetradFxMain {
      * @param primaryStage The primary stage.
      * @return The menu bar.
      */
-    @NotNull
     public MenuBar getMenuBar(Stage primaryStage) {
         MenuBar menuBar = new MenuBar();
 
@@ -388,7 +385,7 @@ public class TetradFxMain {
      */
     private void loadContinuous(File selectedFile, boolean hasHeader, Delimiter delimiter) {
         try {
-            DataSet dataSet = ChangedStuffINeed.loadContinuousData(selectedFile, "//", '\"',
+            DataSet dataSet = SimpleDataLoader.loadContinuousData(selectedFile, "//", '\"',
                     "*", hasHeader, delimiter, false);
             String name = selectedFile.getName();
             dataSet.setName(name);
@@ -411,7 +408,7 @@ public class TetradFxMain {
      */
     private void loadDiscrete(File selectedFile, boolean hasHeader, Delimiter delimiter) {
         try {
-            DataSet dataSet = ChangedStuffINeed.loadDiscreteData(selectedFile, "//",
+            DataSet dataSet = SimpleDataLoader.loadDiscreteData(selectedFile, "//",
                     '\"', "*", hasHeader, delimiter, false);
             Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),
@@ -434,7 +431,7 @@ public class TetradFxMain {
     private void loadMixed(File selectedFile, TextField textField, boolean hasHeader, Delimiter delimiter) {
         try {
             int maxNumCategories = Integer.parseInt(textField.getText());
-            DataSet dataSet = ChangedStuffINeed.loadMixedData(selectedFile, "//", '\"',
+            DataSet dataSet = SimpleDataLoader.loadMixedData(selectedFile, "//", '\"',
                     "*", hasHeader, maxNumCategories, delimiter, false);
             Session.getInstance().add(dataSet, null, Utils.nextName(selectedFile.getName(),
                             Session.getInstance().getProjectNames()),

@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>Returns a TableView for a DataSet that can be displayed in a ScrollPane</p>
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DataView {
 
-    @NotNull
     public static TableView<DataRow> getTableView(DataSet dataSet) {
         TableView<DataRow> table = new TableView<>();
 
@@ -81,7 +79,6 @@ public class DataView {
         }
     }
 
-    @NotNull
     public static ScoreWrapper getScore(DataSet dataSet) {
         if (dataSet.isContinuous()) {
             return new SemBicScore();

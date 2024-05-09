@@ -14,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -556,7 +555,6 @@ public class Project {
         return names;
     }
 
-    @NotNull
     private static Tab managePlusTab1(TabPane _tabPane, VBox node) {
 
         Tab plusTab = new Tab(" + ", new HBox());
